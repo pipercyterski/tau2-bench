@@ -1,0 +1,72 @@
+{
+  "model_name": "grok-voice-think-fast-1.0 + tool-mentor",
+  "model_organization": "Pickle",
+  "submitting_organization": "Pickle",
+  "submission_date": "2026-07-07",
+  "submission_type": "custom",
+  "modality": "voice",
+  "contact_info": {
+    "email": "hojin@pickle.com",
+    "name": "Hojin Yu",
+    "github": "pickle-com"
+  },
+  "results": {
+    "retail": {
+      "pass_1": 76.31578947368422
+    },
+    "airline": {
+      "pass_1": 70.0
+    },
+    "telecom": {
+      "pass_1": 78.0701754385965
+    }
+  },
+  "reasoning_effort": "enabled",
+  "is_new": true,
+  "trajectories_available": true,
+  "trajectory_files": {
+    "retail": "grok-voice-tool-mentor-retail",
+    "airline": "grok-voice-tool-mentor-airline",
+    "telecom": "grok-voice-tool-mentor-telecom"
+  },
+  "references": [
+    {
+      "title": "Tool-mentor fork (tag tool-mentor-v1.0): methodology, reproduction command, mentor prompt",
+      "url": "https://github.com/pickle-com/tau2-bench/tree/tool-mentor-v1.0",
+      "type": "github"
+    },
+    {
+      "title": "Methodology and reproduction contract",
+      "url": "https://github.com/pickle-com/tau2-bench/blob/tool-mentor-v1.0/docs/tool-mentor-methodology.md",
+      "type": "documentation"
+    },
+    {
+      "title": "Trajectories (submit-prepare bundles, all three domains)",
+      "url": "https://huggingface.co/datasets/samtiz/tau2-voice-grok-tool-mentor-trajectories",
+      "type": "huggingface"
+    }
+  ],
+  "methodology": {
+    "evaluation_date": "2026-07-06",
+    "tau2_bench_version": "1.0.0",
+    "user_simulator": "gpt-5.5-2026-04-23 (xhigh)",
+    "notes": "Custom submission: base model is xAI grok-voice-think-fast-1.0 (audio-native, regular speech complexity, single trial on the full base splits) with an added tool-boundary mentor — a separate LLM (gemini-3.5-flash, reasoning_effort=high, read/write deadlines 10s/15s, fail-open) that reviews the voice agent's tool calls at runtime: pre-execution gates on state-mutating and escalation calls (transfer_to_human_agents), guidance notes appended to read results, and stop-interception so a blocked hand-off proposal continues the conversation. The mentor receives only agent-visible inputs (agent-heard STT transcript, official tool results, the same domain policy the agent receives, agent tool names and descriptions); its prompt contains no benchmark-derived facts and is published verbatim in the referenced fork together with its content policy. Standard tau2 agent and user-simulator prompts are byte-unmodified; the mentor is an additional component with its own prompt. Explicit xAI server-VAD settings (threshold 0.1, silence 1200ms, prefix padding 600ms) and 2.0x input gain restore a working audio pipeline on the July 2026 xAI serving stack (in our environment, server-default VAD frequently failed to detect user speech, and we were unable to reproduce the April 2026 official score with default settings). All non-mentor behavioral differences from upstream are enumerated in the referenced methodology document; submitted runs used the upstream-compatible voice-seed behavior (TAU2_OFFICIAL_PYTHON_HASH_VOICE_SEED=1). The voice user-simulator pipeline is the standard v1.0 lineage with only its LLM swapped: gpt-5.5-2026-04-23 at reasoning_effort=xhigh — not comparable to standard-user-simulator leaderboard entries. Voices are local ElevenLabs personas, not Sierra-managed submission voices.",
+    "verification": {
+      "modified_prompts": false,
+      "omitted_questions": false,
+      "details": "Standard agent and user-simulator prompts are byte-identical to upstream. The added mentor component has its own prompt (published in the referenced fork; no benchmark proper nouns or task-derived facts, per the fork's mentor-prompt-constitution). Full base splits evaluated: retail 114, airline 50, telecom 114; no task omitted."
+    }
+  },
+  "voice_config": {
+    "provider": "xAI",
+    "model": "grok-voice-think-fast-1.0",
+    "tick_duration_seconds": 0.2,
+    "max_steps_seconds": 1200.0,
+    "user_tts_provider": "elevenlabs/eleven_v3"
+  },
+  "model_release": {
+    "release_date": "2026-04-23",
+    "announcement_url": "https://x.ai/news/grok-voice-think-fast-1",
+    "announcement_title": "Grok Voice Think Fast 1.0"
+  }
+}
