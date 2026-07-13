@@ -581,11 +581,11 @@ const Leaderboard = () => {
         <div className="domain-scope-note">
           <span className="domain-scope-icon">ⓘ</span>
           <span>
-            Overall does not include Banking. For voice agents on retrieval tasks, see{' '}
+            For voice agents on retrieval tasks, see the{' '}
             <button className="domain-scope-link" onClick={() => setDomain('banking_knowledge')}>
               🏦 Banking
             </button>
-            {' '}— scored separately.
+            {' '}domain. Overall does not include Banking.
           </span>
         </div>
       )}
