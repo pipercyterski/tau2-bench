@@ -76,7 +76,10 @@ const Leaderboard = () => {
   })
   const [showCustom, setShowCustom] = useState(() => {
     const stored = localStorage.getItem('showCustom')
-    return stored === null ? false : stored === 'true'
+    if (stored !== null) return stored === 'true'
+    // Voice defaults to showing custom submissions alongside standard ones
+    const initialBenchmark = getBenchmarkFromHash() || localStorage.getItem('benchmark')
+    return initialBenchmark === 'voice'
   })
   // Legacy submissions toggle
   const [showLegacy, setShowLegacy] = useState(() => {
@@ -360,8 +363,11 @@ const Leaderboard = () => {
     setBenchmark(newBenchmark)
     setExpandedRows(new Set())
     if (newBenchmark === 'voice') {
-      // Voice only has pass^1
+      // Voice only has pass^1; default view is Overall with all submission types
       setSelectedPassK(1)
+      setDomain('overall')
+      setShowStandard(true)
+      setShowCustom(true)
     } else if (domain === 'overall') {
       setDomain(TEXT_DEFAULT_DOMAIN)
     }
