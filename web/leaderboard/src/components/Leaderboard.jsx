@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './Leaderboard.css'
 import ProgressView from './ProgressView'
+import InteractionQualityTable from './InteractionQualityTable'
 
 const BENCHMARK_VALUES = new Set(['text', 'voice'])
 
@@ -219,6 +220,7 @@ const Leaderboard = () => {
             bankingRetrievalConfig: submission.results.banking_knowledge?.retrieval_config || null,
             // Voice-specific fields
             voiceConfig: submission.voice_config || null,
+            interactionMetrics: submission.interaction_metrics || null,
             // Add verification status
             // For 'custom' submissions, we relax the modified_prompts constraint
             // Custom submissions are allowed to modify prompts as long as they have trajectories and don't omit questions
@@ -993,6 +995,27 @@ const Leaderboard = () => {
         )}
         </div>
         )}
+
+      {/* Interaction Quality (voice only, below the ranking table) */}
+      {isVoice && (showStandard || showCustom) && (
+        <InteractionQualityTable
+          models={Object.entries(passKData)
+            .filter(([, data]) => {
+              if (data.modality !== 'voice') return false
+              const isStandard = data.submissionType === 'standard' || !data.submissionType
+              const isCustom = data.submissionType === 'custom'
+              return !((isStandard && !showStandard) || (isCustom && !showCustom))
+            })
+            .map(([submissionKey, data]) => ({
+              key: submissionKey,
+              displayName: data.modelName,
+              data,
+            }))}
+          domain={domain}
+          domains={VOICE_DOMAINS}
+          onModelClick={handleModelClick}
+        />
+      )}
 
       {/* Progress Over Time (always below the ranking table) */}
       <div id="progress" style={{ scrollMarginTop: '80px' }}>

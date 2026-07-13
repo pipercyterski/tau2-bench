@@ -1800,3 +1800,192 @@ a.user-sim-version-link:hover {
     padding: 0.3rem 1rem;
   }
 } 
+
+/* ==========================================================================
+   Interaction Quality table (voice benchmark, below the main ranking table)
+   ========================================================================== */
+
+.interaction-quality-section {
+  margin-top: 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.interaction-quality-header {
+  padding: 24px 24px 8px 24px;
+}
+
+.interaction-quality-title {
+  margin: 0 0 6px 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.interaction-quality-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+.interaction-quality-subtitle a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.interaction-quality-subtitle a:hover {
+  text-decoration: underline;
+}
+
+.interaction-quality-table td.model-info {
+  min-width: 200px;
+}
+
+.interaction-quality-table th.iq-metric-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.interaction-quality-table th.iq-metric-header:hover {
+  background: #eef2f7;
+}
+
+.interaction-quality-table th.iq-sorted {
+  color: #2563eb;
+}
+
+.iq-header-label {
+  display: block;
+}
+
+.iq-header-sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-top: 2px;
+}
+
+.iq-sorted .iq-header-sub {
+  color: #2563eb;
+}
+
+.iq-sort-arrow {
+  margin-left: 4px;
+  font-size: 9px;
+}
+
+.iq-value-cell {
+  font-weight: 600;
+  color: #1e293b;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.iq-no-data {
+  color: #94a3b8;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.iq-reasoning {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: lowercase;
+}
+
+.iq-custom-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  vertical-align: middle;
+}
+
+.iq-detail-container {
+  padding: 8px 4px;
+}
+
+.iq-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.iq-detail-table th {
+  text-align: left;
+  padding: 8px 12px;
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.iq-detail-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.iq-detail-metric {
+  font-weight: 600;
+  color: #334155;
+}
+
+.iq-count {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.iq-low-n {
+  color: #b45309;
+}
+
+.iq-low-n .iq-count {
+  color: #b45309;
+}
+
+.iq-detail-footnote {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.iq-detail-empty {
+  padding: 16px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .interaction-quality-header {
+    padding: 16px 16px 4px 16px;
+  }
+
+  .iq-detail-table {
+    font-size: 12px;
+  }
+}
