@@ -662,76 +662,97 @@ const Leaderboard = () => {
         ) : (
         <div className="reliability-metrics">
         <div className="metrics-table-container">
-          <table className={`reliability-table ${isVoice ? 'voice-table' : ''}`}>
+          <table className={`reliability-table ${isVoice ? 'voice-table' : ''} ${isVoice && rankBy === 'interaction' ? 'interaction-mode' : ''}`}>
             <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Model</th>
-                <th>Released</th>
-                <th>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
-                <th>Reasoning</th>
-                <th>User Sim</th>
-                <th className="passk-header-cell">
-                  <div className="passk-header-toggle">
-                    {isVoice ? (
-                      <button
-                        className={`passk-header-btn ${rankBy === 'passk' ? 'active' : ''}`}
-                        onClick={() => setRankBy('passk')}
-                        title="Rank by task success"
-                      >
-                        Pass^1
-                      </button>
-                    ) : (
-                      [1, 2, 3, 4].map(k => (
-                        <button
-                          key={k}
-                          className={`passk-header-btn ${selectedPassK === k ? 'active' : ''}`}
-                          onClick={() => setSelectedPassK(k)}
-                        >
-                          Pass^{k}
-                        </button>
-                      ))
-                    )}
-                    {(!isVoice || rankBy === 'passk') && (
-                      <button
-                        className="passk-sort-btn"
-                        onClick={handleSort}
-                        title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
-                      >
-                        {sortDirection === 'desc' ? '↓' : '↑'}
-                      </button>
-                    )}
-                  </div>
-                </th>
-                {isVoice && (
-                  <th className="passk-header-cell interaction-header-cell">
-                    <div className="passk-header-toggle">
-                      <button
-                        className={`passk-header-btn ${rankBy === 'interaction' ? 'active' : ''}`}
-                        onClick={() => setRankBy('interaction')}
-                        title="Rank by interaction quality, measured from the same full-duplex trajectories. Click to activate, then pick a metric."
-                      >
-                        Interaction
-                      </button>
-                      {rankBy === 'interaction' && (
-                        <select
-                          className="interaction-metric-select"
-                          value={interactionMetric}
-                          onChange={(e) => setInteractionMetric(e.target.value)}
-                          title={INTERACTION_METRICS.find(m => m.key === interactionMetric)?.desc}
-                        >
-                          {INTERACTION_METRICS.map((m) => (
-                            <option key={m.key} value={m.key}>
-                              {m.label} {m.better === 'lower' ? '↓' : '↑'}
-                            </option>
-                          ))}
-                        </select>
+              {(() => {
+                const interactionMode = isVoice && rankBy === 'interaction'
+                const headerSpan = interactionMode ? 2 : 1
+                return (
+                  <>
+                    <tr>
+                      <th rowSpan={headerSpan}>Rank</th>
+                      <th rowSpan={headerSpan}>Model</th>
+                      <th rowSpan={headerSpan}>Released</th>
+                      <th rowSpan={headerSpan}>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
+                      <th rowSpan={headerSpan}>Reasoning</th>
+                      <th rowSpan={headerSpan}>User Sim</th>
+                      <th className="passk-header-cell" rowSpan={headerSpan}>
+                        <div className="passk-header-toggle">
+                          {isVoice ? (
+                            <>
+                              <button
+                                className={`passk-header-btn ${rankBy === 'passk' ? 'active' : ''}`}
+                                onClick={() => setRankBy('passk')}
+                                title="Rank by task success"
+                              >
+                                Pass^1
+                              </button>
+                              {!interactionMode && (
+                                <button
+                                  className="passk-header-btn"
+                                  onClick={() => {
+                                    setRankBy('interaction')
+                                    setInteractionMetric('response_rate')
+                                  }}
+                                  title="Rank by interaction quality, measured from the same full-duplex trajectories"
+                                >
+                                  Interaction
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            [1, 2, 3, 4].map(k => (
+                              <button
+                                key={k}
+                                className={`passk-header-btn ${selectedPassK === k ? 'active' : ''}`}
+                                onClick={() => setSelectedPassK(k)}
+                              >
+                                Pass^{k}
+                              </button>
+                            ))
+                          )}
+                          {(!isVoice || rankBy === 'passk') && (
+                            <button
+                              className="passk-sort-btn"
+                              onClick={handleSort}
+                              title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
+                            >
+                              {sortDirection === 'desc' ? '↓' : '↑'}
+                            </button>
+                          )}
+                        </div>
+                      </th>
+                      {interactionMode && (
+                        <th className="interaction-group-header" colSpan={4}>
+                          <div className="passk-header-toggle">
+                            <button
+                              className="passk-header-btn active"
+                              title="Ranking by interaction quality — pick a metric below. Click Pass^1 to rank by task success again."
+                            >
+                              Interaction
+                            </button>
+                          </div>
+                        </th>
                       )}
-                    </div>
-                  </th>
-                )}
-                <th className="expand-header"></th>
-              </tr>
+                      <th className="expand-header" rowSpan={headerSpan}></th>
+                    </tr>
+                    {interactionMode && (
+                      <tr className="interaction-subheader-row">
+                        {INTERACTION_METRICS.map((m) => (
+                          <th
+                            key={m.key}
+                            className={`interaction-col-header ${interactionMetric === m.key ? 'active' : ''}`}
+                            onClick={() => setInteractionMetric(m.key)}
+                            title={`${m.desc} Click to sort by this metric.`}
+                          >
+                            {m.label} {m.better === 'lower' ? '↓' : '↑'}
+                          </th>
+                        ))}
+                      </tr>
+                    )}
+                  </>
+                )
+              })()}
             </thead>
             <tbody>
               {(() => {
@@ -1008,45 +1029,49 @@ const Leaderboard = () => {
                      <td className="metric-cell score-cell">
                        {(() => {
                          const value = model.domainData[selectedPassK - 1]
-                         if (value !== null) {
-                           return (
-                             <div className="score-bar-container">
-                               <div className="score-bar-track">
-                                 <div 
-                                   className="score-bar-fill"
-                                   style={{ width: `${Math.min(value, 100)}%` }}
-                                 />
-                               </div>
-                               <span className="score-bar-value">{value.toFixed(1)}%</span>
-                             </div>
-                           )
-                         } else {
+                         if (value === null) {
                            return <span className="no-data">—</span>
                          }
+                         if (isVoice && rankBy === 'interaction') {
+                           // Interaction mode: pass^1 shrinks to a plain number
+                           return <span className="score-plain">{value.toFixed(1)}%</span>
+                         }
+                         return (
+                           <div className="score-bar-container">
+                             <div className="score-bar-track">
+                               <div
+                                 className="score-bar-fill"
+                                 style={{ width: `${Math.min(value, 100)}%` }}
+                               />
+                             </div>
+                             <span className="score-bar-value">{value.toFixed(1)}%</span>
+                           </div>
+                         )
                        })()}
                      </td>
-                     {/* Interaction Quality (voice only) */}
-                     {isVoice && (
-                       <td className="metric-cell interaction-cell">
-                         {model.interactionValue !== null ? (
-                           <span className={`interaction-value ${rankBy === 'interaction' ? 'interaction-value-active' : ''}`}>
-                             {formatInteractionValue(
-                               model.interactionValue,
-                               INTERACTION_METRICS.find(m => m.key === interactionMetric)?.unit
-                             )}
-                           </span>
-                         ) : (
-                           <span
-                             className="no-data"
-                             title={getInteractionPanel(model.data.interactionMetrics, domain)
-                               ? `Not shown: fewer than ${MIN_INTERACTION_N} events`
-                               : 'Interaction metrics not available for this submission'}
-                           >
-                             —
-                           </span>
-                         )}
-                       </td>
-                     )}
+                     {/* Interaction metrics fan-out (voice, interaction mode only) */}
+                     {isVoice && rankBy === 'interaction' && INTERACTION_METRICS.map((m) => {
+                       const value = getInteractionValue(model.data.interactionMetrics, domain, m.key)
+                       return (
+                         <td
+                           key={m.key}
+                           className={`metric-cell interaction-cell ${interactionMetric === m.key ? 'interaction-cell-sorted' : ''}`}
+                         >
+                           {value !== null ? (
+                             formatInteractionValue(value, m.unit)
+                           ) : (
+                             <span
+                               className="no-data"
+                               title={getInteractionPanel(model.data.interactionMetrics, domain)
+                                 ? `Not shown: fewer than ${MIN_INTERACTION_N} events`
+                                 : 'Interaction metrics not available for this submission'}
+                             >
+                               —
+                             </span>
+                           )}
+                         </td>
+                       )
+                     })}
                      {/* Expand Toggle */}
                      <td className="expand-cell" onClick={() => toggleExpand(model.key)}>
                        <span className={`expand-caret ${isExpanded ? 'open' : ''}`}>▶</span>
@@ -1055,7 +1080,7 @@ const Leaderboard = () => {
                   {/* Expandable Domain Breakdown Row */}
                   {isExpanded && (
                     <tr className="domain-detail-row">
-                      <td colSpan={isVoice ? 9 : 8} className="domain-detail-cell">
+                      <td colSpan={isVoice && rankBy === 'interaction' ? 12 : 8} className="domain-detail-cell">
                         <div className="domain-breakdown">
                           {(isVoice
                             ? [
@@ -1131,7 +1156,6 @@ const Leaderboard = () => {
                         {isVoice && model.data.interactionMetrics && (
                           <div className="interaction-breakdown">
                             <div className="interaction-breakdown-title">
-                              Interaction quality
                               <a
                                 className="interaction-breakdown-link"
                                 href="https://github.com/sierra-research/tau2-bench/blob/main/docs/interaction-metrics.md"
