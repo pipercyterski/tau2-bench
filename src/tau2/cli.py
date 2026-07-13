@@ -912,6 +912,26 @@ def main():
     )
     submit_verify_parser.set_defaults(func=lambda args: run_verify_trajectories(args))
 
+    # Submit interaction-metrics subcommand
+    submit_im_parser = submit_subparsers.add_parser(
+        "interaction-metrics",
+        help="Compute voice interaction metrics (latency, responsiveness, "
+        "interrupts, selectivity) from full-duplex trajectories",
+    )
+    submit_im_parser.add_argument(
+        "input_paths",
+        nargs="+",
+        help="Voice experiment directories (results.json + simulations/) or a "
+        "parent directory such as a submission's trajectories/ dir",
+    )
+    submit_im_parser.add_argument(
+        "--output",
+        "-o",
+        default=None,
+        help="Optional path to write the interaction_metrics JSON block",
+    )
+    submit_im_parser.set_defaults(func=lambda args: run_interaction_metrics(args))
+
     # Convert results format command
     convert_parser = subparsers.add_parser(
         "convert-results",
@@ -1072,6 +1092,18 @@ def run_validate_submission(args):
     from tau2.scripts.leaderboard.prepare_submission import validate_submission
 
     validate_submission(submission_dir=args.submission_dir)
+
+
+def run_interaction_metrics(args):
+    """Run the interaction metrics computation command."""
+    from tau2.scripts.leaderboard.compute_interaction_metrics import (
+        compute_interaction_metrics,
+    )
+
+    compute_interaction_metrics(
+        input_paths=args.input_paths,
+        output_path=args.output,
+    )
 
 
 def run_manual_mode():
