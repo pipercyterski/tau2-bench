@@ -1,0 +1,46 @@
+{
+  "model_name": "gemini-3.1-flash-live-preview-thinking-high",
+  "model_organization": "Google",
+  "submitting_organization": "Sierra",
+  "submission_date": "2026-07-13",
+  "submission_type": "custom",
+  "modality": "voice",
+  "contact_info": {
+    "email": "soham@sierra.ai",
+    "name": "Sierra Research Team"
+  },
+  "results": {
+    "banking_knowledge": {
+      "pass_1": 13.402061855670103,
+      "retrieval_config": "alltools"
+    }
+  },
+  "is_new": true,
+  "trajectories_available": true,
+  "trajectory_files": {
+    "banking_knowledge": "gemini-3-1-flash-live-preview_voice_high_usersim-gpt55xhigh_banking"
+  },
+  "methodology": {
+    "evaluation_date": "2026-07-13",
+    "tau2_bench_version": "1.0.0",
+    "user_simulator": "gpt-5.5-2026-04-23 (xhigh)",
+    "notes": "Custom submission: first voice-banking (voice + knowledge) entry. Identical to the standard voice evaluation pipeline (audio-native, regular speech complexity, ElevenLabs eleven_v3 TTS, Gemini thinking level HIGH) but run on the banking_knowledge domain with retrieval-config=alltools, and the user simulator LLM is gpt-5.5-2026-04-23 at reasoning_effort=xhigh instead of the leaderboard-standard v1.0 (gpt-4.1). Not comparable to standard-user-simulator leaderboard entries.",
+    "verification": {
+      "modified_prompts": false,
+      "omitted_questions": false
+    }
+  },
+  "voice_config": {
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-live-preview",
+    "tick_duration_seconds": 0.2,
+    "max_steps_seconds": 1200.0,
+    "user_tts_provider": "elevenlabs/eleven_v3"
+  },
+  "model_release": {
+    "release_date": "2026-03-26",
+    "announcement_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
+    "announcement_title": "Gemini 3.1 Flash Live: Google's latest AI audio model"
+  },
+  "reasoning_effort": "high"
+}

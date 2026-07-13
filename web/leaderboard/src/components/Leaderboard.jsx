@@ -31,6 +31,7 @@ const VOICE_DOMAINS = [
   { key: 'retail', label: '🛍️ Retail' },
   { key: 'airline', label: '✈️ Airline' },
   { key: 'telecom', label: '📱 Telecom' },
+  { key: 'banking_knowledge', label: '🏦 Banking' },
 ]
 
 const formatVoicePipeline = (pipeline) => {
@@ -359,11 +360,6 @@ const Leaderboard = () => {
     setBenchmark(newBenchmark)
     setExpandedRows(new Set())
     if (newBenchmark === 'voice') {
-      // Voice doesn't have banking_knowledge or a meaningful overall (no banking)
-      // Reset to 'overall' which will show avg of available domains
-      if (domain === 'banking_knowledge') {
-        setDomain('overall')
-      }
       // Voice only has pass^1
       setSelectedPassK(1)
     } else if (domain === 'overall') {
@@ -452,7 +448,8 @@ const Leaderboard = () => {
   const isVoice = benchmark === 'voice'
   const availableDomains = isVoice ? VOICE_DOMAINS : TEXT_DOMAINS
 
-  // For voice overall, only average the 3 non-banking domains
+  // Voice overall averages the 3 original domains only; banking_knowledge is
+  // shown as its own column but excluded so older submissions stay comparable
   const voiceDomains = ['retail', 'airline', 'telecom']
 
   return (

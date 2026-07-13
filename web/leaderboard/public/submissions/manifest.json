@@ -31,7 +31,9 @@
     "gpt-realtime-1-0_openai_2026-04-13",
     "livekit-cascaded_livekit_2026-05-19",
     "gpt-realtime-2_openai_2026-06-24",
-    "gpt-realtime-2_openai_2026-06-29"
+    "gpt-realtime-2_openai_2026-06-29",
+    "gpt-realtime-2-banking_openai_2026-07-12",
+    "gemini-3-1-flash-live-preview-thinking-high-banking_google_2026-07-13"
   ],
   "legacy_submissions": [
     "claude-3-7-sonnet_anthropic_2024-06-20",
