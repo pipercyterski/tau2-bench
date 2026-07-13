@@ -348,3 +348,21 @@ class TestGoldenParity:
         assert block["version"]
         assert block["config"] == InteractionMetricsConfig().as_dict()
         assert set(block["domains"]) == {"retail"}
+
+    def test_block_validates_against_submission_schema(self):
+        from tau2.scripts.leaderboard.submission import InteractionMetrics
+
+        block = compute_interaction_metrics_block(
+            discover_experiment_paths([str(TESTDATA / "experiment")])
+        )
+        model = InteractionMetrics.model_validate(block)
+        assert model.domains["retail"].response_rate == pytest.approx(
+            block["domains"]["retail"]["response_rate"]
+        )
+        assert (
+            model.overall.counts.response_total
+            == (block["overall"]["counts"]["response_total"])
+        )
+        # Round-trip through JSON must be lossless (submission.json format)
+        rehydrated = InteractionMetrics.model_validate_json(model.model_dump_json())
+        assert rehydrated == model

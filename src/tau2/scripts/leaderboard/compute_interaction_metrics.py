@@ -62,6 +62,40 @@ def discover_experiment_paths(input_paths: list[str]) -> list[Path]:
     return sorted(experiment_dirs)
 
 
+def compute_metrics_for_loaded_results(
+    results: Results,
+    config: Optional[InteractionMetricsConfig] = None,
+) -> dict:
+    """
+    Compute the interaction-metric panel for one already-loaded experiment,
+    honoring the experiment's recorded tick duration when available.
+    """
+    config = config or InteractionMetricsConfig()
+    audio_config = results.info.audio_native_config
+    if audio_config is not None and audio_config.tick_duration_seconds:
+        config = InteractionMetricsConfig(
+            **{
+                **config.as_dict(),
+                "tick_duration_sec": audio_config.tick_duration_seconds,
+            }
+        )
+    return compute_interaction_metrics_for_experiment(results, config)
+
+
+def build_interaction_metrics_block(
+    domain_metrics: dict[str, dict],
+    config: Optional[InteractionMetricsConfig] = None,
+) -> dict:
+    """Assemble the ``interaction_metrics`` block from per-domain panels."""
+    config = config or InteractionMetricsConfig()
+    return {
+        "version": INTERACTION_METRICS_VERSION,
+        "config": config.as_dict(),
+        "domains": dict(sorted(domain_metrics.items())),
+        "overall": aggregate_domain_metrics(domain_metrics),
+    }
+
+
 def compute_interaction_metrics_block(
     experiment_paths: list[Path],
     config: Optional[InteractionMetricsConfig] = None,
@@ -83,8 +117,6 @@ def compute_interaction_metrics_block(
         NoVoiceTicksError: If an experiment has no tick-bearing simulations.
         ValueError: If two experiments cover the same domain.
     """
-    config = config or InteractionMetricsConfig()
-
     domain_metrics: dict[str, dict] = {}
     for experiment_path in experiment_paths:
         results = Results.load(experiment_path)
@@ -93,28 +125,10 @@ def compute_interaction_metrics_block(
             raise ValueError(
                 f"Domain {domain} appears in multiple experiment directories"
             )
-
-        experiment_config = config
-        audio_config = results.info.audio_native_config
-        if audio_config is not None and audio_config.tick_duration_seconds:
-            experiment_config = InteractionMetricsConfig(
-                **{
-                    **config.as_dict(),
-                    "tick_duration_sec": audio_config.tick_duration_seconds,
-                }
-            )
-
         logger.info(f"Computing interaction metrics for {domain} ({experiment_path})")
-        domain_metrics[domain] = compute_interaction_metrics_for_experiment(
-            results, experiment_config
-        )
+        domain_metrics[domain] = compute_metrics_for_loaded_results(results, config)
 
-    return {
-        "version": INTERACTION_METRICS_VERSION,
-        "config": config.as_dict(),
-        "domains": dict(sorted(domain_metrics.items())),
-        "overall": aggregate_domain_metrics(domain_metrics),
-    }
+    return build_interaction_metrics_block(domain_metrics, config)
 
 
 def _format_cell(metric_name: str, value: Optional[float]) -> str:
