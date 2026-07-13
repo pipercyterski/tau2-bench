@@ -266,8 +266,10 @@ class InteractionMetricsPanel(BaseModelNoExtra):
     """The τ-voice interaction-metric panel for one domain (or the overall average).
 
     Latencies are in seconds (lower is better). Rates and selectivity are
-    fractions in [0, 1] (higher is better), except agent_interruption_rate
-    where lower is better. Selectivity values are correct-rates
+    fractions in [0, 1] (higher is better), except agent_interruption_rate,
+    which counts agent-interrupts-user events per response-eligible user turn
+    (lower is better, and it can exceed 1 when the agent interrupts the same
+    turn more than once). Selectivity values are correct-rates
     (1 - error rate).
     """
 

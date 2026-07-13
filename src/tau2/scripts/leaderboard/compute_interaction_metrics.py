@@ -62,14 +62,12 @@ def discover_experiment_paths(input_paths: list[str]) -> list[Path]:
     return sorted(experiment_dirs)
 
 
-def compute_metrics_for_loaded_results(
+def resolve_experiment_config(
     results: Results,
     config: Optional[InteractionMetricsConfig] = None,
-) -> dict:
-    """
-    Compute the interaction-metric panel for one already-loaded experiment,
-    honoring the experiment's recorded tick duration when available.
-    """
+) -> InteractionMetricsConfig:
+    """Return the config actually used for an experiment: the base config with
+    tick duration overridden from the experiment's recorded audio config."""
     config = config or InteractionMetricsConfig()
     audio_config = results.info.audio_native_config
     if audio_config is not None and audio_config.tick_duration_seconds:
@@ -79,7 +77,41 @@ def compute_metrics_for_loaded_results(
                 "tick_duration_sec": audio_config.tick_duration_seconds,
             }
         )
-    return compute_interaction_metrics_for_experiment(results, config)
+    return config
+
+
+def config_with_resolved_ticks(
+    config: Optional[InteractionMetricsConfig],
+    resolved_configs: list[InteractionMetricsConfig],
+) -> InteractionMetricsConfig:
+    """Return the config to record in the block, with tick_duration_sec set to
+    the value the experiments actually used so provenance isn't misstated."""
+    config = config or InteractionMetricsConfig()
+    ticks = {c.tick_duration_sec for c in resolved_configs}
+    if len(ticks) == 1:
+        config = InteractionMetricsConfig(
+            **{**config.as_dict(), "tick_duration_sec": ticks.pop()}
+        )
+    elif len(ticks) > 1:
+        logger.warning(
+            f"Experiments use differing tick durations {sorted(ticks)}; "
+            f"recording tick_duration_sec={config.tick_duration_sec} in the "
+            "config block, which does not reflect every experiment"
+        )
+    return config
+
+
+def compute_metrics_for_loaded_results(
+    results: Results,
+    config: Optional[InteractionMetricsConfig] = None,
+) -> dict:
+    """
+    Compute the interaction-metric panel for one already-loaded experiment,
+    honoring the experiment's recorded tick duration when available.
+    """
+    return compute_interaction_metrics_for_experiment(
+        results, resolve_experiment_config(results, config)
+    )
 
 
 def build_interaction_metrics_block(
@@ -118,6 +150,7 @@ def compute_interaction_metrics_block(
         ValueError: If two experiments cover the same domain.
     """
     domain_metrics: dict[str, dict] = {}
+    resolved_configs: list[InteractionMetricsConfig] = []
     for experiment_path in experiment_paths:
         results = Results.load(experiment_path)
         domain = results.info.environment_info.domain_name
@@ -126,9 +159,15 @@ def compute_interaction_metrics_block(
                 f"Domain {domain} appears in multiple experiment directories"
             )
         logger.info(f"Computing interaction metrics for {domain} ({experiment_path})")
-        domain_metrics[domain] = compute_metrics_for_loaded_results(results, config)
+        resolved = resolve_experiment_config(results, config)
+        resolved_configs.append(resolved)
+        domain_metrics[domain] = compute_interaction_metrics_for_experiment(
+            results, resolved
+        )
 
-    return build_interaction_metrics_block(domain_metrics, config)
+    return build_interaction_metrics_block(
+        domain_metrics, config_with_resolved_ticks(config, resolved_configs)
+    )
 
 
 def _format_cell(metric_name: str, value: Optional[float]) -> str:

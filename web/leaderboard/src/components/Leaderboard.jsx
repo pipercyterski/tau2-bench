@@ -66,7 +66,7 @@ const INTERACTION_METRICS = [
     label: 'Interrupts',
     unit: '%',
     better: 'lower',
-    desc: 'How often the agent starts talking over the user, per user turn. Lower is better.',
+    desc: 'Agent interruption events per eligible user turn. An agent can interrupt the same turn more than once, so this can exceed 100%. Lower is better.',
   },
   {
     key: 'selectivity',
@@ -90,26 +90,80 @@ const getInteractionPanel = (interactionMetrics, domainKey) => {
     : interactionMetrics.domains?.[domainKey] || null
 }
 
-// Returns the metric value for a panel, or null when unavailable or backed by
-// too few events. Selectivity is the mean of its components that pass min-n.
-const getInteractionValue = (interactionMetrics, domainKey, metricKey) => {
-  const panel = getInteractionPanel(interactionMetrics, domainKey)
-  if (!panel) return null
+// Support gate for a single rate: 'ok' when backed by >= MIN_INTERACTION_N
+// events, 'low_n' when under-supported (including when counts are missing and
+// support can't be verified), 'undefined' when there were no qualifying
+// events so the rate isn't measurable at all.
+const rateStatus = (value, n) => {
+  if (value === null || value === undefined) return 'undefined'
+  return n >= MIN_INTERACTION_N ? 'ok' : 'low_n'
+}
 
+// Latency is averaged over responded turns only, so its support count is
+// response_rate * response_total rather than response_total itself.
+const metricEventCount = (panel, metricKey) => {
+  const total = panel.counts?.response_total ?? 0
+  return metricKey === 'response_latency_mean'
+    ? Math.round((panel.response_rate ?? 0) * total)
+    : total
+}
+
+const selectivityPartStatus = (panel, part) =>
+  rateStatus(panel[part.key], panel.counts?.[part.countKey] ?? 0)
+
+// Composite selectivity is the mean of all three component rates. If any
+// component is missing or under-supported the composite is hidden entirely:
+// silently dropping a component would rank rows on differently-defined
+// quantities (a 2-component mean vs everyone else's 3-component mean).
+const panelSelectivity = (panel) => {
+  const statuses = SELECTIVITY_PARTS.map((part) => selectivityPartStatus(panel, part))
+  if (statuses.every((s) => s === 'undefined')) return { reason: 'undefined' }
+  if (statuses.some((s) => s !== 'ok')) return { reason: 'low_n' }
+  const sum = SELECTIVITY_PARTS.reduce((s, part) => s + panel[part.key], 0)
+  return { reason: 'ok', value: sum / SELECTIVITY_PARTS.length }
+}
+
+const panelMetric = (panel, metricKey) => {
+  if (metricKey === 'selectivity') return panelSelectivity(panel)
+  const status = rateStatus(panel[metricKey], metricEventCount(panel, metricKey))
+  return status === 'ok' ? { reason: 'ok', value: panel[metricKey] } : { reason: status }
+}
+
+// The overall panel is an unweighted mean of domain rates, so it is only as
+// reliable as its weakest contributor: a domain rate that exists but is
+// under-supported enters that mean with full weight. Hide the overall value
+// whenever any contributing domain rate fails the support gate. (A domain
+// with no qualifying events contributes nothing and doesn't count against it.)
+const overallContaminated = (interactionMetrics, metricKey) => {
+  const domains = Object.values(interactionMetrics.domains || {})
   if (metricKey === 'selectivity') {
-    const usable = SELECTIVITY_PARTS
-      .map((part) => ({ value: panel[part.key], n: panel.counts?.[part.countKey] }))
-      .filter((p) => p.value !== null && p.value !== undefined)
-      .filter((p) => p.n === null || p.n === undefined || p.n >= MIN_INTERACTION_N)
-    if (usable.length === 0) return null
-    return usable.reduce((s, p) => s + p.value, 0) / usable.length
+    return domains.some((panel) =>
+      SELECTIVITY_PARTS.some((part) => selectivityPartStatus(panel, part) === 'low_n'))
   }
+  return domains.some((panel) =>
+    rateStatus(panel[metricKey], metricEventCount(panel, metricKey)) === 'low_n')
+}
 
-  const value = panel[metricKey]
-  if (value === null || value === undefined) return null
-  const n = panel.counts?.response_total
-  if (n !== null && n !== undefined && n < MIN_INTERACTION_N) return null
-  return value
+// Returns { value, reason }: reason is 'ok', 'low_n', 'undefined', or
+// 'unavailable' (submission has no interaction_metrics block).
+const getInteractionCellInfo = (interactionMetrics, domainKey, metricKey) => {
+  const panel = getInteractionPanel(interactionMetrics, domainKey)
+  if (!panel) return { value: null, reason: 'unavailable' }
+  const metric = panelMetric(panel, metricKey)
+  if (metric.reason !== 'ok') return { value: null, reason: metric.reason }
+  if (domainKey === 'overall' && overallContaminated(interactionMetrics, metricKey)) {
+    return { value: null, reason: 'low_n' }
+  }
+  return { value: metric.value, reason: 'ok' }
+}
+
+const getInteractionValue = (interactionMetrics, domainKey, metricKey) =>
+  getInteractionCellInfo(interactionMetrics, domainKey, metricKey).value
+
+const INTERACTION_NO_DATA_TOOLTIP = {
+  unavailable: 'Interaction metrics not available for this submission',
+  low_n: `Not shown: backed by fewer than ${MIN_INTERACTION_N} events`,
+  undefined: 'Not shown: no qualifying events in this run',
 }
 
 const formatInteractionValue = (value, unit) => {
@@ -1051,7 +1105,7 @@ const Leaderboard = () => {
                      </td>
                      {/* Interaction metrics fan-out (voice, interaction mode only) */}
                      {isVoice && rankBy === 'interaction' && INTERACTION_METRICS.map((m) => {
-                       const value = getInteractionValue(model.data.interactionMetrics, domain, m.key)
+                       const { value, reason } = getInteractionCellInfo(model.data.interactionMetrics, domain, m.key)
                        return (
                          <td
                            key={m.key}
@@ -1060,12 +1114,7 @@ const Leaderboard = () => {
                            {value !== null ? (
                              formatInteractionValue(value, m.unit)
                            ) : (
-                             <span
-                               className="no-data"
-                               title={getInteractionPanel(model.data.interactionMetrics, domain)
-                                 ? `Not shown: fewer than ${MIN_INTERACTION_N} events`
-                                 : 'Interaction metrics not available for this submission'}
-                             >
+                             <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[reason]}>
                                —
                              </span>
                            )}
@@ -1136,16 +1185,16 @@ const Leaderboard = () => {
                                 {isVoice && model.data.interactionMetrics && (
                                   <div className="domain-interaction-metrics">
                                     {INTERACTION_METRICS.map((metric) => {
-                                      const mValue = getInteractionValue(model.data.interactionMetrics, key, metric.key)
+                                      const cell = getInteractionCellInfo(model.data.interactionMetrics, key, metric.key)
                                       return (
                                         <div key={metric.key} className="domain-interaction-row" title={metric.desc}>
                                           <span className="domain-interaction-label">
                                             {metric.label} {metric.better === 'lower' ? '↓' : '↑'}
                                           </span>
                                           <span className="domain-interaction-value">
-                                            {mValue !== null
-                                              ? formatInteractionValue(mValue, metric.unit)
-                                              : <span className="no-data">—</span>}
+                                            {cell.value !== null
+                                              ? formatInteractionValue(cell.value, metric.unit)
+                                              : <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[cell.reason]}>—</span>}
                                           </span>
                                         </div>
                                       )

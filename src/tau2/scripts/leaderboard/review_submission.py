@@ -38,6 +38,8 @@ from tau2.metrics.voice_interaction_metrics import NoVoiceTicksError
 from tau2.scripts.leaderboard.compute_interaction_metrics import (
     build_interaction_metrics_block,
     compute_metrics_for_loaded_results,
+    config_with_resolved_ticks,
+    resolve_experiment_config,
 )
 from tau2.scripts.leaderboard.prepare_submission import (
     validate_submission_metrics,
@@ -170,10 +172,16 @@ def _compute_interaction_metrics(
     numbers.
     """
     domain_metrics: dict[str, dict] = {}
+    resolved_configs = []
     for results in results_list:
         domain = results.info.environment_info.domain_name
+        if domain in domain_metrics:
+            raise ValueError(
+                f"Domain {domain} appears in multiple trajectory files"
+            )
         try:
             domain_metrics[domain] = compute_metrics_for_loaded_results(results)
+            resolved_configs.append(resolve_experiment_config(results))
             console.print(f"  [green]OK[/green] {domain}")
         except NoVoiceTicksError:
             console.print(
@@ -182,7 +190,9 @@ def _compute_interaction_metrics(
             )
     if not domain_metrics:
         return None
-    return build_interaction_metrics_block(domain_metrics)
+    return build_interaction_metrics_block(
+        domain_metrics, config_with_resolved_ticks(None, resolved_configs)
+    )
 
 
 def _update_submission_json(

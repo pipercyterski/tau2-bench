@@ -57,6 +57,7 @@ def sync_trajectories(submission_name: str, cache_dir: Path) -> Path:
             "sync",
             s3_url,
             str(dest),
+            "--delete",
             "--no-sign-request",
             "--only-show-errors",
         ],

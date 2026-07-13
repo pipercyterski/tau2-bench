@@ -29,10 +29,19 @@ tau2 submit interaction-metrics <experiment-dirs-or-trajectories-dir> [--output 
 | Selectivity | S_VT | `selectivity_vocal_tic` | ↑ | Fraction of vocal tics ("um", coughs) the agent correctly ignored. |
 | Selectivity | S_ND | `selectivity_non_directed` | ↑ | Fraction of non-agent-directed speech ("hold on", side conversations) the agent correctly ignored. |
 
-Latencies are in seconds. Rates and selectivity are fractions in [0, 1];
-selectivity values are correct-rates (1 − error rate). Every rate is stored
-with the event count backing it (the `counts` block); the leaderboard hides
-rates computed from fewer than 10 events.
+Latencies are in seconds. Rates and selectivity are fractions in [0, 1],
+except I_A, which counts events per response-eligible user turn and can
+exceed 1 when the agent interrupts the same turn more than once; selectivity
+values are correct-rates (1 − error rate). Every rate is stored with the
+event count backing it (the `counts` block); the leaderboard hides rates
+computed from fewer than 10 events (for L_R the supporting count is the
+number of responded turns, `response_rate × response_total`).
+
+The leaderboard's Selectivity column is the unweighted mean of S_BC, S_VT,
+and S_ND. It is shown only when all three components are present and backed
+by at least 10 events — a partial mean would not be comparable across rows —
+and an Overall value is additionally hidden if any contributing domain rate
+falls below that threshold.
 
 These definitions and all detection windows are identical to the τ-voice
 paper's analysis pipeline; the implementation lives in
@@ -115,7 +124,9 @@ silence (out-of-turn effects) are also scored.
 
 The windows used for a computation are recorded in the
 `interaction_metrics.config` block of each submission, and
-`interaction_metrics.version` stamps the metric-code version.
+`interaction_metrics.version` stamps the metric-code version. The recorded
+`tick_duration_sec` is the value the experiments actually used (taken from
+each experiment's `audio_native_config`), not the tool default.
 
 ## Aggregation
 
