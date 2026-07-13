@@ -575,12 +575,11 @@ const Leaderboard = () => {
         <div className="domain-scope-note">
           <span className="domain-scope-icon">ⓘ</span>
           <span>
-            Overall averages the three conversational domains: Retail, Airline, and Telecom.
-            For voice agents on knowledge-intensive banking tasks, see{' '}
+            Overall does not include Banking. For voice agents on retrieval tasks, see{' '}
             <button className="domain-scope-link" onClick={() => setDomain('banking_knowledge')}>
               🏦 Banking
             </button>
-            {' '}— scored separately and not included in Overall.
+            {' '}— scored separately.
           </span>
         </div>
       )}
