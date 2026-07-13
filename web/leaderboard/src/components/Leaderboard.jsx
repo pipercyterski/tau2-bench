@@ -584,8 +584,8 @@ const Leaderboard = () => {
           </div>
         ) : (
         <div className="reliability-metrics">
-        <div className="metrics-table-container">
-          <table className="reliability-table">
+        <div className="metrics-table-container table-scroll">
+          <table className="reliability-table compact">
             <thead>
               <tr>
                 <th>Rank</th>

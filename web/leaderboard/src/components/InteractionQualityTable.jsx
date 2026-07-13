@@ -161,7 +161,7 @@ const InteractionQualityTable = ({ models, domain, domains, onModelClick }) => {
   return (
     <div className="interaction-quality-section">
       <div className="interaction-quality-header">
-        <h3 className="interaction-quality-title">🎛️ Interaction Quality</h3>
+        <h3 className="interaction-quality-title">Interaction Quality</h3>
         <p className="interaction-quality-subtitle">
           Conversational dynamics measured from the same full-duplex trajectories:
           how fast, how responsive, and how selective each model is on the open
@@ -175,8 +175,8 @@ const InteractionQualityTable = ({ models, domain, domains, onModelClick }) => {
           </a>
         </p>
       </div>
-      <div className="metrics-table-container">
-        <table className="reliability-table interaction-quality-table">
+      <div className="metrics-table-container table-scroll">
+        <table className="reliability-table compact interaction-quality-table">
           <thead>
             <tr>
               <th>Model</th>
