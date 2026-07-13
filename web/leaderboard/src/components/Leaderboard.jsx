@@ -1133,6 +1133,25 @@ const Leaderboard = () => {
                                     <span className="no-data domain-no-data">—</span>
                                   )}
                                 </div>
+                                {isVoice && model.data.interactionMetrics && (
+                                  <div className="domain-interaction-metrics">
+                                    {INTERACTION_METRICS.map((metric) => {
+                                      const mValue = getInteractionValue(model.data.interactionMetrics, key, metric.key)
+                                      return (
+                                        <div key={metric.key} className="domain-interaction-row" title={metric.desc}>
+                                          <span className="domain-interaction-label">
+                                            {metric.label} {metric.better === 'lower' ? '↓' : '↑'}
+                                          </span>
+                                          <span className="domain-interaction-value">
+                                            {mValue !== null
+                                              ? formatInteractionValue(mValue, metric.unit)
+                                              : <span className="no-data">—</span>}
+                                          </span>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )}
                                 {hasTraj && (
                                   <a
                                     className="view-trajectories-link"
@@ -1152,48 +1171,16 @@ const Leaderboard = () => {
                             <span className="submission-details-btn-label">Details</span>
                           </button>
                         </div>
-                        {/* Interaction quality breakdown (voice only) */}
                         {isVoice && model.data.interactionMetrics && (
-                          <div className="interaction-breakdown">
-                            <div className="interaction-breakdown-title">
-                              <a
-                                className="interaction-breakdown-link"
-                                href="https://github.com/sierra-research/tau2-bench/blob/main/docs/interaction-metrics.md"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Metric definitions →
-                              </a>
-                            </div>
-                            <table className="interaction-breakdown-table">
-                              <thead>
-                                <tr>
-                                  <th></th>
-                                  {VOICE_DOMAINS.map((d) => (
-                                    <th key={d.key}>{d.label}</th>
-                                  ))}
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {INTERACTION_METRICS.map((metric) => (
-                                  <tr key={metric.key}>
-                                    <td className="interaction-breakdown-metric" title={metric.desc}>
-                                      {metric.label} {metric.better === 'lower' ? '↓' : '↑'}
-                                    </td>
-                                    {VOICE_DOMAINS.map((d) => {
-                                      const value = getInteractionValue(model.data.interactionMetrics, d.key, metric.key)
-                                      return (
-                                        <td key={d.key}>
-                                          {value !== null
-                                            ? formatInteractionValue(value, metric.unit)
-                                            : <span className="no-data">—</span>}
-                                        </td>
-                                      )
-                                    })}
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                          <div className="interaction-definitions">
+                            <a
+                              className="interaction-breakdown-link"
+                              href="https://github.com/sierra-research/tau2-bench/blob/main/docs/interaction-metrics.md"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Metric definitions →
+                            </a>
                           </div>
                         )}
                       </td>

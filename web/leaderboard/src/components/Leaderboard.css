@@ -1918,23 +1918,47 @@ a.user-sim-version-link:hover {
   font-weight: 600;
 }
 
-/* Expanded-row interaction breakdown (four headline metrics per domain) */
-.interaction-breakdown {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid #e2e8f0;
+/* Expanded-row interaction metrics: four headline metrics inside each
+   domain card, below the pass^1 bar. */
+.domain-interaction-metrics {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.interaction-breakdown-title {
+.domain-interaction-row {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.domain-interaction-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.domain-interaction-value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2d3748;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.domain-interaction-value .no-data {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.interaction-definitions {
+  margin-top: 10px;
 }
 
 .interaction-breakdown-link {
@@ -1942,35 +1966,8 @@ a.user-sim-version-link:hover {
   font-weight: 500;
   color: #2563eb;
   text-decoration: none;
-  text-transform: none;
-  letter-spacing: 0;
 }
 
 .interaction-breakdown-link:hover {
   text-decoration: underline;
-}
-
-.interaction-breakdown-table {
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.interaction-breakdown-table th {
-  text-align: left;
-  padding: 6px 24px 6px 0;
-  color: #718096;
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.interaction-breakdown-table td {
-  padding: 5px 24px 5px 0;
-  color: #2d3748;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.interaction-breakdown-metric {
-  font-weight: 600;
-  color: #475569;
 }
