@@ -650,53 +650,6 @@
   overflow-y: visible;
 }
 
-/* Scrollable variant: both leaderboard tables share the page, so each is
-   capped in height and scrolls internally with a sticky header. */
-.metrics-table-container.table-scroll {
-  max-height: 480px;
-  overflow-y: auto;
-}
-
-/* Compact density for the leaderboard-page tables. */
-.reliability-table.compact {
-  font-size: 14px;
-}
-
-.reliability-table.compact thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: #f8fafc;
-  padding: 12px 12px;
-  font-size: 12px;
-  border-bottom: none;
-  box-shadow: inset 0 -1px 0 #e2e8f0;
-}
-
-.reliability-table.compact thead th:first-child {
-  padding: 12px 6px;
-}
-
-.reliability-table.compact thead th:last-child {
-  padding: 12px 4px;
-}
-
-.reliability-table.compact tbody tr {
-  height: 48px;
-}
-
-.reliability-table.compact td {
-  padding: 10px 12px;
-}
-
-.reliability-table.compact td.model-info {
-  padding: 10px 16px !important; /* .model-info uses !important */
-}
-
-.reliability-table.compact .model-name {
-  font-size: 14.5px;
-}
-
 .reliability-table {
   width: 100%;
   border-collapse: collapse;
@@ -1848,192 +1801,122 @@ a.user-sim-version-link:hover {
   }
 } 
 
+
 /* ==========================================================================
-   Interaction Quality table (voice benchmark, below the main ranking table)
+   Interaction quality column (voice benchmark)
    ========================================================================== */
 
-.interaction-quality-section {
-  margin-top: 24px;
-  background: #ffffff;
+/* The voice table has 9 columns: the 8th is Interaction, the 9th expand.
+   These class-based rules correct the generic nth-child widths above. */
+.reliability-table th.interaction-header-cell {
+  width: 130px;
+  padding: 20px 8px;
+}
+
+/* Voice adds the Interaction column, so give the score bar less room and
+   keep the model name readable. */
+.reliability-table.voice-table th:nth-child(7) {
+  min-width: 230px;
+}
+
+.reliability-table.voice-table th:nth-child(2) {
+  min-width: 190px;
+}
+
+.interaction-header-cell .passk-header-toggle {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.reliability-table th.expand-header {
+  width: 36px;
+  padding: 20px 4px;
+}
+
+.interaction-metric-select {
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-  overflow: hidden;
-}
-
-.interaction-quality-header {
-  padding: 20px 22px 12px 22px;
-}
-
-.interaction-quality-title {
-  margin: 0 0 2px 0;
-  font-size: 1rem;
-  font-weight: 700;
+  border-radius: 8px;
+  background: #ffffff;
   color: #2d3748;
-}
-
-.interaction-quality-subtitle {
-  margin: 0;
-  font-size: 13px;
-  color: #718096;
-  line-height: 1.5;
-  max-width: 720px;
-}
-
-.interaction-quality-subtitle a {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.interaction-quality-subtitle a:hover {
-  text-decoration: underline;
-}
-
-.interaction-quality-table td.model-info {
-  min-width: 200px;
-}
-
-.interaction-quality-table th.iq-metric-header {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 6px;
   cursor: pointer;
-  user-select: none;
 }
 
-.interaction-quality-table th.iq-metric-header:hover {
-  background: #eef2f7;
+.interaction-metric-select:focus {
+  outline: none;
+  border-color: #16a34a;
 }
 
-.interaction-quality-table th.iq-sorted {
-  color: #2563eb;
-}
-
-.iq-header-label {
-  display: block;
-}
-
-.iq-header-sub {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: none;
-  letter-spacing: 0;
-  margin-top: 2px;
-}
-
-.iq-sorted .iq-header-sub {
-  color: #2563eb;
-}
-
-.iq-sort-arrow {
-  margin-left: 4px;
-  font-size: 9px;
-}
-
-.iq-value-cell {
-  font-weight: 600;
-  color: #1e293b;
-  font-variant-numeric: tabular-nums;
+.interaction-cell {
   text-align: center;
 }
 
-.iq-no-data {
-  color: #94a3b8;
-  font-size: 13px;
+.interaction-value {
+  font-weight: 600;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+.interaction-value-active {
+  color: #1a202c;
+}
+
+/* Expanded-row interaction breakdown (four headline metrics per domain) */
+.interaction-breakdown {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.interaction-breakdown-title {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.iq-reasoning {
-  display: inline-block;
-  margin-left: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #94a3b8;
-  text-transform: lowercase;
-}
-
-.iq-custom-badge {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 1px 8px;
-  font-size: 10px;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
   font-weight: 700;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #92400e;
-  background: #fef3c7;
-  border: 1px solid #fcd34d;
-  border-radius: 10px;
-  vertical-align: middle;
+  margin-bottom: 8px;
 }
 
-.iq-detail-container {
-  padding: 8px 4px;
+.interaction-breakdown-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.iq-detail-table {
-  width: 100%;
+.interaction-breakdown-link:hover {
+  text-decoration: underline;
+}
+
+.interaction-breakdown-table {
   border-collapse: collapse;
   font-size: 13px;
 }
 
-.iq-detail-table th {
+.interaction-breakdown-table th {
   text-align: left;
-  padding: 8px 12px;
-  color: #475569;
-  font-weight: 700;
+  padding: 6px 24px 6px 0;
+  color: #718096;
+  font-weight: 600;
   font-size: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  white-space: nowrap;
 }
 
-.iq-detail-table td {
-  padding: 6px 12px;
-  border-bottom: 1px solid #f1f5f9;
+.interaction-breakdown-table td {
+  padding: 5px 24px 5px 0;
+  color: #2d3748;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.iq-detail-metric {
+.interaction-breakdown-metric {
   font-weight: 600;
-  color: #334155;
-}
-
-.iq-count {
-  font-size: 11px;
-  color: #94a3b8;
-  font-weight: 400;
-}
-
-.iq-low-n {
-  color: #b45309;
-}
-
-.iq-low-n .iq-count {
-  color: #b45309;
-}
-
-.iq-detail-footnote {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-.iq-detail-empty {
-  padding: 16px;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .interaction-quality-header {
-    padding: 16px 16px 4px 16px;
-  }
-
-  .iq-detail-table {
-    font-size: 12px;
-  }
+  color: #475569;
 }

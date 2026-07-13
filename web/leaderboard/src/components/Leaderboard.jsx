@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Leaderboard.css'
 import ProgressView from './ProgressView'
-import InteractionQualityTable from './InteractionQualityTable'
 
 const BENCHMARK_VALUES = new Set(['text', 'voice'])
 
@@ -41,6 +40,81 @@ const formatVoicePipeline = (pipeline) => {
     pipeline.llm ? `LLM: ${pipeline.llm}` : null,
     pipeline.tts ? `TTS: ${pipeline.tts}` : null,
   ].filter(Boolean).join('\n')
+}
+
+// Voice interaction quality (τ-voice panel, condensed to four headline metrics).
+// Rates backed by fewer than MIN_INTERACTION_N events are hidden as noise.
+const MIN_INTERACTION_N = 10
+
+const INTERACTION_METRICS = [
+  {
+    key: 'response_rate',
+    label: 'Responsiveness',
+    unit: '%',
+    better: 'higher',
+    desc: 'Fraction of user turns that received an agent response before the user had to speak again. Higher is better.',
+  },
+  {
+    key: 'response_latency_mean',
+    label: 'Latency',
+    unit: 's',
+    better: 'lower',
+    desc: 'Mean seconds from the end of a user turn to the start of the agent response. Lower is better.',
+  },
+  {
+    key: 'agent_interruption_rate',
+    label: 'Interrupts',
+    unit: '%',
+    better: 'lower',
+    desc: 'How often the agent starts talking over the user, per user turn. Lower is better.',
+  },
+  {
+    key: 'selectivity',
+    label: 'Selectivity',
+    unit: '%',
+    better: 'higher',
+    desc: 'How well the agent ignores audio not directed at it (backchannels, vocal tics, background speech). Higher is better.',
+  },
+]
+
+const SELECTIVITY_PARTS = [
+  { key: 'selectivity_backchannel', countKey: 'backchannel_total' },
+  { key: 'selectivity_vocal_tic', countKey: 'vocal_tic_total' },
+  { key: 'selectivity_non_directed', countKey: 'non_directed_total' },
+]
+
+const getInteractionPanel = (interactionMetrics, domainKey) => {
+  if (!interactionMetrics) return null
+  return domainKey === 'overall'
+    ? interactionMetrics.overall || null
+    : interactionMetrics.domains?.[domainKey] || null
+}
+
+// Returns the metric value for a panel, or null when unavailable or backed by
+// too few events. Selectivity is the mean of its components that pass min-n.
+const getInteractionValue = (interactionMetrics, domainKey, metricKey) => {
+  const panel = getInteractionPanel(interactionMetrics, domainKey)
+  if (!panel) return null
+
+  if (metricKey === 'selectivity') {
+    const usable = SELECTIVITY_PARTS
+      .map((part) => ({ value: panel[part.key], n: panel.counts?.[part.countKey] }))
+      .filter((p) => p.value !== null && p.value !== undefined)
+      .filter((p) => p.n === null || p.n === undefined || p.n >= MIN_INTERACTION_N)
+    if (usable.length === 0) return null
+    return usable.reduce((s, p) => s + p.value, 0) / usable.length
+  }
+
+  const value = panel[metricKey]
+  if (value === null || value === undefined) return null
+  const n = panel.counts?.response_total
+  if (n !== null && n !== undefined && n < MIN_INTERACTION_N) return null
+  return value
+}
+
+const formatInteractionValue = (value, unit) => {
+  if (value === null || value === undefined) return '—'
+  return unit === 's' ? `${value.toFixed(2)}s` : `${(value * 100).toFixed(1)}%`
 }
 
 const Leaderboard = () => {
@@ -84,6 +158,9 @@ const Leaderboard = () => {
   })
   // Info tooltip state
   const [showFilterInfo, setShowFilterInfo] = useState(false)
+  // Voice ranking mode: 'passk' (default) or 'interaction' (τ-voice panel)
+  const [rankBy, setRankBy] = useState('passk')
+  const [interactionMetric, setInteractionMetric] = useState('response_rate')
   // Expanded rows state (set of model names)
   const [expandedRows, setExpandedRows] = useState(new Set())
   const [openPipelineKey, setOpenPipelineKey] = useState(null)
@@ -584,8 +661,8 @@ const Leaderboard = () => {
           </div>
         ) : (
         <div className="reliability-metrics">
-        <div className="metrics-table-container table-scroll">
-          <table className="reliability-table compact">
+        <div className="metrics-table-container">
+          <table className={`reliability-table ${isVoice ? 'voice-table' : ''}`}>
             <thead>
               <tr>
                 <th>Rank</th>
@@ -597,7 +674,13 @@ const Leaderboard = () => {
                 <th className="passk-header-cell">
                   <div className="passk-header-toggle">
                     {isVoice ? (
-                      <button className="passk-header-btn active">Pass^1</button>
+                      <button
+                        className={`passk-header-btn ${rankBy === 'passk' ? 'active' : ''}`}
+                        onClick={() => setRankBy('passk')}
+                        title="Rank by task success"
+                      >
+                        Pass^1
+                      </button>
                     ) : (
                       [1, 2, 3, 4].map(k => (
                         <button
@@ -609,15 +692,44 @@ const Leaderboard = () => {
                         </button>
                       ))
                     )}
-                    <button 
-                      className="passk-sort-btn"
-                      onClick={handleSort}
-                      title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
-                    >
-                      {sortDirection === 'desc' ? '↓' : '↑'}
-                    </button>
+                    {(!isVoice || rankBy === 'passk') && (
+                      <button
+                        className="passk-sort-btn"
+                        onClick={handleSort}
+                        title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
+                      >
+                        {sortDirection === 'desc' ? '↓' : '↑'}
+                      </button>
+                    )}
                   </div>
                 </th>
+                {isVoice && (
+                  <th className="passk-header-cell interaction-header-cell">
+                    <div className="passk-header-toggle">
+                      <button
+                        className={`passk-header-btn ${rankBy === 'interaction' ? 'active' : ''}`}
+                        onClick={() => setRankBy('interaction')}
+                        title="Rank by interaction quality, measured from the same full-duplex trajectories. Click to activate, then pick a metric."
+                      >
+                        Interaction
+                      </button>
+                      {rankBy === 'interaction' && (
+                        <select
+                          className="interaction-metric-select"
+                          value={interactionMetric}
+                          onChange={(e) => setInteractionMetric(e.target.value)}
+                          title={INTERACTION_METRICS.find(m => m.key === interactionMetric)?.desc}
+                        >
+                          {INTERACTION_METRICS.map((m) => (
+                            <option key={m.key} value={m.key}>
+                              {m.label} {m.better === 'lower' ? '↓' : '↑'}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  </th>
+                )}
                 <th className="expand-header"></th>
               </tr>
             </thead>
@@ -680,10 +792,27 @@ const Leaderboard = () => {
                     hasCompleteData,
                     hasAnyData,
                     consistencyScore,
-                    organization: data.organization
+                    organization: data.organization,
+                    interactionValue: isVoice
+                      ? getInteractionValue(data.interactionMetrics, domain, interactionMetric)
+                      : null,
                   }
                 })
-                
+
+                const rankByInteraction = isVoice && rankBy === 'interaction'
+                if (rankByInteraction) {
+                  // Rank by the selected interaction metric in its natural
+                  // direction; models without metrics sort last.
+                  const better = INTERACTION_METRICS.find(m => m.key === interactionMetric)?.better
+                  modelStats.sort((a, b) => {
+                    if (a.interactionValue === null && b.interactionValue === null) return 0
+                    if (a.interactionValue === null) return 1
+                    if (b.interactionValue === null) return -1
+                    return better === 'lower'
+                      ? a.interactionValue - b.interactionValue
+                      : b.interactionValue - a.interactionValue
+                  })
+                } else {
                 // Sort by selected pass^k metric and direction
                 const passIndex = selectedPassK - 1
                 modelStats.sort((a, b) => {
@@ -691,18 +820,19 @@ const Leaderboard = () => {
                   if (a.hasAnyData && !b.hasAnyData) return -1
                   if (!a.hasAnyData && b.hasAnyData) return 1
                   if (!a.hasAnyData && !b.hasAnyData) return 0
-                  
+
                   const aValue = a.domainData[passIndex]
                   const bValue = b.domainData[passIndex]
-                  
+
                   // Handle null values (missing data)
                   if (aValue === null && bValue === null) return 0
                   if (aValue === null) return 1
                   if (bValue === null) return -1
-                  
+
                   const multiplier = sortDirection === 'desc' ? 1 : -1
                   return (bValue - aValue) * multiplier
                 })
+                }
                 
                 // Show empty state if no results after filtering
                 if (modelStats.length === 0) {
@@ -895,6 +1025,28 @@ const Leaderboard = () => {
                          }
                        })()}
                      </td>
+                     {/* Interaction Quality (voice only) */}
+                     {isVoice && (
+                       <td className="metric-cell interaction-cell">
+                         {model.interactionValue !== null ? (
+                           <span className={`interaction-value ${rankBy === 'interaction' ? 'interaction-value-active' : ''}`}>
+                             {formatInteractionValue(
+                               model.interactionValue,
+                               INTERACTION_METRICS.find(m => m.key === interactionMetric)?.unit
+                             )}
+                           </span>
+                         ) : (
+                           <span
+                             className="no-data"
+                             title={getInteractionPanel(model.data.interactionMetrics, domain)
+                               ? `Not shown: fewer than ${MIN_INTERACTION_N} events`
+                               : 'Interaction metrics not available for this submission'}
+                           >
+                             —
+                           </span>
+                         )}
+                       </td>
+                     )}
                      {/* Expand Toggle */}
                      <td className="expand-cell" onClick={() => toggleExpand(model.key)}>
                        <span className={`expand-caret ${isExpanded ? 'open' : ''}`}>▶</span>
@@ -903,7 +1055,7 @@ const Leaderboard = () => {
                   {/* Expandable Domain Breakdown Row */}
                   {isExpanded && (
                     <tr className="domain-detail-row">
-                      <td colSpan="8" className="domain-detail-cell">
+                      <td colSpan={isVoice ? 9 : 8} className="domain-detail-cell">
                         <div className="domain-breakdown">
                           {(isVoice
                             ? [
@@ -975,6 +1127,51 @@ const Leaderboard = () => {
                             <span className="submission-details-btn-label">Details</span>
                           </button>
                         </div>
+                        {/* Interaction quality breakdown (voice only) */}
+                        {isVoice && model.data.interactionMetrics && (
+                          <div className="interaction-breakdown">
+                            <div className="interaction-breakdown-title">
+                              Interaction quality
+                              <a
+                                className="interaction-breakdown-link"
+                                href="https://github.com/sierra-research/tau2-bench/blob/main/docs/interaction-metrics.md"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Metric definitions →
+                              </a>
+                            </div>
+                            <table className="interaction-breakdown-table">
+                              <thead>
+                                <tr>
+                                  <th></th>
+                                  {VOICE_DOMAINS.map((d) => (
+                                    <th key={d.key}>{d.label}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {INTERACTION_METRICS.map((metric) => (
+                                  <tr key={metric.key}>
+                                    <td className="interaction-breakdown-metric" title={metric.desc}>
+                                      {metric.label} {metric.better === 'lower' ? '↓' : '↑'}
+                                    </td>
+                                    {VOICE_DOMAINS.map((d) => {
+                                      const value = getInteractionValue(model.data.interactionMetrics, d.key, metric.key)
+                                      return (
+                                        <td key={d.key}>
+                                          {value !== null
+                                            ? formatInteractionValue(value, metric.unit)
+                                            : <span className="no-data">—</span>}
+                                        </td>
+                                      )
+                                    })}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   )}
@@ -996,26 +1193,6 @@ const Leaderboard = () => {
         </div>
         )}
 
-      {/* Interaction Quality (voice only, below the ranking table) */}
-      {isVoice && (showStandard || showCustom) && (
-        <InteractionQualityTable
-          models={Object.entries(passKData)
-            .filter(([, data]) => {
-              if (data.modality !== 'voice') return false
-              const isStandard = data.submissionType === 'standard' || !data.submissionType
-              const isCustom = data.submissionType === 'custom'
-              return !((isStandard && !showStandard) || (isCustom && !showCustom))
-            })
-            .map(([submissionKey, data]) => ({
-              key: submissionKey,
-              displayName: data.modelName,
-              data,
-            }))}
-          domain={domain}
-          domains={VOICE_DOMAINS}
-          onModelClick={handleModelClick}
-        />
-      )}
 
       {/* Progress Over Time (always below the ranking table) */}
       <div id="progress" style={{ scrollMarginTop: '80px' }}>
