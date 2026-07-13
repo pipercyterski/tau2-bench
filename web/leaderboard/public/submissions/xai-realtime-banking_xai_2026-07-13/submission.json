@@ -1,0 +1,40 @@
+{
+  "model_name": "xai-realtime",
+  "model_organization": "xAI",
+  "submitting_organization": "Sierra",
+  "submission_date": "2026-07-13",
+  "submission_type": "custom",
+  "modality": "voice",
+  "contact_info": {
+    "email": "soham@sierra.ai",
+    "name": "Sierra Research Team"
+  },
+  "results": {
+    "banking_knowledge": {
+      "pass_1": 11.34020618556701,
+      "retrieval_config": "alltools"
+    }
+  },
+  "is_new": true,
+  "trajectories_available": true,
+  "trajectory_files": {
+    "banking_knowledge": "xai-realtime_voice_usersim-gpt55xhigh_banking"
+  },
+  "methodology": {
+    "evaluation_date": "2026-07-13",
+    "tau2_bench_version": "1.0.0",
+    "user_simulator": "gpt-5.5-2026-04-23 (xhigh)",
+    "notes": "Combined voice+knowledge track: banking_knowledge domain run through the audio-native voice pipeline (regular speech complexity, alltools retrieval). Custom user simulator gpt-5.5-2026-04-23 (reasoning_effort=xhigh). Evaluated via xAI's 'xai-realtime' endpoint, which does not disclose the served Grok voice model version. 1 trial per task.",
+    "verification": {
+      "modified_prompts": false,
+      "omitted_questions": false
+    }
+  },
+  "voice_config": {
+    "provider": "xai",
+    "model": "xai-realtime",
+    "tick_duration_seconds": 0.2,
+    "max_steps_seconds": 1200.0,
+    "user_tts_provider": "elevenlabs/eleven_v3"
+  }
+}
