@@ -717,6 +717,17 @@ def main():
         action="store_true",
         help="Show expanded tick view instead of consolidated (for full-duplex simulations).",
     )
+    view_parser.add_argument(
+        "--max-tool-result-chars",
+        type=int,
+        default=500,
+        help="Truncate tool results (e.g. retrieved knowledge articles) to this many characters. Default: 500.",
+    )
+    view_parser.add_argument(
+        "--full-tool-results",
+        action="store_true",
+        help="Show full tool results without truncation.",
+    )
     view_parser.set_defaults(func=lambda args: run_view_simulations(args))
 
     # Domain command
@@ -972,12 +983,18 @@ def main():
 def run_view_simulations(args):
     from tau2.scripts.view_simulations import main as view_main
 
+    if args.full_tool_results or args.max_tool_result_chars <= 0:
+        max_tool_result_length = None
+    else:
+        max_tool_result_length = args.max_tool_result_chars
+
     view_main(
         sim_file=args.file,
         only_show_failed=args.only_show_failed,
         only_show_all_failed=args.only_show_all_failed,
         sim_dir=args.dir,
         expanded_ticks=args.expanded_ticks,
+        max_tool_result_length=max_tool_result_length,
     )
 
 
