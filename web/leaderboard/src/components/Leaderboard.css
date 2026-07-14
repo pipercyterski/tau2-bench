@@ -1926,6 +1926,7 @@ a.user-sim-version-link:hover {
 .reliability-table .interaction-subheader-row th.interaction-col-header {
   width: 105px;
   min-width: 0;
+  position: relative; /* containing block for the metric-definition tooltip */
   padding: 4px 4px 12px;
   font-size: 11.5px;
   text-transform: none;
@@ -1997,7 +1998,9 @@ a.user-sim-version-link:hover {
   color: #b6c2d2;
   margin-left: 4px;
   cursor: help;
-  position: relative;
+  /* the tooltip pseudo-elements position against the th (the icon sits
+     inside the .col-anim overflow:hidden box, which would clip them) */
+  position: static;
   transition: color 0.2s ease;
 }
 
