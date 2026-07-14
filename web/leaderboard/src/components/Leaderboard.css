@@ -1841,6 +1841,12 @@ a.user-sim-version-link:hover {
   max-width: 90px;
 }
 
+/* The group-header chip is wider than the generic cap; without this its
+   right edge gets clipped by the wrapper's overflow: hidden */
+.voice-table th.interaction-group-header .col-anim {
+  max-width: 190px;
+}
+
 /* Released column: open in pass^1 mode, collapsed in interaction mode */
 .voice-table th.release-header,
 .voice-table td.release-date-cell {
