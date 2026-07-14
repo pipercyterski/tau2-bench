@@ -214,7 +214,8 @@ const Leaderboard = () => {
   const [showFilterInfo, setShowFilterInfo] = useState(false)
   // Voice ranking mode: 'passk' (default) or 'interaction' (τ-voice panel)
   const [rankBy, setRankBy] = useState('passk')
-  const [interactionMetric, setInteractionMetric] = useState('response_rate')
+  // null = keep the pass^1 ordering; set by clicking a metric column header
+  const [interactionMetric, setInteractionMetric] = useState(null)
   // Expanded rows state (set of model names)
   const [expandedRows, setExpandedRows] = useState(new Set())
   const [openPipelineKey, setOpenPipelineKey] = useState(null)
@@ -751,9 +752,9 @@ const Leaderboard = () => {
                                   className="passk-header-btn"
                                   onClick={() => {
                                     setRankBy('interaction')
-                                    setInteractionMetric('response_rate')
+                                    setInteractionMetric(null)
                                   }}
-                                  title="Rank by interaction quality, measured from the same full-duplex trajectories"
+                                  title="Show interaction quality, measured from the same full-duplex trajectories"
                                 >
                                   Interaction Metrics
                                 </button>
@@ -786,7 +787,7 @@ const Leaderboard = () => {
                           <div className="passk-header-toggle col-anim">
                             <button
                               className="passk-header-btn active"
-                              title="Ranking by interaction quality — pick a metric below. Click Pass^1 to rank by task success again."
+                              title="Showing interaction quality (still ordered by pass^1) — click a metric column to sort by it. Click Pass^1 to collapse."
                             >
                               Interaction Metrics
                             </button>
@@ -801,8 +802,10 @@ const Leaderboard = () => {
                           <th
                             key={m.key}
                             className={`interaction-col-header ${interactionMode && interactionMetric === m.key ? 'active' : ''}`}
-                            onClick={() => interactionMode && setInteractionMetric(m.key)}
-                            title={`Sort by ${m.label.toLowerCase()}`}
+                            onClick={() => interactionMode && setInteractionMetric(interactionMetric === m.key ? null : m.key)}
+                            title={interactionMode && interactionMetric === m.key
+                              ? 'Back to pass^1 order'
+                              : `Sort by ${m.label.toLowerCase()}`}
                           >
                             <div className="col-anim">
                               {m.label} {m.better === 'lower' ? '↓' : '↑'}
@@ -882,13 +885,15 @@ const Leaderboard = () => {
                     hasAnyData,
                     consistencyScore,
                     organization: data.organization,
-                    interactionValue: isVoice
+                    interactionValue: isVoice && interactionMetric
                       ? getInteractionValue(data.interactionMetrics, domain, interactionMetric)
                       : null,
                   }
                 })
 
-                const rankByInteraction = isVoice && rankBy === 'interaction'
+                // Entering interaction mode keeps the pass^1 ordering until the
+                // user explicitly picks a metric column to sort by.
+                const rankByInteraction = isVoice && rankBy === 'interaction' && interactionMetric !== null
                 if (rankByInteraction) {
                   // Rank by the selected interaction metric in its natural
                   // direction; models without metrics sort last.
