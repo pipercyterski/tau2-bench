@@ -1994,11 +1994,15 @@ For deposits without available images, the dispute will proceed based on custome
             return "Error: Missing required parameters."
 
         # Normalize to int (the documented type) so the stored record and the
-        # response render identically whether the caller sent 2500 or 2500.0
+        # response render identically whether the caller sent 2500 or 2500.0.
+        # Fractional values are rejected rather than truncated.
         try:
-            requested_increase_amount = int(requested_increase_amount)
+            requested_increase_amount = float(requested_increase_amount)
         except (TypeError, ValueError):
             return "Error: Invalid requested_increase_amount. Must be a whole number."
+        if not requested_increase_amount.is_integer():
+            return "Error: Invalid requested_increase_amount. Must be a whole number of dollars."
+        requested_increase_amount = int(requested_increase_amount)
 
         if requested_increase_amount <= 0:
             return "Error: Requested increase amount must be positive."
@@ -3961,10 +3965,15 @@ For deposits without available images, the dispute will proceed based on custome
         if new_limit is None:
             return "Error: Missing required parameter: new_limit."
 
+        # Reject fractional values rather than truncating them to the
+        # documented integer type.
         try:
-            new_limit = int(new_limit)
+            new_limit = float(new_limit)
         except (ValueError, TypeError):
             return f"Error: new_limit must be an integer, got '{new_limit}'."
+        if not new_limit.is_integer():
+            return f"Error: new_limit must be an integer, got '{new_limit}'."
+        new_limit = int(new_limit)
 
         if new_limit <= 0:
             return "Error: new_limit must be a positive amount."

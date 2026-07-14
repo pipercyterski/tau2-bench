@@ -3486,6 +3486,68 @@ class TestNumericArgumentNormalization:
         assert responses[0] == responses[1]
         assert "$2,500" in responses[0] and "$2,500.0" not in responses[0]
 
+    def test_cli_request_fractional_amount_rejected(
+        self, base_knowledge_db: TransactionalDB
+    ):
+        # A fractional amount is a wrong value, not an alternate spelling:
+        # truncating it to the documented int would silently match a gold
+        # whole-dollar request. It must error and leave the DB untouched.
+        env = self._fresh_env(base_knowledge_db)
+        resp = call(
+            env,
+            "unlock_discoverable_agent_tool",
+            {"agent_tool_name": "submit_credit_limit_increase_request_7392"},
+        )
+        assert not resp.error, resp.content
+        records_before = dict(env.tools.db.credit_limit_increase_requests.data)
+        resp = call(
+            env,
+            "call_discoverable_agent_tool",
+            {
+                "agent_tool_name": "submit_credit_limit_increase_request_7392",
+                "arguments": '{"credit_card_account_id": "cc_001", "user_id": "user_001", "requested_increase_amount": 2500.5}',
+            },
+        )
+        assert "Error" in resp.content and "whole number" in resp.content
+        assert env.tools.db.credit_limit_increase_requests.data == records_before
+
+    def test_debit_limit_fractional_amount_rejected(
+        self, base_knowledge_db: TransactionalDB
+    ):
+        env = self._fresh_env(base_knowledge_db)
+        env.tools.db.debit_cards.data["dbc_002"]["daily_atm_limit"] = 500
+        resp = call(
+            env,
+            "unlock_discoverable_agent_tool",
+            {"agent_tool_name": "request_temporary_debit_card_limit_increase_8374"},
+        )
+        assert not resp.error, resp.content
+        resp = call(
+            env,
+            "call_discoverable_agent_tool",
+            {
+                "agent_tool_name": "request_temporary_debit_card_limit_increase_8374",
+                "arguments": '{"card_id": "dbc_002", "limit_type": "atm", "new_limit": 700.5}',
+            },
+        )
+        assert "Error" in resp.content and "must be an integer" in resp.content
+        card = env.tools.db.debit_cards.data["dbc_002"]
+        assert card["daily_atm_limit"] == 500
+        assert "temporary_atm_limit_increase" not in card
+
+        # A whole-valued float is just an alternate spelling and must still
+        # succeed, storing the documented int.
+        resp = call(
+            env,
+            "call_discoverable_agent_tool",
+            {
+                "agent_tool_name": "request_temporary_debit_card_limit_increase_8374",
+                "arguments": '{"card_id": "dbc_002", "limit_type": "atm", "new_limit": 700.0}',
+            },
+        )
+        assert not resp.error and "Error" not in resp.content, resp.content
+        assert env.tools.db.debit_cards.data["dbc_002"]["daily_atm_limit"] == 700
+
     def test_credit_card_application_income_spelling(
         self, base_knowledge_db: TransactionalDB
     ):
