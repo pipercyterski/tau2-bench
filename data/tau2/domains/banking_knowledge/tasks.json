@@ -8245,12 +8245,39 @@
           "action_id": "077_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"lj82d4f1a9\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "077_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
           },
           "requestor": "assistant",
           "action_id": "077_1b"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_lj82d4f1a9\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "077_1c"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_538bfb9cba\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "077_1d"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -8279,21 +8306,12 @@
           "action_id": "077_4"
         },
         {
-          "name": "unlock_discoverable_agent_tool",
+          "name": "get_credit_card_accounts_by_user",
           "arguments": {
-            "agent_tool_name": "get_credit_card_accounts_by_user"
+            "user_id": "lj82d4f1a9"
           },
           "requestor": "assistant",
           "action_id": "077_4b"
-        },
-        {
-          "name": "call_discoverable_agent_tool",
-          "arguments": {
-            "agent_tool_name": "get_credit_card_accounts_by_user",
-            "arguments": "{\"user_id\": \"lj82d4f1a9\"}"
-          },
-          "requestor": "assistant",
-          "action_id": "077_4c"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -8732,6 +8750,15 @@
           },
           "requestor": "assistant",
           "action_id": "078_1"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"mc78a5b9d2\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "078_1a"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -9285,6 +9312,15 @@
           },
           "requestor": "assistant",
           "action_id": "079_1"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"cr89a2b3c4\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "079_1a"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -9950,12 +9986,48 @@
           "action_id": "080_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"tm92c4d7e8\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "080_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
           },
           "requestor": "assistant",
           "action_id": "080_2"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_blue\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "080_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_gff\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "080_2b"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_green\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "080_2c"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -10689,12 +10761,48 @@
           "action_id": "081_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"tm92c4d7e8\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "081_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
           },
           "requestor": "assistant",
           "action_id": "081_2"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_blue\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "081_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_gff\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "081_2b"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_tm92c4d7e8_green\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "081_2c"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -11256,6 +11364,15 @@
           "action_id": "082_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"mc47a2b9e1\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "082_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
@@ -11264,12 +11381,48 @@
           "action_id": "082_2"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_mc47a2b9e1_blue\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "082_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_mc47a2b9e1_gff\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "082_2b"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_bank_account_transactions_9173"
           },
           "requestor": "assistant",
           "action_id": "082_3"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_bank_account_transactions_9173",
+            "arguments": "{\"account_id\": \"chk_mc47a2b9e1_blue\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "082_3a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_bank_account_transactions_9173",
+            "arguments": "{\"account_id\": \"chk_mc47a2b9e1_gff\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "082_3b"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -11972,6 +12125,15 @@
           "action_id": "084_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"a7c2f85d91\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "084_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
@@ -11980,12 +12142,48 @@
           "action_id": "084_2"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_b8d92f4c17\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "084_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_e5a31c7d82\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "084_2b"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_bank_account_transactions_9173"
           },
           "requestor": "assistant",
           "action_id": "084_3"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_bank_account_transactions_9173",
+            "arguments": "{\"account_id\": \"chk_b8d92f4c17\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "084_3a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_bank_account_transactions_9173",
+            "arguments": "{\"account_id\": \"chk_e5a31c7d82\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "084_3b"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -12265,12 +12463,39 @@
           "action_id": "085_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"f7d3a82c91\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "085_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
           },
           "requestor": "assistant",
           "action_id": "085_2"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_b4d92f7c28\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "085_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_e8a31c9d47\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "085_2b"
         },
         {
           "name": "unlock_discoverable_agent_tool",
@@ -12752,12 +12977,39 @@
           "action_id": "086_1"
         },
         {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+            "arguments": "{\"user_id\": \"cr47f8d2a1\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "086_1a"
+        },
+        {
           "name": "unlock_discoverable_agent_tool",
           "arguments": {
             "agent_tool_name": "get_debit_cards_by_account_id_7823"
           },
           "requestor": "assistant",
           "action_id": "086_2"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_cr47f8d2a1_gff\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "086_2a"
+        },
+        {
+          "name": "call_discoverable_agent_tool",
+          "arguments": {
+            "agent_tool_name": "get_debit_cards_by_account_id_7823",
+            "arguments": "{\"account_id\": \"chk_cr47f8d2a1_evergreen\"}"
+          },
+          "requestor": "assistant",
+          "action_id": "086_2b"
         },
         {
           "name": "unlock_discoverable_agent_tool",

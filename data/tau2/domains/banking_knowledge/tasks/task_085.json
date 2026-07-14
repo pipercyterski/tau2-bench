@@ -184,12 +184,39 @@
         "action_id": "085_1"
       },
       {
+        "name": "call_discoverable_agent_tool",
+        "arguments": {
+          "agent_tool_name": "get_all_user_accounts_by_user_id_3847",
+          "arguments": "{\"user_id\": \"f7d3a82c91\"}"
+        },
+        "requestor": "assistant",
+        "action_id": "085_1a"
+      },
+      {
         "name": "unlock_discoverable_agent_tool",
         "arguments": {
           "agent_tool_name": "get_debit_cards_by_account_id_7823"
         },
         "requestor": "assistant",
         "action_id": "085_2"
+      },
+      {
+        "name": "call_discoverable_agent_tool",
+        "arguments": {
+          "agent_tool_name": "get_debit_cards_by_account_id_7823",
+          "arguments": "{\"account_id\": \"chk_b4d92f7c28\"}"
+        },
+        "requestor": "assistant",
+        "action_id": "085_2a"
+      },
+      {
+        "name": "call_discoverable_agent_tool",
+        "arguments": {
+          "agent_tool_name": "get_debit_cards_by_account_id_7823",
+          "arguments": "{\"account_id\": \"chk_e8a31c9d47\"}"
+        },
+        "requestor": "assistant",
+        "action_id": "085_2b"
       },
       {
         "name": "unlock_discoverable_agent_tool",
