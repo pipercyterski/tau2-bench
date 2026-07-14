@@ -36,5 +36,57 @@
     "tick_duration_seconds": 0.2,
     "max_steps_seconds": 1200.0,
     "user_tts_provider": "elevenlabs/eleven_v3"
+  },
+  "interaction_metrics": {
+    "version": "1.0",
+    "config": {
+      "tick_duration_sec": 0.2,
+      "no_yield_window_sec": 2.0,
+      "backchannel_yield_window_sec": 1.0,
+      "vocal_tic_yield_window_sec": 1.0,
+      "non_directed_yield_window_sec": 1.0,
+      "vocal_tic_response_window_sec": 2.0,
+      "non_directed_response_window_sec": 2.0
+    },
+    "domains": {
+      "banking_knowledge": {
+        "response_latency_mean": 1.35659519168291,
+        "yield_latency_mean": 0.9537974683544304,
+        "response_rate": 0.9974076474400518,
+        "yield_rate": 0.9604863221884499,
+        "agent_interruption_rate": 0.29941672067401165,
+        "selectivity_backchannel": 0.6060606060606061,
+        "selectivity_vocal_tic": 0.37857142857142856,
+        "selectivity_non_directed": 0.10596026490066224,
+        "counts": {
+          "n_simulations": 97,
+          "response_total": 1543,
+          "yield_total": 1316,
+          "backchannel_total": 99,
+          "vocal_tic_total": 140,
+          "non_directed_total": 151,
+          "agent_interrupts_count": 462
+        }
+      }
+    },
+    "overall": {
+      "response_latency_mean": 1.35659519168291,
+      "yield_latency_mean": 0.9537974683544304,
+      "response_rate": 0.9974076474400518,
+      "yield_rate": 0.9604863221884499,
+      "agent_interruption_rate": 0.29941672067401165,
+      "selectivity_backchannel": 0.6060606060606061,
+      "selectivity_vocal_tic": 0.37857142857142856,
+      "selectivity_non_directed": 0.10596026490066224,
+      "counts": {
+        "agent_interrupts_count": 462,
+        "backchannel_total": 99,
+        "n_simulations": 97,
+        "non_directed_total": 151,
+        "response_total": 1543,
+        "vocal_tic_total": 140,
+        "yield_total": 1316
+      }
+    }
   }
 }

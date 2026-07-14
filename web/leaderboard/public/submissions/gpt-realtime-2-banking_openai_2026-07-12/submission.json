@@ -42,5 +42,57 @@
     "announcement_url": "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/",
     "announcement_title": "Advancing voice intelligence with new models in the API"
   },
-  "reasoning_effort": "xhigh"
+  "reasoning_effort": "xhigh",
+  "interaction_metrics": {
+    "version": "1.0",
+    "config": {
+      "tick_duration_sec": 0.2,
+      "no_yield_window_sec": 2.0,
+      "backchannel_yield_window_sec": 1.0,
+      "vocal_tic_yield_window_sec": 1.0,
+      "non_directed_yield_window_sec": 1.0,
+      "vocal_tic_response_window_sec": 2.0,
+      "non_directed_response_window_sec": 2.0
+    },
+    "domains": {
+      "banking_knowledge": {
+        "response_latency_mean": 2.0380952380952393,
+        "yield_latency_mean": 0.6119440914866582,
+        "response_rate": 0.9471228615863142,
+        "yield_rate": 0.9974651457541192,
+        "agent_interruption_rate": 0.2667185069984448,
+        "selectivity_backchannel": 0.036363636363636376,
+        "selectivity_vocal_tic": 0.12403100775193798,
+        "selectivity_non_directed": 0.1454545454545455,
+        "counts": {
+          "n_simulations": 97,
+          "response_total": 1286,
+          "yield_total": 789,
+          "backchannel_total": 55,
+          "vocal_tic_total": 129,
+          "non_directed_total": 165,
+          "agent_interrupts_count": 343
+        }
+      }
+    },
+    "overall": {
+      "response_latency_mean": 2.0380952380952393,
+      "yield_latency_mean": 0.6119440914866582,
+      "response_rate": 0.9471228615863142,
+      "yield_rate": 0.9974651457541192,
+      "agent_interruption_rate": 0.2667185069984448,
+      "selectivity_backchannel": 0.036363636363636376,
+      "selectivity_vocal_tic": 0.12403100775193798,
+      "selectivity_non_directed": 0.1454545454545455,
+      "counts": {
+        "agent_interrupts_count": 343,
+        "backchannel_total": 55,
+        "n_simulations": 97,
+        "non_directed_total": 165,
+        "response_total": 1286,
+        "vocal_tic_total": 129,
+        "yield_total": 789
+      }
+    }
+  }
 }

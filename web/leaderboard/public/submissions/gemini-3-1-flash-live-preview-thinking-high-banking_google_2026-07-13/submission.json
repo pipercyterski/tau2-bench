@@ -42,5 +42,57 @@
     "announcement_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/",
     "announcement_title": "Gemini 3.1 Flash Live: Google's latest AI audio model"
   },
-  "reasoning_effort": "high"
+  "reasoning_effort": "high",
+  "interaction_metrics": {
+    "version": "1.0",
+    "config": {
+      "tick_duration_sec": 0.2,
+      "no_yield_window_sec": 2.0,
+      "backchannel_yield_window_sec": 1.0,
+      "vocal_tic_yield_window_sec": 1.0,
+      "non_directed_yield_window_sec": 1.0,
+      "vocal_tic_response_window_sec": 2.0,
+      "non_directed_response_window_sec": 2.0
+    },
+    "domains": {
+      "banking_knowledge": {
+        "response_latency_mean": 2.9428307123034227,
+        "yield_latency_mean": 0.8494117647058823,
+        "response_rate": 0.8152337858220211,
+        "yield_rate": 0.4753914988814318,
+        "agent_interruption_rate": 0.16591251885369532,
+        "selectivity_backchannel": 0.9090909090909091,
+        "selectivity_vocal_tic": 0.5931034482758621,
+        "selectivity_non_directed": 0.4285714285714286,
+        "counts": {
+          "n_simulations": 97,
+          "response_total": 1326,
+          "yield_total": 894,
+          "backchannel_total": 66,
+          "vocal_tic_total": 145,
+          "non_directed_total": 84,
+          "agent_interrupts_count": 220
+        }
+      }
+    },
+    "overall": {
+      "response_latency_mean": 2.9428307123034227,
+      "yield_latency_mean": 0.8494117647058823,
+      "response_rate": 0.8152337858220211,
+      "yield_rate": 0.4753914988814318,
+      "agent_interruption_rate": 0.16591251885369532,
+      "selectivity_backchannel": 0.9090909090909091,
+      "selectivity_vocal_tic": 0.5931034482758621,
+      "selectivity_non_directed": 0.4285714285714286,
+      "counts": {
+        "agent_interrupts_count": 220,
+        "backchannel_total": 66,
+        "n_simulations": 97,
+        "non_directed_total": 84,
+        "response_total": 1326,
+        "vocal_tic_total": 145,
+        "yield_total": 894
+      }
+    }
+  }
 }
