@@ -3370,5 +3370,117 @@ class TestApplyCreditCardAccountFlagParity:
         assert "not found" in resp.content.lower()
 
 
+class TestNumericArgumentNormalization:
+    """DB state must not depend on how a caller spells a JSON number.
+
+    JSON does not distinguish ints from floats (33, 33.0, and 33.00 are the
+    same number), so two calls differing only in numeric spelling must produce
+    identical deterministic IDs and identical DB hashes. Gold trajectories are
+    replayed through the same code paths at evaluation time, so any spelling
+    sensitivity here directly mis-scores DB-basis tasks.
+    """
+
+    @staticmethod
+    def _fresh_env(base_db: TransactionalDB) -> Environment:
+        return _create_test_environment(base_db.model_copy(deep=True))
+
+    def _env_after_agent_call(
+        self, base_db: TransactionalDB, tool_name: str, arguments_json: str
+    ) -> Environment:
+        env = self._fresh_env(base_db)
+        resp = call(
+            env, "unlock_discoverable_agent_tool", {"agent_tool_name": tool_name}
+        )
+        assert not resp.error, resp.content
+        resp = call(
+            env,
+            "call_discoverable_agent_tool",
+            {"agent_tool_name": tool_name, "arguments": arguments_json},
+        )
+        assert not resp.error and "Error" not in resp.content, resp.content
+        return env
+
+    def _env_after_user_call(
+        self, base_db: TransactionalDB, tool_name: str, arguments_json: str
+    ) -> Environment:
+        env = self._fresh_env(base_db)
+        resp = call(
+            env, "give_discoverable_user_tool", {"discoverable_tool_name": tool_name}
+        )
+        assert not resp.error, resp.content
+        resp = call(
+            env,
+            "call_discoverable_user_tool",
+            {"discoverable_tool_name": tool_name, "arguments": arguments_json},
+            requestor="user",
+        )
+        assert not resp.error and "Error" not in resp.content, resp.content
+        return env
+
+    def test_savings_credit_amount_spelling(self, base_knowledge_db: TransactionalDB):
+        env_float = self._env_after_agent_call(
+            base_knowledge_db,
+            "apply_savings_account_credit_6831",
+            '{"account_id": "sav_001", "amount": 33.00, "credit_type": "interest_correction"}',
+        )
+        env_int = self._env_after_agent_call(
+            base_knowledge_db,
+            "apply_savings_account_credit_6831",
+            '{"account_id": "sav_001", "amount": 33, "credit_type": "interest_correction"}',
+        )
+        assert env_float.get_db_hash() == env_int.get_db_hash()
+
+    def test_checking_credit_amount_spelling(self, base_knowledge_db: TransactionalDB):
+        env_float = self._env_after_agent_call(
+            base_knowledge_db,
+            "apply_checking_account_credit_5829",
+            '{"account_id": "chk_001", "amount": 14.00, "credit_type": "fee_refund"}',
+        )
+        env_int = self._env_after_agent_call(
+            base_knowledge_db,
+            "apply_checking_account_credit_5829",
+            '{"account_id": "chk_001", "amount": 14, "credit_type": "fee_refund"}',
+        )
+        assert env_float.get_db_hash() == env_int.get_db_hash()
+
+    def test_user_check_deposit_amount_spelling(
+        self, base_knowledge_db: TransactionalDB
+    ):
+        env_int = self._env_after_user_call(
+            base_knowledge_db,
+            "deposit_check_3847",
+            '{"account_id": "chk_001", "check_amount": 1500}',
+        )
+        env_float = self._env_after_user_call(
+            base_knowledge_db,
+            "deposit_check_3847",
+            '{"account_id": "chk_001", "check_amount": 1500.0}',
+        )
+        assert env_int.get_db_hash() == env_float.get_db_hash()
+
+    def test_credit_card_application_income_spelling(
+        self, base_knowledge_db: TransactionalDB
+    ):
+        # apply_for_credit_card is a regular (non-discoverable) user tool, so
+        # its arguments arrive as parsed values rather than a JSON string.
+        hashes = []
+        for income in (100000, 100000.0):
+            env = self._fresh_env(base_knowledge_db)
+            resp = call(
+                env,
+                "apply_for_credit_card",
+                {
+                    "card_type": "Gold Rewards Card",
+                    "customer_name": "Amara Okonkwo",
+                    "annual_income": income,
+                    "rho_bank_subscription": False,
+                },
+                requestor="user",
+            )
+            assert not resp.error and "Error" not in resp.content, resp.content
+            hashes.append(env.get_db_hash())
+        assert hashes[0] == hashes[1]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

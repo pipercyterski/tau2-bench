@@ -655,9 +655,12 @@ class KnowledgeTools(ToolKitBase):
                 f"You must first use `unlock_discoverable_agent_tool` to unlock this tool before calling it."
             )
 
-        # Parse arguments
+        # Parse arguments. JSON does not distinguish ints from floats (33 and 33.0
+        # are the same JSON number), so normalize all numbers to float. Otherwise
+        # deterministic IDs and DB-state hashes would depend on how the caller
+        # happened to spell the number.
         try:
-            args_dict = json.loads(arguments)
+            args_dict = json.loads(arguments, parse_int=float)
         except json.JSONDecodeError as e:
             return f"Error: Invalid JSON in arguments: {e}"
 
@@ -2711,6 +2714,12 @@ For deposits without available images, the dispute will proceed based on custome
         if not account_id or amount is None or not credit_type:
             return "Error: Missing required parameters."
 
+        # Validate amount is a positive number
+        try:
+            amount = float(amount)
+        except (TypeError, ValueError):
+            return "Error: Invalid credit amount. Must be a number."
+
         if amount <= 0:
             return "Error: Credit amount must be positive."
 
@@ -2789,6 +2798,12 @@ For deposits without available images, the dispute will proceed based on custome
         """
         if not account_id or amount is None or not credit_type:
             return "Error: Missing required parameters."
+
+        # Validate amount is a positive number
+        try:
+            amount = float(amount)
+        except (TypeError, ValueError):
+            return "Error: Invalid credit amount. Must be a number."
 
         if amount <= 0:
             return "Error: Credit amount must be positive."
@@ -4344,6 +4359,13 @@ class KnowledgeUserTools(ToolKitBase):
                 f"Must be one of: {self.VALID_CREDIT_CARD_TYPES}"
             )
 
+        # Normalize to float so the deterministic application ID and stored record
+        # do not depend on whether the caller sent 100000 or 100000.0
+        try:
+            annual_income = float(annual_income)
+        except (TypeError, ValueError):
+            return "Error: Invalid annual_income. Must be a number."
+
         # Generate a deterministic application ID from the input parameters
         # This ensures the same inputs produce the same ID for environment evaluation
         application_id = generate_application_id(
@@ -4451,9 +4473,12 @@ class KnowledgeUserTools(ToolKitBase):
         if not self.has_discoverable_tool(discoverable_tool_name):
             return f"Error: Unknown discoverable tool '{discoverable_tool_name}'."
 
-        # Parse arguments
+        # Parse arguments. JSON does not distinguish ints from floats (33 and 33.0
+        # are the same JSON number), so normalize all numbers to float. Otherwise
+        # deterministic IDs and DB-state hashes would depend on how the caller
+        # happened to spell the number.
         try:
-            args_dict = json.loads(arguments)
+            args_dict = json.loads(arguments, parse_int=float)
         except json.JSONDecodeError as e:
             return f"Error: Invalid JSON in arguments: {e}"
 
