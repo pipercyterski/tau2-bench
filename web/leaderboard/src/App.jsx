@@ -4,7 +4,6 @@ import TrajectoryVisualizer from './components/TrajectoryVisualizer'
 import Leaderboard from './components/Leaderboard'
 import LeaderboardPreview from './components/LeaderboardPreview'
 import Blog from './components/Blog'
-import AuthorPage from './components/AuthorPage'
 
 function App() {
   
@@ -18,14 +17,8 @@ function App() {
     if (base === 'progress') return 'leaderboard'
     if (base === 'trajectory-visualizer') return 'trajectory-visualizer'
     if (base === 'blog') return 'blog'
-    if (base.startsWith('author/')) return 'author'
     if (base === 'results' || base === 'docs') return '__deprecated__'
     return 'home'
-  }
-
-  const getAuthorSlugFromHash = (hash) => {
-    const base = hash.split('?')[0]
-    return base.startsWith('author/') ? base.slice('author/'.length) : null
   }
 
   const getInitialView = () => {
@@ -39,7 +32,6 @@ function App() {
   }
   
   const [currentView, setCurrentView] = useState(getInitialView())
-  const [authorSlug, setAuthorSlug] = useState(getAuthorSlugFromHash(window.location.hash.slice(1)))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [papersDropdownOpen, setPapersDropdownOpen] = useState(false)
 
@@ -97,7 +89,6 @@ function App() {
         setCurrentView('home')
       } else {
         setCurrentView(view)
-        setAuthorSlug(getAuthorSlugFromHash(hash))
         scrollToSectionForHash(hash)
       }
     }
@@ -157,7 +148,7 @@ function App() {
             <button onClick={() => navigateTo('home')} className={`nav-link ${currentView === 'home' ? 'active' : ''}`}>Overview</button>
             <button onClick={() => navigateTo('leaderboard')} className={`nav-link ${currentView === 'leaderboard' ? 'active' : ''}`}>Leaderboard</button>
             <button onClick={() => navigateTo('trajectory-visualizer')} className={`nav-link ${currentView === 'trajectory-visualizer' ? 'active' : ''}`}>Visualizer</button>
-            <button onClick={() => navigateTo('blog')} className={`nav-link ${currentView === 'blog' || currentView === 'author' ? 'active' : ''}`}>Blog</button>
+            <button onClick={() => navigateTo('blog')} className={`nav-link ${currentView === 'blog' ? 'active' : ''}`}>Blog</button>
             <a href="https://github.com/sierra-research/tau2-bench" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>GitHub</a>
           </div>
         </div>
@@ -238,8 +229,6 @@ function App() {
         <TrajectoryVisualizer />
       ) : currentView === 'blog' ? (
         <Blog />
-      ) : currentView === 'author' ? (
-        <AuthorPage slug={authorSlug} />
       ) : null}
 
       {/* Simple Footer */}

@@ -5,12 +5,14 @@ import { BLOG_POSTS, AUTHORS, authorPhoto } from '../data/blogData'
 const resolveHref = (href) =>
   href.startsWith('http') ? href : `${import.meta.env.BASE_URL}${href}`
 
+const authorPageUrl = (slug) => `${import.meta.env.BASE_URL}authors/${slug}.html`
+
 export function AuthorLine({ slugs }) {
   return (
     <div className="post-authors">
       <div className="post-author-photos">
         {slugs.map((slug) => (
-          <a key={slug} href={`#author/${slug}`} className="post-author-photo-link" title={AUTHORS[slug]?.name}>
+          <a key={slug} href={authorPageUrl(slug)} className="post-author-photo-link" title={AUTHORS[slug]?.name}>
             <img src={authorPhoto(slug)} alt={AUTHORS[slug]?.name} className="post-author-photo" />
           </a>
         ))}
@@ -19,7 +21,7 @@ export function AuthorLine({ slugs }) {
         {slugs.map((slug, i) => (
           <span key={slug}>
             {i > 0 && (i === slugs.length - 1 ? ' & ' : ', ')}
-            <a href={`#author/${slug}`} className="post-author-name">{AUTHORS[slug]?.name}</a>
+            <a href={authorPageUrl(slug)} className="post-author-name">{AUTHORS[slug]?.name}</a>
           </span>
         ))}
       </span>
