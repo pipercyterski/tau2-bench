@@ -3,6 +3,8 @@ import './App.css'
 import TrajectoryVisualizer from './components/TrajectoryVisualizer'
 import Leaderboard from './components/Leaderboard'
 import LeaderboardPreview from './components/LeaderboardPreview'
+import Blog from './components/Blog'
+import AuthorPage from './components/AuthorPage'
 
 function App() {
   
@@ -15,8 +17,15 @@ function App() {
     // #progress is handled by the effect below.
     if (base === 'progress') return 'leaderboard'
     if (base === 'trajectory-visualizer') return 'trajectory-visualizer'
+    if (base === 'blog') return 'blog'
+    if (base.startsWith('author/')) return 'author'
     if (base === 'results' || base === 'docs') return '__deprecated__'
     return 'home'
+  }
+
+  const getAuthorSlugFromHash = (hash) => {
+    const base = hash.split('?')[0]
+    return base.startsWith('author/') ? base.slice('author/'.length) : null
   }
 
   const getInitialView = () => {
@@ -30,10 +39,9 @@ function App() {
   }
   
   const [currentView, setCurrentView] = useState(getInitialView())
+  const [authorSlug, setAuthorSlug] = useState(getAuthorSlugFromHash(window.location.hash.slice(1)))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [blogDropdownOpen, setBlogDropdownOpen] = useState(false)
   const [papersDropdownOpen, setPapersDropdownOpen] = useState(false)
-  const [heroBlogDropdownOpen, setHeroBlogDropdownOpen] = useState(false)
 
   // Handle navigation with URL updates
   const navigateTo = (view) => {
@@ -43,6 +51,8 @@ function App() {
       window.history.pushState(null, '', '#home')
     } else if (view === 'leaderboard') {
       window.history.pushState(null, '', '#leaderboard')
+    } else if (view === 'blog') {
+      window.history.pushState(null, '', '#blog')
     } else if (view === 'trajectory-visualizer') {
       // Preserve existing query params if already on the visualizer
       const currentHash = window.location.hash || ''
@@ -87,6 +97,7 @@ function App() {
         setCurrentView('home')
       } else {
         setCurrentView(view)
+        setAuthorSlug(getAuthorSlugFromHash(hash))
         scrollToSectionForHash(hash)
       }
     }
@@ -146,16 +157,7 @@ function App() {
             <button onClick={() => navigateTo('home')} className={`nav-link ${currentView === 'home' ? 'active' : ''}`}>Overview</button>
             <button onClick={() => navigateTo('leaderboard')} className={`nav-link ${currentView === 'leaderboard' ? 'active' : ''}`}>Leaderboard</button>
             <button onClick={() => navigateTo('trajectory-visualizer')} className={`nav-link ${currentView === 'trajectory-visualizer' ? 'active' : ''}`}>Visualizer</button>
-            <div className="nav-dropdown" onMouseEnter={() => setBlogDropdownOpen(true)} onMouseLeave={() => setBlogDropdownOpen(false)}>
-              <button className="nav-link nav-dropdown-trigger">
-                Blog Posts <span className="dropdown-arrow">▾</span>
-              </button>
-              <div className={`nav-dropdown-menu ${blogDropdownOpen ? 'open' : ''}`}>
-                <a href={`${import.meta.env.BASE_URL}blog/tau-knowledge.html`} onClick={() => { setMobileMenuOpen(false); setBlogDropdownOpen(false); }}>τ-knowledge</a>
-                <a href={`${import.meta.env.BASE_URL}blog/tau-voice-examples.html`} onClick={() => { setMobileMenuOpen(false); setBlogDropdownOpen(false); }}>τ-voice examples</a>
-                <a href={`${import.meta.env.BASE_URL}blog/tau3-task-fixes.html`} onClick={() => { setMobileMenuOpen(false); setBlogDropdownOpen(false); }}>τ³ Task Fixes</a>
-              </div>
-            </div>
+            <button onClick={() => navigateTo('blog')} className={`nav-link ${currentView === 'blog' || currentView === 'author' ? 'active' : ''}`}>Blog</button>
             <a href="https://github.com/sierra-research/tau2-bench" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>GitHub</a>
           </div>
         </div>
@@ -219,16 +221,7 @@ function App() {
                         <a href="https://arxiv.org/abs/2406.12045" target="_blank" rel="noopener noreferrer">τ-bench</a>
                       </div>
                     </div>
-                    <div className="hero-dropdown" onMouseEnter={() => setHeroBlogDropdownOpen(true)} onMouseLeave={() => setHeroBlogDropdownOpen(false)}>
-                      <button className="btn-secondary">
-                        Blog Posts <span className="dropdown-arrow">▾</span>
-                      </button>
-                      <div className={`hero-dropdown-menu ${heroBlogDropdownOpen ? 'open' : ''}`}>
-                        <a href="https://sierra.ai/blog/bench-advancing-agent-benchmarking-to-knowledge-and-voice" target="_blank" rel="noopener noreferrer">τ³-bench</a>
-                        <a href="https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-scenarios" target="_blank" rel="noopener noreferrer">τ²-bench</a>
-                        <a href="https://sierra.ai/blog/benchmarking-ai-agents" target="_blank" rel="noopener noreferrer">τ-bench</a>
-                      </div>
-                    </div>
+                    <button className="btn-secondary" onClick={() => navigateTo('blog')}>Blog</button>
                   </div>
                 </div>
 
@@ -243,6 +236,10 @@ function App() {
         <Leaderboard />
       ) : currentView === 'trajectory-visualizer' ? (
         <TrajectoryVisualizer />
+      ) : currentView === 'blog' ? (
+        <Blog />
+      ) : currentView === 'author' ? (
+        <AuthorPage slug={authorSlug} />
       ) : null}
 
       {/* Simple Footer */}
