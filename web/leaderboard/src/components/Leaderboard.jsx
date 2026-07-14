@@ -726,7 +726,7 @@ const Leaderboard = () => {
                     <tr>
                       <th rowSpan={headerSpan}>Rank</th>
                       <th rowSpan={headerSpan}>Model</th>
-                      <th rowSpan={headerSpan}>Released</th>
+                      {!interactionMode && <th rowSpan={headerSpan}>Released</th>}
                       <th rowSpan={headerSpan}>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
                       <th rowSpan={headerSpan}>Reasoning</th>
                       <th rowSpan={headerSpan}>User Sim</th>
@@ -750,7 +750,7 @@ const Leaderboard = () => {
                                   }}
                                   title="Rank by interaction quality, measured from the same full-duplex trajectories"
                                 >
-                                  Interaction
+                                  Interaction Metrics
                                 </button>
                               )}
                             </>
@@ -783,7 +783,7 @@ const Leaderboard = () => {
                               className="passk-header-btn active"
                               title="Ranking by interaction quality — pick a metric below. Click Pass^1 to rank by task success again."
                             >
-                              Interaction
+                              Interaction Metrics
                             </button>
                           </div>
                         </th>
@@ -797,9 +797,16 @@ const Leaderboard = () => {
                             key={m.key}
                             className={`interaction-col-header ${interactionMetric === m.key ? 'active' : ''}`}
                             onClick={() => setInteractionMetric(m.key)}
-                            title={`${m.desc} Click to sort by this metric.`}
+                            title={`Sort by ${m.label.toLowerCase()}`}
                           >
                             {m.label} {m.better === 'lower' ? '↓' : '↑'}
+                            <span
+                              className="interaction-info-icon"
+                              data-tooltip={m.desc}
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              ⓘ
+                            </span>
                           </th>
                         ))}
                       </tr>
@@ -953,7 +960,9 @@ const Leaderboard = () => {
                        </div>
                      </td>
 
-                     {/* Release Date (from model_release.release_date) */}
+                     {/* Release Date (from model_release.release_date); hidden in
+                         interaction mode to make room for the metric columns */}
+                     {!(isVoice && rankBy === 'interaction') && (
                      <td className="release-date-cell">
                        {(() => {
                          const releaseInfo = fullSubmissionData[model.key]?.model_release
@@ -981,6 +990,7 @@ const Leaderboard = () => {
                          ) : inner
                        })()}
                      </td>
+                     )}
 
                      {/* Organization / Retrieval Config (banking) */}
                      <td className={`organization-info${domain === 'banking_knowledge' ? ' organization-info-retrieval' : ''}`}>
@@ -1129,7 +1139,7 @@ const Leaderboard = () => {
                   {/* Expandable Domain Breakdown Row */}
                   {isExpanded && (
                     <tr className="domain-detail-row">
-                      <td colSpan={isVoice && rankBy === 'interaction' ? 12 : 8} className="domain-detail-cell">
+                      <td colSpan={isVoice && rankBy === 'interaction' ? 11 : 8} className="domain-detail-cell">
                         <div className="domain-breakdown">
                           {(isVoice
                             ? [

@@ -1815,58 +1815,31 @@ a.user-sim-version-link:hover {
   padding: 20px 4px;
 }
 
-/* Interaction mode: pass^1 collapses to a plain number and the four
-   interaction metrics fan out as their own columns. Tighten the metadata
-   columns so all four metrics fit without horizontal scrolling. */
-.reliability-table.interaction-mode th:nth-child(7) {
-  min-width: 80px;
-  width: 80px;
+/* Interaction mode: pass^1 collapses to a plain number, the Released column
+   is hidden, and the four interaction metrics fan out into the freed space.
+   Every other column keeps its pass^1-mode width so the table doesn't
+   resize when switching modes. */
+.reliability-table.interaction-mode th.passk-header-cell {
+  width: 84px;
+  min-width: 84px;
 }
 
 .reliability-table.interaction-mode td.score-cell {
-  min-width: 80px;
+  width: 84px;
+  min-width: 84px;
 }
 
-.reliability-table.interaction-mode thead tr:first-child th:nth-child(2) {
-  width: 170px;
-  min-width: 170px;
+/* Smooth mode switch: the fanned-out metric columns fade in */
+@keyframes interactionColIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.reliability-table.interaction-mode thead tr:first-child th:nth-child(3) {
-  width: 95px;
-}
-
-.reliability-table.interaction-mode thead tr:first-child th:nth-child(4) {
-  width: 120px;
-}
-
-.reliability-table.interaction-mode thead tr:first-child th:nth-child(5) {
-  width: 85px;
-}
-
-.reliability-table.interaction-mode thead tr:first-child th:nth-child(6) {
-  width: 85px;
-}
-
-/* Tighter cell padding so the fanned-out columns fit without scrolling */
-.reliability-table.interaction-mode th,
-.reliability-table.interaction-mode td {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.reliability-table.interaction-mode thead tr:first-child th {
-  font-size: 12px;
-}
-
-.reliability-table.interaction-mode td {
-  font-size: 14px;
-}
-
-/* Let the cascaded-pipeline summary wrap instead of forcing column width */
-.reliability-table.interaction-mode .voice-pipeline-summary {
-  white-space: normal;
-  flex-wrap: wrap;
+.reliability-table.interaction-mode .interaction-cell,
+.reliability-table.interaction-mode .interaction-col-header,
+.reliability-table.interaction-mode .interaction-group-header,
+.reliability-table.interaction-mode .score-plain {
+  animation: interactionColIn 0.3s ease;
 }
 
 /* Group heading spanning the four metric subheadings */
@@ -1878,7 +1851,7 @@ a.user-sim-version-link:hover {
 .reliability-table .interaction-subheader-row th.interaction-col-header {
   width: 105px;
   min-width: 0;
-  padding: 4px 6px 12px;
+  padding: 4px 4px 12px;
   font-size: 11.5px;
   text-transform: none;
   letter-spacing: 0.2px;
@@ -1899,6 +1872,72 @@ a.user-sim-version-link:hover {
 
 .reliability-table th.interaction-col-header.active {
   color: #16a34a;
+}
+
+/* Metric definition tooltips on the interaction column headers */
+.interaction-info-icon {
+  font-size: 11px;
+  color: #b6c2d2;
+  margin-left: 4px;
+  cursor: help;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.interaction-info-icon:hover {
+  color: #065f46;
+}
+
+.interaction-info-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: normal;
+  width: max-content;
+  max-width: 230px;
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.interaction-info-icon::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: #1e293b;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 20;
+}
+
+.interaction-info-icon:hover::after,
+.interaction-info-icon:hover::before {
+  opacity: 1;
+}
+
+/* Right-align the last column's tooltip so it doesn't overflow the table */
+.interaction-subheader-row th:last-child .interaction-info-icon::after {
+  left: auto;
+  right: -8px;
+  transform: none;
 }
 
 .score-plain {
