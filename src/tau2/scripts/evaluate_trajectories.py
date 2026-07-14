@@ -9,9 +9,10 @@ from loguru import logger
 from rich.console import Console
 from rich.progress import Progress
 
-from tau2.data_model.simulation import Results
+from tau2.data_model.simulation import Results, SimulationRun
 from tau2.evaluator.evaluator import EvaluationType, evaluate_simulation
 from tau2.metrics.agent_metrics import compute_metrics
+from tau2.orchestrator.modes import CommunicationMode
 from tau2.utils.display import ConsoleDisplay
 from tau2.utils.io_utils import expand_paths
 
@@ -23,6 +24,30 @@ def is_solo_mode(results: Results) -> bool:
     if agent_implementation == "llm_agent_solo" and user_implementation == "dummy_user":
         return True
     return False
+
+
+def get_communication_mode(
+    results: Results, simulation: Optional[SimulationRun] = None
+) -> CommunicationMode:
+    """Detect the communication mode of a simulation in the results.
+
+    Full-duplex (voice streaming) trajectories store the conversation in
+    simulation.ticks rather than simulation.messages and must be rescored
+    with the tick-based evaluators. Per-simulation signals take precedence;
+    the run-level info covers full-duplex trajectories that predate the
+    SimulationRun.mode field or were saved without ticks.
+    """
+    if simulation is not None and (
+        simulation.mode == CommunicationMode.FULL_DUPLEX.value
+        or simulation.ticks is not None
+    ):
+        return CommunicationMode.FULL_DUPLEX
+    info = results.info
+    if info.audio_native_config is not None:
+        return CommunicationMode.FULL_DUPLEX
+    if info.user_info.implementation == "voice_streaming_user_simulator":
+        return CommunicationMode.FULL_DUPLEX
+    return CommunicationMode.HALF_DUPLEX
 
 
 def compute_simulation_rewards(
@@ -60,6 +85,7 @@ def compute_simulation_rewards(
                 simulation=simulation,
                 evaluation_type=evaluation_type,
                 solo_mode=solo_mode,
+                mode=get_communication_mode(results, simulation),
             )
 
             # Update the simulation with new reward info

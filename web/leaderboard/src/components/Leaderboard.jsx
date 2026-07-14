@@ -43,6 +43,135 @@ const formatVoicePipeline = (pipeline) => {
   ].filter(Boolean).join('\n')
 }
 
+// Voice interaction quality (τ-voice panel, condensed to four headline metrics).
+// Rates backed by fewer than MIN_INTERACTION_N events are hidden as noise.
+const MIN_INTERACTION_N = 10
+
+const INTERACTION_METRICS = [
+  {
+    key: 'response_rate',
+    label: 'Responsiveness',
+    unit: '%',
+    better: 'higher',
+    desc: 'Fraction of user turns that received an agent response before the user had to speak again. Higher is better.',
+  },
+  {
+    key: 'response_latency_mean',
+    label: 'Latency',
+    unit: 's',
+    better: 'lower',
+    desc: 'Mean seconds from the end of a user turn to the start of the agent response. Lower is better.',
+  },
+  {
+    key: 'agent_interruption_rate',
+    label: 'Interrupts',
+    unit: '%',
+    better: 'lower',
+    desc: 'Agent interruption events per eligible user turn. An agent can interrupt the same turn more than once, so this can exceed 100%. Lower is better.',
+  },
+  {
+    key: 'selectivity',
+    label: 'Selectivity',
+    unit: '%',
+    better: 'higher',
+    desc: 'How well the agent ignores audio not directed at it (backchannels, vocal tics, background speech). Higher is better.',
+  },
+]
+
+const SELECTIVITY_PARTS = [
+  { key: 'selectivity_backchannel', countKey: 'backchannel_total' },
+  { key: 'selectivity_vocal_tic', countKey: 'vocal_tic_total' },
+  { key: 'selectivity_non_directed', countKey: 'non_directed_total' },
+]
+
+const getInteractionPanel = (interactionMetrics, domainKey) => {
+  if (!interactionMetrics) return null
+  return domainKey === 'overall'
+    ? interactionMetrics.overall || null
+    : interactionMetrics.domains?.[domainKey] || null
+}
+
+// Support gate for a single rate: 'ok' when backed by >= MIN_INTERACTION_N
+// events, 'low_n' when under-supported (including when counts are missing and
+// support can't be verified), 'undefined' when there were no qualifying
+// events so the rate isn't measurable at all.
+const rateStatus = (value, n) => {
+  if (value === null || value === undefined) return 'undefined'
+  return n >= MIN_INTERACTION_N ? 'ok' : 'low_n'
+}
+
+// Latency is averaged over responded turns only, so its support count is
+// response_rate * response_total rather than response_total itself.
+const metricEventCount = (panel, metricKey) => {
+  const total = panel.counts?.response_total ?? 0
+  return metricKey === 'response_latency_mean'
+    ? Math.round((panel.response_rate ?? 0) * total)
+    : total
+}
+
+const selectivityPartStatus = (panel, part) =>
+  rateStatus(panel[part.key], panel.counts?.[part.countKey] ?? 0)
+
+// Composite selectivity is the mean of all three component rates. If any
+// component is missing or under-supported the composite is hidden entirely:
+// silently dropping a component would rank rows on differently-defined
+// quantities (a 2-component mean vs everyone else's 3-component mean).
+const panelSelectivity = (panel) => {
+  const statuses = SELECTIVITY_PARTS.map((part) => selectivityPartStatus(panel, part))
+  if (statuses.every((s) => s === 'undefined')) return { reason: 'undefined' }
+  if (statuses.some((s) => s !== 'ok')) return { reason: 'low_n' }
+  const sum = SELECTIVITY_PARTS.reduce((s, part) => s + panel[part.key], 0)
+  return { reason: 'ok', value: sum / SELECTIVITY_PARTS.length }
+}
+
+const panelMetric = (panel, metricKey) => {
+  if (metricKey === 'selectivity') return panelSelectivity(panel)
+  const status = rateStatus(panel[metricKey], metricEventCount(panel, metricKey))
+  return status === 'ok' ? { reason: 'ok', value: panel[metricKey] } : { reason: status }
+}
+
+// The overall panel is an unweighted mean of domain rates, so it is only as
+// reliable as its weakest contributor: a domain rate that exists but is
+// under-supported enters that mean with full weight. Hide the overall value
+// whenever any contributing domain rate fails the support gate. (A domain
+// with no qualifying events contributes nothing and doesn't count against it.)
+const overallContaminated = (interactionMetrics, metricKey) => {
+  const domains = Object.values(interactionMetrics.domains || {})
+  if (metricKey === 'selectivity') {
+    return domains.some((panel) =>
+      SELECTIVITY_PARTS.some((part) => selectivityPartStatus(panel, part) === 'low_n'))
+  }
+  return domains.some((panel) =>
+    rateStatus(panel[metricKey], metricEventCount(panel, metricKey)) === 'low_n')
+}
+
+// Returns { value, reason }: reason is 'ok', 'low_n', 'undefined', or
+// 'unavailable' (submission has no interaction_metrics block).
+const getInteractionCellInfo = (interactionMetrics, domainKey, metricKey) => {
+  const panel = getInteractionPanel(interactionMetrics, domainKey)
+  if (!panel) return { value: null, reason: 'unavailable' }
+  const metric = panelMetric(panel, metricKey)
+  if (metric.reason !== 'ok') return { value: null, reason: metric.reason }
+  if (domainKey === 'overall' && overallContaminated(interactionMetrics, metricKey)) {
+    return { value: null, reason: 'low_n' }
+  }
+  return { value: metric.value, reason: 'ok' }
+}
+
+const getInteractionValue = (interactionMetrics, domainKey, metricKey) =>
+  getInteractionCellInfo(interactionMetrics, domainKey, metricKey).value
+
+const INTERACTION_NO_DATA_TOOLTIP = {
+  unavailable: 'Interaction metrics not available for this submission',
+  low_n: `Not shown: backed by fewer than ${MIN_INTERACTION_N} events`,
+  undefined: 'Not shown: no qualifying events in this run',
+}
+
+const formatInteractionValue = (value, unit) => {
+  if (value === null || value === undefined) return '—'
+  return unit === 's' ? `${value.toFixed(2)}s` : `${(value * 100).toFixed(1)}%`
+}
+
 const Leaderboard = () => {
   // Benchmark selector: 'text' (τ-bench) or 'voice' (τ-voice)
   const [benchmark, setBenchmark] = useState(() => {
@@ -87,6 +216,10 @@ const Leaderboard = () => {
   })
   // Info tooltip state
   const [showFilterInfo, setShowFilterInfo] = useState(false)
+  // Voice ranking mode: 'passk' (default) or 'interaction' (τ-voice panel)
+  const [rankBy, setRankBy] = useState('passk')
+  // null = keep the pass^1 ordering; set by clicking a metric column header
+  const [interactionMetric, setInteractionMetric] = useState(null)
   // Expanded rows state (set of model names)
   const [expandedRows, setExpandedRows] = useState(new Set())
   const [openPipelineKey, setOpenPipelineKey] = useState(null)
@@ -223,6 +356,7 @@ const Leaderboard = () => {
             bankingRetrievalConfig: submission.results.banking_knowledge?.retrieval_config || null,
             // Voice-specific fields
             voiceConfig: submission.voice_config || null,
+            interactionMetrics: submission.interaction_metrics || null,
             // Add verification status
             // For 'custom' submissions, we relax the modified_prompts constraint
             // Custom submissions are allowed to modify prompts as long as they have trajectories and don't omit questions
@@ -600,41 +734,113 @@ const Leaderboard = () => {
         ) : (
         <div className="reliability-metrics">
         <div className="metrics-table-container">
-          <table className="reliability-table">
+          <table className={`reliability-table ${isVoice ? 'voice-table' : ''} ${isVoice && rankBy === 'interaction' ? 'interaction-mode' : ''}`}>
             <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Model</th>
-                <th>Released</th>
-                <th>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
-                <th>Reasoning</th>
-                <th>User Sim</th>
-                <th className="passk-header-cell">
-                  <div className="passk-header-toggle">
-                    {isVoice ? (
-                      <button className="passk-header-btn active">Pass^1</button>
-                    ) : (
-                      [1, 2, 3, 4].map(k => (
-                        <button
-                          key={k}
-                          className={`passk-header-btn ${selectedPassK === k ? 'active' : ''}`}
-                          onClick={() => setSelectedPassK(k)}
-                        >
-                          Pass^{k}
-                        </button>
-                      ))
+              {(() => {
+                // Voice keeps every column mounted in both ranking modes and
+                // collapses the inactive ones with CSS transitions, so
+                // switching modes animates instead of re-laying-out the table.
+                const interactionMode = isVoice && rankBy === 'interaction'
+                const headerSpan = isVoice ? 2 : 1
+                return (
+                  <>
+                    <tr>
+                      <th rowSpan={headerSpan}>Rank</th>
+                      <th rowSpan={headerSpan}>Model</th>
+                      <th className="release-header" rowSpan={headerSpan}>
+                        <span className="col-anim">Released</span>
+                      </th>
+                      <th rowSpan={headerSpan}>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
+                      <th rowSpan={headerSpan}>Reasoning</th>
+                      <th rowSpan={headerSpan}>User Sim</th>
+                      <th className="passk-header-cell" rowSpan={headerSpan}>
+                        <div className="passk-header-toggle">
+                          {isVoice ? (
+                            <>
+                              <button
+                                className={`passk-header-btn ${rankBy === 'passk' ? 'active' : ''}`}
+                                onClick={() => setRankBy('passk')}
+                                title="Rank by task success"
+                              >
+                                Pass^1
+                              </button>
+                              <span className="col-anim interaction-toggle-wrap">
+                                <button
+                                  className="passk-header-btn"
+                                  onClick={() => {
+                                    setRankBy('interaction')
+                                    setInteractionMetric(null)
+                                  }}
+                                  title="Show interaction quality, measured from the same full-duplex trajectories"
+                                >
+                                  Interaction Metrics
+                                </button>
+                              </span>
+                            </>
+                          ) : (
+                            [1, 2, 3, 4].map(k => (
+                              <button
+                                key={k}
+                                className={`passk-header-btn ${selectedPassK === k ? 'active' : ''}`}
+                                onClick={() => setSelectedPassK(k)}
+                              >
+                                Pass^{k}
+                              </button>
+                            ))
+                          )}
+                          {(!isVoice || rankBy === 'passk') && (
+                            <button
+                              className="passk-sort-btn"
+                              onClick={handleSort}
+                              title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
+                            >
+                              {sortDirection === 'desc' ? '↓' : '↑'}
+                            </button>
+                          )}
+                        </div>
+                      </th>
+                      {isVoice && (
+                        <th className="interaction-group-header" colSpan={4}>
+                          <div className="passk-header-toggle col-anim">
+                            <button
+                              className="passk-header-btn active"
+                              title="Showing interaction quality (still ordered by pass^1) — click a metric column to sort by it. Click Pass^1 to collapse."
+                            >
+                              Interaction Metrics
+                            </button>
+                          </div>
+                        </th>
+                      )}
+                      <th className="expand-header" rowSpan={headerSpan}></th>
+                    </tr>
+                    {isVoice && (
+                      <tr className="interaction-subheader-row">
+                        {INTERACTION_METRICS.map((m) => (
+                          <th
+                            key={m.key}
+                            className={`interaction-col-header ${interactionMode && interactionMetric === m.key ? 'active' : ''}`}
+                            onClick={() => interactionMode && setInteractionMetric(interactionMetric === m.key ? null : m.key)}
+                            title={interactionMode && interactionMetric === m.key
+                              ? 'Back to pass^1 order'
+                              : `Sort by ${m.label.toLowerCase()}`}
+                          >
+                            <div className="col-anim">
+                              {m.label} {m.better === 'lower' ? '↓' : '↑'}
+                              <span
+                                className="interaction-info-icon"
+                                data-tooltip={m.desc}
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                ⓘ
+                              </span>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
                     )}
-                    <button 
-                      className="passk-sort-btn"
-                      onClick={handleSort}
-                      title={sortDirection === 'desc' ? 'Sorted descending' : 'Sorted ascending'}
-                    >
-                      {sortDirection === 'desc' ? '↓' : '↑'}
-                    </button>
-                  </div>
-                </th>
-                <th className="expand-header"></th>
-              </tr>
+                  </>
+                )
+              })()}
             </thead>
             <tbody>
               {(() => {
@@ -695,10 +901,29 @@ const Leaderboard = () => {
                     hasCompleteData,
                     hasAnyData,
                     consistencyScore,
-                    organization: data.organization
+                    organization: data.organization,
+                    interactionValue: isVoice && interactionMetric
+                      ? getInteractionValue(data.interactionMetrics, domain, interactionMetric)
+                      : null,
                   }
                 })
-                
+
+                // Entering interaction mode keeps the pass^1 ordering until the
+                // user explicitly picks a metric column to sort by.
+                const rankByInteraction = isVoice && rankBy === 'interaction' && interactionMetric !== null
+                if (rankByInteraction) {
+                  // Rank by the selected interaction metric in its natural
+                  // direction; models without metrics sort last.
+                  const better = INTERACTION_METRICS.find(m => m.key === interactionMetric)?.better
+                  modelStats.sort((a, b) => {
+                    if (a.interactionValue === null && b.interactionValue === null) return 0
+                    if (a.interactionValue === null) return 1
+                    if (b.interactionValue === null) return -1
+                    return better === 'lower'
+                      ? a.interactionValue - b.interactionValue
+                      : b.interactionValue - a.interactionValue
+                  })
+                } else {
                 // Sort by selected pass^k metric and direction
                 const passIndex = selectedPassK - 1
                 modelStats.sort((a, b) => {
@@ -706,18 +931,19 @@ const Leaderboard = () => {
                   if (a.hasAnyData && !b.hasAnyData) return -1
                   if (!a.hasAnyData && b.hasAnyData) return 1
                   if (!a.hasAnyData && !b.hasAnyData) return 0
-                  
+
                   const aValue = a.domainData[passIndex]
                   const bValue = b.domainData[passIndex]
-                  
+
                   // Handle null values (missing data)
                   if (aValue === null && bValue === null) return 0
                   if (aValue === null) return 1
                   if (bValue === null) return -1
-                  
+
                   const multiplier = sortDirection === 'desc' ? 1 : -1
                   return (bValue - aValue) * multiplier
                 })
+                }
                 
                 // Show empty state if no results after filtering
                 if (modelStats.length === 0) {
@@ -763,8 +989,10 @@ const Leaderboard = () => {
                        </div>
                      </td>
 
-                     {/* Release Date (from model_release.release_date) */}
+                     {/* Release Date (from model_release.release_date); collapses
+                         in interaction mode to make room for the metric columns */}
                      <td className="release-date-cell">
+                       <span className="col-anim">
                        {(() => {
                          const releaseInfo = fullSubmissionData[model.key]?.model_release
                          const releaseDate = releaseInfo?.release_date
@@ -790,6 +1018,7 @@ const Leaderboard = () => {
                            </a>
                          ) : inner
                        })()}
+                       </span>
                      </td>
 
                      {/* Organization / Retrieval Config (banking) */}
@@ -889,27 +1118,48 @@ const Leaderboard = () => {
                          <span className="no-data">—</span>
                        )}
                      </td>
-                     {/* Score (selected Pass^k) */}
+                     {/* Score (selected Pass^k); in interaction mode the bar
+                         collapses away, leaving the plain number */}
                      <td className="metric-cell score-cell">
                        {(() => {
                          const value = model.domainData[selectedPassK - 1]
-                         if (value !== null) {
-                           return (
-                             <div className="score-bar-container">
-                               <div className="score-bar-track">
-                                 <div 
-                                   className="score-bar-fill"
-                                   style={{ width: `${Math.min(value, 100)}%` }}
-                                 />
-                               </div>
-                               <span className="score-bar-value">{value.toFixed(1)}%</span>
-                             </div>
-                           )
-                         } else {
+                         if (value === null) {
                            return <span className="no-data">—</span>
                          }
+                         return (
+                           <div className="score-bar-container">
+                             <div className="score-bar-track">
+                               <div
+                                 className="score-bar-fill"
+                                 style={{ width: `${Math.min(value, 100)}%` }}
+                               />
+                             </div>
+                             <span className="score-bar-value">{value.toFixed(1)}%</span>
+                           </div>
+                         )
                        })()}
                      </td>
+                     {/* Interaction metrics fan-out (voice); collapsed outside
+                         interaction mode */}
+                     {isVoice && INTERACTION_METRICS.map((m) => {
+                       const { value, reason } = getInteractionCellInfo(model.data.interactionMetrics, domain, m.key)
+                       return (
+                         <td
+                           key={m.key}
+                           className={`metric-cell interaction-cell ${rankBy === 'interaction' && interactionMetric === m.key ? 'interaction-cell-sorted' : ''}`}
+                         >
+                           <span className="col-anim">
+                             {value !== null ? (
+                               formatInteractionValue(value, m.unit)
+                             ) : (
+                               <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[reason]}>
+                                 —
+                               </span>
+                             )}
+                           </span>
+                         </td>
+                       )
+                     })}
                      {/* Expand Toggle */}
                      <td className="expand-cell" onClick={() => toggleExpand(model.key)}>
                        <span className={`expand-caret ${isExpanded ? 'open' : ''}`}>▶</span>
@@ -918,7 +1168,7 @@ const Leaderboard = () => {
                   {/* Expandable Domain Breakdown Row */}
                   {isExpanded && (
                     <tr className="domain-detail-row">
-                      <td colSpan="8" className="domain-detail-cell">
+                      <td colSpan={isVoice ? 12 : 8} className="domain-detail-cell">
                         <div className="domain-breakdown">
                           {(isVoice
                             ? [
@@ -971,6 +1221,25 @@ const Leaderboard = () => {
                                     <span className="no-data domain-no-data">—</span>
                                   )}
                                 </div>
+                                {isVoice && model.data.interactionMetrics && (
+                                  <div className="domain-interaction-metrics">
+                                    {INTERACTION_METRICS.map((metric) => {
+                                      const cell = getInteractionCellInfo(model.data.interactionMetrics, key, metric.key)
+                                      return (
+                                        <div key={metric.key} className="domain-interaction-row" title={metric.desc}>
+                                          <span className="domain-interaction-label">
+                                            {metric.label} {metric.better === 'lower' ? '↓' : '↑'}
+                                          </span>
+                                          <span className="domain-interaction-value">
+                                            {cell.value !== null
+                                              ? formatInteractionValue(cell.value, metric.unit)
+                                              : <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[cell.reason]}>—</span>}
+                                          </span>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                )}
                                 {hasTraj && (
                                   <a
                                     className="view-trajectories-link"
@@ -990,6 +1259,18 @@ const Leaderboard = () => {
                             <span className="submission-details-btn-label">Details</span>
                           </button>
                         </div>
+                        {isVoice && model.data.interactionMetrics && (
+                          <div className="interaction-definitions">
+                            <a
+                              className="interaction-breakdown-link"
+                              href="https://github.com/sierra-research/tau2-bench/blob/main/docs/interaction-metrics.md"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Metric definitions →
+                            </a>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   )}
@@ -1010,6 +1291,7 @@ const Leaderboard = () => {
         )}
         </div>
         )}
+
 
       {/* Progress Over Time (always below the ranking table) */}
       <div id="progress" style={{ scrollMarginTop: '80px' }}>

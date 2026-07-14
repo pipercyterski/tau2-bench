@@ -47,7 +47,7 @@ button {
 button:hover {
   border-color: #646cff;
 }
-button:focus,
+/* Only show the focus ring for keyboard navigation, not mouse clicks */
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
