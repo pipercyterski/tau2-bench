@@ -247,8 +247,8 @@ function App() {
         <div className="container">
           <p>
             For questions or feedback, contact{' '}
-            <a href="mailto:ben.s@sierra.ai" className="footer-email">
-              ben.s@sierra.ai
+            <a href="mailto:research@sierra.ai" className="footer-email">
+              research@sierra.ai
             </a>
           </p>
         </div>
