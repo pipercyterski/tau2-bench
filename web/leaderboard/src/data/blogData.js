@@ -1,123 +1,86 @@
 // Blog posts and author profiles for the Blog page and author bio pages.
-// Post authorship follows the corresponding paper's author list (see the
-// Citation section of the repo README).
+// Bios, roles, and photos come from the authors' sierra.ai/author pages;
+// photos are served locally from public/authors/<slug>.jpg.
 
 export const PAPERS = {
   tauBench: {
     title: 'τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains',
     href: 'https://arxiv.org/abs/2406.12045',
     venue: 'arXiv 2024',
-    authorSlugs: ['shunyu-yao', 'noah-shinn', 'pedram-razavi', 'karthik-narasimhan'],
   },
   tau2Bench: {
     title: 'τ²-Bench: Evaluating Conversational Agents in a Dual-Control Environment',
     href: 'https://arxiv.org/abs/2506.07982',
     venue: 'arXiv 2025',
-    authorSlugs: ['victor-barres', 'honghua-dong', 'soham-ray', 'xujie-si', 'karthik-narasimhan'],
   },
   tauKnowledge: {
     title: 'τ-Knowledge: Evaluating Conversational Agents over Unstructured Knowledge',
     href: 'https://arxiv.org/abs/2603.04370',
     venue: 'arXiv 2026',
-    authorSlugs: ['quan-shi', 'alexandra-zytek', 'pedram-razavi', 'karthik-narasimhan', 'victor-barres'],
   },
   tauVoice: {
     title: 'τ-Voice: Benchmarking Full-Duplex Voice Agents on Real-World Domains',
     href: 'https://arxiv.org/abs/2603.13686',
     venue: 'arXiv 2026',
-    authorSlugs: ['soham-ray', 'keshav-dhandhania', 'victor-barres', 'karthik-narasimhan'],
-  },
-  saber: {
-    title: 'SABER: Small Actions, Big Errors — Safeguarding Mutating Steps in LLM Agents (τ-Bench Verified)',
-    href: 'https://arxiv.org/abs/2512.07850',
-    venue: 'ICLR 2026 Workshop',
-    authorSlugs: ['alejandro-cuadron', 'pengfei-yu', 'yang-liu', 'arpit-gupta'],
   },
 }
 
 export const AUTHORS = {
   'victor-barres': {
     name: 'Victor Barres',
-    affiliation: 'Sierra',
-    bio: 'Victor is a researcher at Sierra working on agent benchmarking. He is a lead author of τ²-Bench and a co-author of τ-Knowledge and τ-Voice.',
+    role: 'Research Scientist at Sierra',
+    sierraProfile: 'https://sierra.ai/author/victor-barres',
+    bio: 'Victor Barres is a Research Scientist at Sierra specializing in conversational AI, dialogue modeling, and the integration of large language models with reasoning systems. He holds a PhD in Computational Cognitive Neuroscience from the University of Southern California. Previously, Victor was a Senior Researcher at Elemental Cognition, where he developed architectures that combine language models and symbolic reasoning systems to enable complex scientific question answering. As a Principal NLP Scientist at Uniphore, he led the NLP research team and drove advances in dialogue systems and language models for large-scale real-world applications.',
     paperKeys: ['tau2Bench', 'tauKnowledge', 'tauVoice'],
   },
-  'karthik-narasimhan': {
-    name: 'Karthik Narasimhan',
-    affiliation: 'Sierra',
-    bio: 'Karthik leads research at Sierra and is a co-author of every paper in the τ-bench family, from the original τ-bench through τ²-Bench, τ-Knowledge, and τ-Voice.',
-    paperKeys: ['tauBench', 'tau2Bench', 'tauKnowledge', 'tauVoice'],
+  'ben-shi': {
+    name: 'Ben Shi',
+    role: 'Research at Sierra',
+    sierraProfile: 'https://sierra.ai/author/ben-shi',
+    bio: 'Ben is on the Research team at Sierra. Previously, he was at Princeton University and Meta.',
+    paperKeys: ['tauKnowledge'],
+  },
+  'ola-zytek': {
+    name: 'Ola Zytek',
+    role: 'Research Engineer at Sierra',
+    sierraProfile: 'https://sierra.ai/author/ola-zytek',
+    bio: 'Ola Zytek is a Research Engineer at Sierra, focused on building conversational agents and retrieval systems through post training and evaluation. Prior to joining Sierra, she completed her PhD at MIT, where she specialized in building systems to support human decision-making with machine learning.',
+    paperKeys: ['tauKnowledge'],
   },
   'soham-ray': {
     name: 'Soham Ray',
-    affiliation: 'Sierra',
-    bio: 'Soham is a researcher at Sierra working on voice agents and agent evaluation. He is the lead author of τ-Voice and a co-author of τ²-Bench.',
+    role: 'Research Engineer at Sierra',
+    sierraProfile: 'https://sierra.ai/author/soham-ray',
+    bio: "Soham Ray is a Research Engineer at Sierra, focused on building conversational AI agents. He has over four years of experience in the customer service AI space, conducting applied research on augmenting and automating task-oriented dialogue systems. He holds a Master's degree in Computer Science from Cornell University, where he specialized in AI and NLP.",
     paperKeys: ['tauVoice', 'tau2Bench'],
   },
   'keshav-dhandhania': {
     name: 'Keshav Dhandhania',
-    affiliation: 'Sierra',
-    bio: 'Keshav works at Sierra on real-time voice agents and is a co-author of τ-Voice.',
+    role: 'Research Engineer at Sierra',
+    sierraProfile: 'https://sierra.ai/author/keshav-dhandhania',
+    bio: "Keshav Dhandhania is a Research Engineer at Sierra, where he works on improving AI agents through evaluation frameworks, post-training, and actionable insights. Previously, he spent five years at Google on teams including Gemini @ Chrome, Gemini, and Google Assistant. Before that, he co-founded CommonLounge—later acquired by Brex—and earned his Master's degree from MIT specializing in deep learning and NLP.",
     paperKeys: ['tauVoice'],
   },
   'pedram-razavi': {
     name: 'Pedram Razavi',
-    affiliation: 'Sierra',
-    bio: 'Pedram works at Sierra on agent benchmarking and is a co-author of the original τ-bench and τ-Knowledge.',
+    role: 'Software Engineer at Sierra',
+    sierraProfile: 'https://sierra.ai/author/pedram-razavi',
+    bio: 'Pedram Razavi is a software engineer on the Knowledge team at Sierra. Previously, he was an engineer at Cocoon and Quip. He studied Computer Science and Mathematics at MIT and earned an M.S. in Symbolic Systems from Stanford.',
     paperKeys: ['tauBench', 'tauKnowledge'],
   },
-  'quan-shi': {
-    name: 'Quan Shi',
-    bio: 'Quan is the lead author of τ-Knowledge, a benchmark for evaluating conversational agents over large unstructured knowledge bases.',
-    paperKeys: ['tauKnowledge'],
-  },
-  'alexandra-zytek': {
-    name: 'Alexandra Zytek',
-    bio: 'Alexandra is a co-author of τ-Knowledge, a benchmark for evaluating conversational agents over large unstructured knowledge bases.',
-    paperKeys: ['tauKnowledge'],
-  },
-  'shunyu-yao': {
-    name: 'Shunyu Yao',
-    bio: 'Shunyu is the lead author of the original τ-bench, the benchmark for tool-agent-user interaction that started the τ-bench family.',
-    paperKeys: ['tauBench'],
-  },
-  'noah-shinn': {
-    name: 'Noah Shinn',
-    bio: 'Noah is a co-author of the original τ-bench, the benchmark for tool-agent-user interaction that started the τ-bench family.',
-    paperKeys: ['tauBench'],
+  'karthik-narasimhan': {
+    name: 'Karthik Narasimhan',
+    role: 'Head of Research at Sierra',
+    sierraProfile: 'https://sierra.ai/author/karthik-narasimhan',
+    bio: 'Karthik is Head of Research at Sierra and an associate professor of Computer Science at Princeton. He holds a PhD from MIT and co-authored the first GPT paper at OpenAI. He has been researching natural language processing, reinforcement learning, and AI agents for over a decade and has co-authored works like ReAct, Tree of Thoughts, CoALA and SWE-agent.',
+    paperKeys: ['tauBench', 'tau2Bench', 'tauKnowledge', 'tauVoice'],
   },
   'honghua-dong': {
     name: 'Honghua Dong',
-    bio: 'Honghua is a co-author of τ²-Bench, which evaluates conversational agents in dual-control environments.',
+    role: 'PhD candidate, University of Toronto',
+    sierraProfile: 'https://sierra.ai/author/honghua-dong',
+    bio: 'Honghua Dong is a Ph.D. candidate at the University of Toronto. His research focuses on the development and evaluation of language model agents. He is currently interning at Sierra, where he is working to improve language model agents in the domain of customer service.',
     paperKeys: ['tau2Bench'],
-  },
-  'xujie-si': {
-    name: 'Xujie Si',
-    bio: 'Xujie is a co-author of τ²-Bench, which evaluates conversational agents in dual-control environments.',
-    paperKeys: ['tau2Bench'],
-  },
-  'alejandro-cuadron': {
-    name: 'Alejandro Cuadron',
-    bio: 'Alejandro is the lead author of τ-Bench Verified (SABER), the systematic audit of τ-bench tasks that drove most of the τ³ airline and retail task fixes.',
-    paperKeys: ['saber'],
-  },
-  'pengfei-yu': {
-    name: 'Pengfei Yu',
-    affiliation: 'Amazon',
-    bio: 'Pengfei is a co-author of τ-Bench Verified (SABER), the systematic audit of τ-bench tasks that drove most of the τ³ airline and retail task fixes.',
-    paperKeys: ['saber'],
-  },
-  'yang-liu': {
-    name: 'Yang Liu',
-    affiliation: 'Amazon',
-    bio: 'Yang is a co-author of τ-Bench Verified (SABER), the systematic audit of τ-bench tasks that drove most of the τ³ airline and retail task fixes.',
-    paperKeys: ['saber'],
-  },
-  'arpit-gupta': {
-    name: 'Arpit Gupta',
-    affiliation: 'Amazon',
-    bio: 'Arpit is a co-author of τ-Bench Verified (SABER), the systematic audit of τ-bench tasks that drove most of the τ³ airline and retail task fixes.',
-    paperKeys: ['saber'],
   },
 }
 
@@ -125,72 +88,77 @@ export const AUTHORS = {
 // is resolved against import.meta.env.BASE_URL.
 export const BLOG_POSTS = [
   {
+    slug: 'tau-voice-sierra',
+    title: 'τ-voice: Benchmarking Real-Time Voice Agents on Real-World Tasks',
+    category: 'Research',
+    date: 'May 2026',
+    description:
+      'τ-voice evaluates real-time voice agents on 278 grounded customer-service tasks, pairing deterministic task scoring with realistic, controllable audio — diverse personas, environmental noise, and free-form turn-taking.',
+    href: 'https://sierra.ai/blog/tau-voice-benchmarking-real-time-voice-agents-on-real-world-tasks',
+    authorSlugs: ['soham-ray', 'keshav-dhandhania', 'victor-barres'],
+  },
+  {
+    slug: 'tau3-bench-announcement',
+    title: 'τ³-Bench: Advancing Agent Benchmarking to Knowledge and Voice',
+    category: 'Announcement',
+    date: 'March 2026',
+    description:
+      'τ³-bench extends the benchmark family with the τ-knowledge and τ-voice tracks, advancing agent evaluation to unstructured knowledge and real-time voice.',
+    href: 'https://sierra.ai/blog/bench-advancing-agent-benchmarking-to-knowledge-and-voice',
+    authorSlugs: ['victor-barres', 'ben-shi', 'ola-zytek', 'soham-ray', 'keshav-dhandhania', 'pedram-razavi'],
+  },
+  {
     slug: 'tau-knowledge',
     title: 'τ-knowledge',
-    badge: 'Research',
+    category: 'Research',
     date: 'February 2026',
     description:
-      'A benchmark for evaluating AI agents in knowledge-intensive customer support: a realistic fintech knowledge base of 698 documents paired with tasks requiring multi-step reasoning, policy application, and tool use. The best frontier model reaches only ~26% pass^1.',
+      'A benchmark for evaluating AI agents in knowledge-intensive customer support: a realistic fintech knowledge base of 698 documents paired with tasks requiring multi-step reasoning, policy application, and tool use.',
     href: 'blog/tau-knowledge.html',
-    authorSlugs: PAPERS.tauKnowledge.authorSlugs,
+    authorSlugs: ['ben-shi', 'ola-zytek', 'pedram-razavi'],
   },
   {
     slug: 'tau-voice-examples',
     title: 'τ-voice Examples',
-    badge: 'Research',
+    category: 'Research',
     date: 'February 2026',
     description:
-      'τ-Voice extends τ-bench to live, full-duplex voice interactions — overlapping speech, interruptions, accents, and background noise. These annotated examples show how the same task can succeed with clean audio and fail under realistic conditions.',
+      'Annotated examples of τ-voice calls — overlapping speech, interruptions, accents, and background noise — showing how the same task can succeed with clean audio and fail under realistic conditions.',
     href: 'blog/tau-voice-examples.html',
-    authorSlugs: PAPERS.tauVoice.authorSlugs,
+    authorSlugs: ['soham-ray', 'keshav-dhandhania', 'victor-barres'],
   },
   {
     slug: 'tau3-task-fixes',
     title: 'τ³-Bench: Fixing Airline + Retail',
-    badge: 'Engineering',
+    category: 'Engineering',
     date: 'February 2026',
     description:
-      'We audited and fixed 50+ tasks across the airline and retail domains, addressing incorrect expected actions, ambiguous instructions, impossible constraints, and missing fallback behaviors — most sourced from τ-Bench Verified (SABER) and community pull requests.',
+      'We audited and fixed 50+ tasks across the airline and retail domains, addressing incorrect expected actions, ambiguous instructions, impossible constraints, and missing fallback behaviors.',
     href: 'blog/tau3-task-fixes.html',
-    authorSlugs: PAPERS.saber.authorSlugs,
-  },
-  {
-    slug: 'tau3-bench-announcement',
-    title: 'τ³-bench: Advancing Agent Benchmarking to Knowledge and Voice',
-    badge: 'Announcement',
-    date: 'March 2026',
-    description:
-      'The Sierra blog announcement of τ³-bench, which extends the benchmark family with the τ-Knowledge and τ-Voice tracks.',
-    href: 'https://sierra.ai/blog/bench-advancing-agent-benchmarking-to-knowledge-and-voice',
-    authorSlugs: ['quan-shi', 'alexandra-zytek', 'soham-ray', 'keshav-dhandhania', 'pedram-razavi', 'victor-barres', 'karthik-narasimhan'],
+    authorSlugs: ['victor-barres', 'ben-shi'],
   },
   {
     slug: 'tau2-bench-announcement',
     title: 'τ²-bench: Benchmarking Agents in Collaborative Real-World Scenarios',
-    badge: 'Announcement',
+    category: 'Announcement',
     date: 'June 2025',
     description:
-      'The Sierra blog announcement of τ²-bench, which evaluates conversational agents in dual-control environments where both the agent and the user can act.',
+      'τ²-bench evaluates conversational agents in dual-control environments, where both the agent and the user can act on the world.',
     href: 'https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-scenarios',
-    authorSlugs: PAPERS.tau2Bench.authorSlugs,
+    authorSlugs: ['victor-barres', 'honghua-dong', 'soham-ray', 'karthik-narasimhan'],
   },
   {
     slug: 'tau-bench-announcement',
     title: 'τ-bench: Benchmarking AI Agents',
-    badge: 'Announcement',
+    category: 'Announcement',
     date: 'June 2024',
     description:
-      'The Sierra blog announcement of the original τ-bench, a benchmark for tool-agent-user interaction in real-world domains.',
+      'The original τ-bench, a benchmark for tool-agent-user interaction in real-world domains.',
     href: 'https://sierra.ai/blog/benchmarking-ai-agents',
-    authorSlugs: PAPERS.tauBench.authorSlugs,
+    authorSlugs: ['karthik-narasimhan'],
   },
 ]
 
 export const postsByAuthor = (slug) => BLOG_POSTS.filter((p) => p.authorSlugs.includes(slug))
 
-export const authorInitials = (name) =>
-  name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
+export const authorPhoto = (slug) => `${import.meta.env.BASE_URL}authors/${slug}.jpg`

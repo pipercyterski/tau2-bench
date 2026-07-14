@@ -1,48 +1,49 @@
 import { useEffect } from 'react'
 import './Blog.css'
-import { BLOG_POSTS, AUTHORS, authorInitials } from '../data/blogData'
+import { BLOG_POSTS, AUTHORS, authorPhoto } from '../data/blogData'
 
 const resolveHref = (href) =>
   href.startsWith('http') ? href : `${import.meta.env.BASE_URL}${href}`
 
-export function AuthorChips({ slugs }) {
+export function AuthorLine({ slugs }) {
   return (
-    <div className="author-chips">
-      {slugs.map((slug) => {
-        const author = AUTHORS[slug]
-        if (!author) return null
-        return (
-          <a key={slug} href={`#author/${slug}`} className="author-chip" onClick={(e) => e.stopPropagation()}>
-            <span className="author-avatar">{authorInitials(author.name)}</span>
-            <span className="author-chip-name">{author.name}</span>
+    <div className="post-authors">
+      <div className="post-author-photos">
+        {slugs.map((slug) => (
+          <a key={slug} href={`#author/${slug}`} className="post-author-photo-link" title={AUTHORS[slug]?.name}>
+            <img src={authorPhoto(slug)} alt={AUTHORS[slug]?.name} className="post-author-photo" />
           </a>
-        )
-      })}
+        ))}
+      </div>
+      <span className="post-author-names">
+        {slugs.map((slug, i) => (
+          <span key={slug}>
+            {i > 0 && (i === slugs.length - 1 ? ' & ' : ', ')}
+            <a href={`#author/${slug}`} className="post-author-name">{AUTHORS[slug]?.name}</a>
+          </span>
+        ))}
+      </span>
     </div>
   )
 }
 
-function BlogCard({ post }) {
-  const href = resolveHref(post.href)
+export function BlogCard({ post }) {
   const external = post.href.startsWith('http')
   return (
     <article className="blog-card">
       <a
         className="blog-card-link"
-        href={href}
+        href={resolveHref(post.href)}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       >
         <div className="blog-card-top">
-          <span className={`blog-card-badge badge-${post.badge.toLowerCase()}`}>{post.badge}</span>
-          <span className="blog-card-date">{post.date}</span>
+          <span className="blog-card-label">{post.category} · {post.date}</span>
+          {external && <span className="blog-card-source">sierra.ai ↗</span>}
         </div>
-        <h2 className="blog-card-title">
-          {post.title}
-          {external && <span className="external-marker" title="Opens on sierra.ai">↗</span>}
-        </h2>
+        <h2 className="blog-card-title">{post.title}</h2>
         <p className="blog-card-description">{post.description}</p>
       </a>
-      <AuthorChips slugs={post.authorSlugs} />
+      <AuthorLine slugs={post.authorSlugs} />
     </article>
   )
 }
