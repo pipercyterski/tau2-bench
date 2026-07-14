@@ -3458,6 +3458,34 @@ class TestNumericArgumentNormalization:
         )
         assert env_int.get_db_hash() == env_float.get_db_hash()
 
+    def test_cli_request_amount_spelling(self, base_knowledge_db: TransactionalDB):
+        responses = []
+        hashes = []
+        for spelling in ("2500", "2500.0"):
+            env = self._fresh_env(base_knowledge_db)
+            resp = call(
+                env,
+                "unlock_discoverable_agent_tool",
+                {"agent_tool_name": "submit_credit_limit_increase_request_7392"},
+            )
+            assert not resp.error, resp.content
+            resp = call(
+                env,
+                "call_discoverable_agent_tool",
+                {
+                    "agent_tool_name": "submit_credit_limit_increase_request_7392",
+                    "arguments": f'{{"credit_card_account_id": "cc_001", "user_id": "user_001", "requested_increase_amount": {spelling}}}',
+                },
+            )
+            assert not resp.error and "Error" not in resp.content, resp.content
+            responses.append(resp.content)
+            hashes.append(env.get_db_hash())
+        assert hashes[0] == hashes[1]
+        # The tool normalizes to int (its documented type), so the rendered
+        # response must not leak the caller's spelling either.
+        assert responses[0] == responses[1]
+        assert "$2,500" in responses[0] and "$2,500.0" not in responses[0]
+
     def test_credit_card_application_income_spelling(
         self, base_knowledge_db: TransactionalDB
     ):

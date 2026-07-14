@@ -1993,6 +1993,13 @@ For deposits without available images, the dispute will proceed based on custome
         ):
             return "Error: Missing required parameters."
 
+        # Normalize to int (the documented type) so the stored record and the
+        # response render identically whether the caller sent 2500 or 2500.0
+        try:
+            requested_increase_amount = int(requested_increase_amount)
+        except (TypeError, ValueError):
+            return "Error: Invalid requested_increase_amount. Must be a whole number."
+
         if requested_increase_amount <= 0:
             return "Error: Requested increase amount must be positive."
 
