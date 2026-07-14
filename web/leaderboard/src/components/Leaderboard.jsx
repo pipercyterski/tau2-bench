@@ -719,14 +719,19 @@ const Leaderboard = () => {
           <table className={`reliability-table ${isVoice ? 'voice-table' : ''} ${isVoice && rankBy === 'interaction' ? 'interaction-mode' : ''}`}>
             <thead>
               {(() => {
+                // Voice keeps every column mounted in both ranking modes and
+                // collapses the inactive ones with CSS transitions, so
+                // switching modes animates instead of re-laying-out the table.
                 const interactionMode = isVoice && rankBy === 'interaction'
-                const headerSpan = interactionMode ? 2 : 1
+                const headerSpan = isVoice ? 2 : 1
                 return (
                   <>
                     <tr>
                       <th rowSpan={headerSpan}>Rank</th>
                       <th rowSpan={headerSpan}>Model</th>
-                      {!interactionMode && <th rowSpan={headerSpan}>Released</th>}
+                      <th className="release-header" rowSpan={headerSpan}>
+                        <span className="col-anim">Released</span>
+                      </th>
                       <th rowSpan={headerSpan}>{domain === 'banking_knowledge' ? 'Retrieval' : isVoice ? 'Provider' : 'Submitting Org'}</th>
                       <th rowSpan={headerSpan}>Reasoning</th>
                       <th rowSpan={headerSpan}>User Sim</th>
@@ -741,7 +746,7 @@ const Leaderboard = () => {
                               >
                                 Pass^1
                               </button>
-                              {!interactionMode && (
+                              <span className="col-anim interaction-toggle-wrap">
                                 <button
                                   className="passk-header-btn"
                                   onClick={() => {
@@ -752,7 +757,7 @@ const Leaderboard = () => {
                                 >
                                   Interaction Metrics
                                 </button>
-                              )}
+                              </span>
                             </>
                           ) : (
                             [1, 2, 3, 4].map(k => (
@@ -776,9 +781,9 @@ const Leaderboard = () => {
                           )}
                         </div>
                       </th>
-                      {interactionMode && (
+                      {isVoice && (
                         <th className="interaction-group-header" colSpan={4}>
-                          <div className="passk-header-toggle">
+                          <div className="passk-header-toggle col-anim">
                             <button
                               className="passk-header-btn active"
                               title="Ranking by interaction quality — pick a metric below. Click Pass^1 to rank by task success again."
@@ -790,23 +795,25 @@ const Leaderboard = () => {
                       )}
                       <th className="expand-header" rowSpan={headerSpan}></th>
                     </tr>
-                    {interactionMode && (
+                    {isVoice && (
                       <tr className="interaction-subheader-row">
                         {INTERACTION_METRICS.map((m) => (
                           <th
                             key={m.key}
-                            className={`interaction-col-header ${interactionMetric === m.key ? 'active' : ''}`}
-                            onClick={() => setInteractionMetric(m.key)}
+                            className={`interaction-col-header ${interactionMode && interactionMetric === m.key ? 'active' : ''}`}
+                            onClick={() => interactionMode && setInteractionMetric(m.key)}
                             title={`Sort by ${m.label.toLowerCase()}`}
                           >
-                            {m.label} {m.better === 'lower' ? '↓' : '↑'}
-                            <span
-                              className="interaction-info-icon"
-                              data-tooltip={m.desc}
-                              onClick={(event) => event.stopPropagation()}
-                            >
-                              ⓘ
-                            </span>
+                            <div className="col-anim">
+                              {m.label} {m.better === 'lower' ? '↓' : '↑'}
+                              <span
+                                className="interaction-info-icon"
+                                data-tooltip={m.desc}
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                ⓘ
+                              </span>
+                            </div>
                           </th>
                         ))}
                       </tr>
@@ -960,10 +967,10 @@ const Leaderboard = () => {
                        </div>
                      </td>
 
-                     {/* Release Date (from model_release.release_date); hidden in
-                         interaction mode to make room for the metric columns */}
-                     {!(isVoice && rankBy === 'interaction') && (
+                     {/* Release Date (from model_release.release_date); collapses
+                         in interaction mode to make room for the metric columns */}
                      <td className="release-date-cell">
+                       <span className="col-anim">
                        {(() => {
                          const releaseInfo = fullSubmissionData[model.key]?.model_release
                          const releaseDate = releaseInfo?.release_date
@@ -989,8 +996,8 @@ const Leaderboard = () => {
                            </a>
                          ) : inner
                        })()}
+                       </span>
                      </td>
-                     )}
 
                      {/* Organization / Retrieval Config (banking) */}
                      <td className={`organization-info${domain === 'banking_knowledge' ? ' organization-info-retrieval' : ''}`}>
@@ -1089,16 +1096,13 @@ const Leaderboard = () => {
                          <span className="no-data">—</span>
                        )}
                      </td>
-                     {/* Score (selected Pass^k) */}
+                     {/* Score (selected Pass^k); in interaction mode the bar
+                         collapses away, leaving the plain number */}
                      <td className="metric-cell score-cell">
                        {(() => {
                          const value = model.domainData[selectedPassK - 1]
                          if (value === null) {
                            return <span className="no-data">—</span>
-                         }
-                         if (isVoice && rankBy === 'interaction') {
-                           // Interaction mode: pass^1 shrinks to a plain number
-                           return <span className="score-plain">{value.toFixed(1)}%</span>
                          }
                          return (
                            <div className="score-bar-container">
@@ -1113,21 +1117,24 @@ const Leaderboard = () => {
                          )
                        })()}
                      </td>
-                     {/* Interaction metrics fan-out (voice, interaction mode only) */}
-                     {isVoice && rankBy === 'interaction' && INTERACTION_METRICS.map((m) => {
+                     {/* Interaction metrics fan-out (voice); collapsed outside
+                         interaction mode */}
+                     {isVoice && INTERACTION_METRICS.map((m) => {
                        const { value, reason } = getInteractionCellInfo(model.data.interactionMetrics, domain, m.key)
                        return (
                          <td
                            key={m.key}
-                           className={`metric-cell interaction-cell ${interactionMetric === m.key ? 'interaction-cell-sorted' : ''}`}
+                           className={`metric-cell interaction-cell ${rankBy === 'interaction' && interactionMetric === m.key ? 'interaction-cell-sorted' : ''}`}
                          >
-                           {value !== null ? (
-                             formatInteractionValue(value, m.unit)
-                           ) : (
-                             <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[reason]}>
-                               —
-                             </span>
-                           )}
+                           <span className="col-anim">
+                             {value !== null ? (
+                               formatInteractionValue(value, m.unit)
+                             ) : (
+                               <span className="no-data" title={INTERACTION_NO_DATA_TOOLTIP[reason]}>
+                                 —
+                               </span>
+                             )}
+                           </span>
                          </td>
                        )
                      })}
@@ -1139,7 +1146,7 @@ const Leaderboard = () => {
                   {/* Expandable Domain Breakdown Row */}
                   {isExpanded && (
                     <tr className="domain-detail-row">
-                      <td colSpan={isVoice && rankBy === 'interaction' ? 11 : 8} className="domain-detail-cell">
+                      <td colSpan={isVoice ? 12 : 8} className="domain-detail-cell">
                         <div className="domain-breakdown">
                           {(isVoice
                             ? [

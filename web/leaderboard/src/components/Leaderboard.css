@@ -1815,31 +1815,88 @@ a.user-sim-version-link:hover {
   padding: 20px 4px;
 }
 
-/* Interaction mode: pass^1 collapses to a plain number, the Released column
-   is hidden, and the four interaction metrics fan out into the freed space.
-   Every other column keeps its pass^1-mode width so the table doesn't
-   resize when switching modes. */
-.reliability-table.interaction-mode th.passk-header-cell {
-  width: 84px;
+/* Interaction mode: every column is mounted in both ranking modes and the
+   inactive group is collapsed with width/padding transitions, so toggling
+   animates smoothly — the pass^1 bar shrinks away while the four metric
+   columns expand into the freed space. The metadata columns never move. */
+.voice-table .col-anim {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 220px;
+  opacity: 1;
+  transition: max-width 0.35s ease, opacity 0.25s ease;
+}
+
+/* Released column: open in pass^1 mode, collapsed in interaction mode */
+.voice-table th.release-header,
+.voice-table td.release-date-cell {
+  transition: padding 0.35s ease;
+}
+
+.reliability-table.voice-table.interaction-mode th.release-header,
+.reliability-table.voice-table.interaction-mode td.release-date-cell {
+  /* !important needed to beat the shorthand on .release-date-cell above */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.reliability-table.voice-table.interaction-mode th.release-header {
+  width: 0;
+}
+
+.voice-table.interaction-mode th.release-header .col-anim,
+.voice-table.interaction-mode td.release-date-cell .col-anim {
+  max-width: 0;
+  opacity: 0;
+}
+
+/* Pass^1 column: the bar collapses in interaction mode, leaving the number */
+.voice-table th.passk-header-cell,
+.voice-table td.score-cell {
+  transition: min-width 0.35s ease, padding 0.35s ease;
+}
+
+.reliability-table.voice-table.interaction-mode th.passk-header-cell {
   min-width: 84px;
 }
 
-.reliability-table.interaction-mode td.score-cell {
-  width: 84px;
+.reliability-table.voice-table.interaction-mode td.score-cell {
   min-width: 84px;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
 }
 
-/* Smooth mode switch: the fanned-out metric columns fade in */
-@keyframes interactionColIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.reliability-table.voice-table.interaction-mode th.passk-header-cell {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
-.reliability-table.interaction-mode .interaction-cell,
-.reliability-table.interaction-mode .interaction-col-header,
-.reliability-table.interaction-mode .interaction-group-header,
-.reliability-table.interaction-mode .score-plain {
-  animation: interactionColIn 0.3s ease;
+.voice-table .score-bar-track {
+  max-width: 320px;
+  transition: max-width 0.35s ease, opacity 0.25s ease;
+}
+
+.voice-table.interaction-mode .score-bar-track {
+  max-width: 0;
+  opacity: 0;
+}
+
+.voice-table .score-bar-container {
+  transition: gap 0.35s ease;
+}
+
+.voice-table.interaction-mode .score-bar-container {
+  gap: 0;
+}
+
+/* The "Interaction Metrics" toggle button collapses once the mode is active
+   (the group header pill takes over as the label) */
+.voice-table.interaction-mode .interaction-toggle-wrap {
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Group heading spanning the four metric subheadings */
@@ -1859,6 +1916,7 @@ a.user-sim-version-link:hover {
   user-select: none;
   color: #94a3b8;
   text-align: center;
+  transition: padding 0.35s ease;
 }
 
 .reliability-table .interaction-subheader-row th.interaction-col-header:first-child {
@@ -1866,12 +1924,52 @@ a.user-sim-version-link:hover {
   padding: 4px 6px 12px;
 }
 
-.reliability-table th.interaction-col-header:hover {
+.reliability-table .interaction-subheader-row th.interaction-col-header .col-anim {
+  display: block;
+  /* wrapping keeps the column's min width at ~one word so the table never
+     overflows its container; the collapse animates via max-height instead */
+  white-space: normal;
+  max-height: 40px;
+  transition: max-width 0.35s ease, opacity 0.25s ease, max-height 0.35s ease;
+}
+
+.reliability-table.interaction-mode th.interaction-col-header:hover {
   background: #eef2f7;
 }
 
 .reliability-table th.interaction-col-header.active {
   color: #16a34a;
+}
+
+/* Pass^1 mode: the interaction columns collapse to zero width and the
+   subheader row to zero height */
+.voice-table td.interaction-cell,
+.voice-table th.interaction-group-header {
+  transition: padding 0.35s ease;
+}
+
+.reliability-table.voice-table:not(.interaction-mode) td.interaction-cell,
+.reliability-table.voice-table:not(.interaction-mode) th.interaction-group-header {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.reliability-table.voice-table:not(.interaction-mode) .interaction-subheader-row th.interaction-col-header {
+  width: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.voice-table:not(.interaction-mode) td.interaction-cell .col-anim,
+.voice-table:not(.interaction-mode) th.interaction-group-header .col-anim {
+  max-width: 0;
+  opacity: 0;
+}
+
+.reliability-table.voice-table:not(.interaction-mode) .interaction-subheader-row th.interaction-col-header .col-anim {
+  max-width: 0;
+  max-height: 0;
+  opacity: 0;
 }
 
 /* Metric definition tooltips on the interaction column headers */
@@ -1938,12 +2036,6 @@ a.user-sim-version-link:hover {
   left: auto;
   right: -8px;
   transform: none;
-}
-
-.score-plain {
-  font-weight: 600;
-  color: #2d3748;
-  font-variant-numeric: tabular-nums;
 }
 
 .interaction-cell {
