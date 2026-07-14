@@ -75,6 +75,21 @@ export const AUTHORS = {
     bio: 'Karthik is Head of Research at Sierra and an associate professor of Computer Science at Princeton. He holds a PhD from MIT and co-authored the first GPT paper at OpenAI. He has been researching natural language processing, reinforcement learning, and AI agents for over a decade and has co-authored works like ReAct, Tree of Thoughts, CoALA and SWE-agent.',
     paperKeys: ['tauBench', 'tau2Bench', 'tauKnowledge', 'tauVoice'],
   },
+  'shunyu-yao': {
+    name: 'Shunyu Yao',
+    role: 'AI Researcher',
+    // No sierra.ai author page; bio compiled from his public profile
+    // (ysymyth.github.io) and the τ-bench paper.
+    bio: 'Shunyu Yao is an AI researcher known for foundational work on language agents, including ReAct, Tree of Thoughts, Reflexion, and CoALA. He is the lead author of the original τ-bench. He holds a PhD in Computer Science from Princeton University, where he was a member of the Princeton NLP group, and studied in the Yao Class at Tsinghua University.',
+    paperKeys: ['tauBench'],
+  },
+  'noah-shinn': {
+    name: 'Noah Shinn',
+    role: 'Research Scientist at Sierra',
+    sierraProfile: 'https://sierra.ai/author/noah-shinn',
+    bio: 'Noah is a research scientist at Sierra. Prior to Sierra, he worked on machine learning and programming language research at Northeastern and MIT.',
+    paperKeys: ['tauBench'],
+  },
   'honghua-dong': {
     name: 'Honghua Dong',
     role: 'PhD candidate, University of Toronto',
@@ -155,7 +170,7 @@ export const BLOG_POSTS = [
     description:
       'The original τ-bench, a benchmark for tool-agent-user interaction in real-world domains.',
     href: 'https://sierra.ai/blog/benchmarking-ai-agents',
-    authorSlugs: ['karthik-narasimhan'],
+    authorSlugs: ['shunyu-yao', 'noah-shinn', 'pedram-razavi', 'karthik-narasimhan'],
   },
 ]
 
