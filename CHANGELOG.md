@@ -10,13 +10,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- Leaderboard website now fetches submission and trajectory data from S3 (`sierra-tau-bench-public`) instead of serving from GitHub Pages directly
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+## [1.0.1] - 2026-07-15
+
+> **⚠️ Grading change — banking_knowledge scores are not comparable across this release.**
+> The fixes below change how `banking_knowledge` rewards are computed. Re-grading existing
+> trajectories moves scores **only upward** (no previously-passing simulation fails under the
+> new scheme), by up to ~9 points pass^1 depending on the model (e.g. GPT-5.5 xhigh:
+> 37.37 → 46.39; GPT-5.4 xhigh: 30.67 → 39.43). Scores produced with tau2-bench < 1.0.1 on
+> `banking_knowledge` must not be
+> compared against scores produced with >= 1.0.1. Old results files can be re-scored with
+> `tau2 evaluate-trajs --fresh-tasks <results.json>`. Other domains are unaffected.
+
+### Added
+- `tau2 evaluate-trajs --fresh-tasks` flag: re-grade trajectories against the current task
+  definitions from the data directory instead of the ones embedded in each results file, so
+  shipped task/criteria fixes are picked up when re-scoring old runs
+
+### Changed
+- Leaderboard website now fetches submission and trajectory data from S3 (`sierra-tau-bench-public`) instead of serving from GitHub Pages directly
+- `banking_knowledge` tasks 077–086 (lost/stolen card scenarios): gold trajectories made
+  agent-realizable, e.g. account-listing reads that any agent must perform are now part of
+  the golden trajectory instead of counting against the DB-hash comparison (#402)
+
+### Fixed
+- **`banking_knowledge` grading: extra read calls no longer zero the reward** (#329). The
+  `call_discoverable_agent_tool` wrapper logged *every* call to the `agent_discoverable_tools`
+  table, which is part of the DB-hash reward comparison. A single prudent verification read
+  not present in the golden trajectory (e.g. `get_all_user_accounts_by_user_id_3847` after
+  opening an account, or `get_pending_replacement_orders_5765` after ordering a replacement
+  card) therefore zeroed the reward. Write calls are still always logged; read calls are now
+  logged only when required by the task's golden trajectory (per-task allowlist), so
+  required-read assertions keep discriminating while extra validation reads are ignored.
+  This accounts for nearly all of the score movement in this release.
+- **`banking_knowledge` grading: DB hashes no longer depend on int-vs-float argument
+  spelling** (#397). Numeric tool arguments are normalized (`25` and `25.0` are the same JSON
+  number), so deterministic record IDs and DB-state hashes no longer differ based on how the
+  caller spelled a number. In the re-graded leaderboard set this fix changed no final scores
+  on its own, but it removes a latent source of spurious failures.
+- **`banking_knowledge`: bank account transactions are returned in reverse chronological
+  order** (#403). The knowledge base (doc_018) documents `get_bank_account_transactions_9173`
+  as returning most-recent-first, but the tool returned raw DB insertion order (oldest
+  first), making the "dispute the earliest duplicate" tie-breaker in doc_031 unresolvable
+  from tool output for the duplicate-charge tasks (issue #371, part a). Output is now sorted
+  by date descending with a stable sort; task_085's two identical CityFit rows were swapped
+  in the fixture so its gold duplicate id follows the same tie-break convention as
+  task_083/084 (no gold action changes). Re-grading confirmed this fix changes no existing
+  leaderboard scores.
+- Contradictory cash-back rate in the `banking_knowledge` Platinum Rewards knowledge-base
+  document (#388)
+- `tau2 evaluate-trajs` now reproduces live grading when re-scoring trajectories: it applies
+  the per-task `read_log_allowlist` for `banking_knowledge` (previously required-read
+  assertions silently stopped discriminating on re-grade), and replays historical
+  trajectories leniently (`Environment.set_state(strict=False)`) so recorded tool outputs
+  that cosmetically predate current tool code — e.g. `deposit_check_3847` echoing
+  `"check_amount": 25` where current code renders `25.0` — no longer abort the replay with
+  `ValueError`. Live evaluation remains strict.
 - Hallucinated tool calls in agent trajectories are now treated as no-ops during `Environment.set_state` replay (matching the live env, which returns a `ToolMessage(error=True)` and applies no state change), instead of raising `ValueError`. Previously, the exception propagated through `run_with_retry`, causing the entire task to be re-run up to `--max-retries` times before being binned as `INFRASTRUCTURE_ERROR` (which is excluded from `pass^k` and `avg_reward` metrics). Trajectories that hallucinate and then successfully recover now score correctly; trajectories that hallucinate without recovering still fail naturally via DB-state mismatch. Repeated hallucination remains bounded by the orchestrator's `max_errors` guard (`TerminationReason.TOO_MANY_ERRORS`).
 
 ## [1.0.0] - 2026-MM-DD
