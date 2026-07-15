@@ -33,6 +33,7 @@ from tau2.domains.banking_knowledge.utils import (
 )
 from tau2.environment.toolkit import (
     DISCOVERABLE_ATTR,
+    MUTATES_STATE_ATTR,
     ToolKitBase,
     ToolType,
     is_discoverable_tool,
@@ -342,6 +343,16 @@ class KnowledgeTools(ToolKitBase):
         super().__init__(db)
         self._user_discoverable_tools_state: Dict[str, Dict[str, Any]] = {}
         self._agent_discoverable_tools_state: Dict[str, Dict[str, Any]] = {}
+        # Names of read-only discoverable tools whose calls should be logged to
+        # the agent_discoverable_tools table during eval. Populated at task
+        # setup from the golden trajectory so that required-read assertions
+        # still discriminate, while extra validation reads don't pollute the
+        # DB hash. See get_environment(read_log_allowlist=...).
+        self._read_log_allowlist: set[str] = set()
+
+    def set_read_log_allowlist(self, allowlist: Optional[set]) -> None:
+        """Replace the read-call DB-logging allowlist."""
+        self._read_log_allowlist = set(allowlist or [])
 
     def get_user_discoverable_tools_state(self) -> Dict[str, Dict[str, Any]]:
         """Get the current state of user discoverable tools (for sharing with user tools)."""
@@ -671,10 +682,19 @@ class KnowledgeTools(ToolKitBase):
         except TypeError as e:
             return f"Error: Invalid arguments: {e}"
 
-        # Record the call in the database for evaluation (only unique tool names)
-        agent_tool_record = {"tool_name": agent_tool_name, "status": "CALLED"}
-        record_id = generate_agent_discoverable_tool_id(agent_tool_name)
-        add_to_db("agent_discoverable_tools", record_id, agent_tool_record, db=self.db)
+        # Record the call in the database for evaluation. Only state-mutating
+        # underlying tools, plus read tools explicitly required by the task's
+        # golden trajectory (the allowlist), are logged. Extra read-only
+        # validation calls (e.g. precondition checks the agent did out of
+        # caution) are intentionally skipped so they don't break the DB-hash
+        # comparison in EnvironmentEvaluator.
+        underlying_mutates = getattr(method, MUTATES_STATE_ATTR, False)
+        if underlying_mutates or agent_tool_name in self._read_log_allowlist:
+            agent_tool_record = {"tool_name": agent_tool_name, "status": "CALLED"}
+            record_id = generate_agent_discoverable_tool_id(agent_tool_name)
+            add_to_db(
+                "agent_discoverable_tools", record_id, agent_tool_record, db=self.db
+            )
 
         return result
 
