@@ -40,9 +40,11 @@ All other domains are unaffected.
 6. **task_074 under-refunded Light Blue ATM fees against its own policy docs** (#374). The
    Light Blue Account docs grant two free out-of-network and two free foreign ATM
    withdrawals per month, but the gold refund honored only one of each ($8.00 instead of
-   $14.50) and the fixture's transaction annotations jumped from "1ST OF 2" straight to
-   "AFTER 2 FREE". The gold credit is now the policy-faithful $14.50 and the two
-   mislabeled fee annotations are corrected. Unlike the grading fixes, this changes a gold
+   $14.50). The fixture's fee descriptions also embedded the answer key — annotations like
+   "(SHOULD BE FREE - 1ST OF 2)" and "(AFTER 2 FREE)" told the agent which fees were
+   erroneous. The gold credit is now the policy-faithful $14.50 and all twelve annotated
+   descriptions are scrubbed to plain statement text, so the agent must derive the free
+   allowance from the policy docs. Unlike the grading fixes, this changes a gold
    value: a trajectory that reproduced the old $8.00 refund fails task_074 under 1.0.1,
    while policy-faithful $14.50 refunds now pass.
 

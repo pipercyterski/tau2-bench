@@ -77,10 +77,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   free allowance** (#374). The Light Blue Account docs grant two free out-of-network and two
   free foreign ATM withdrawals per month (docs `_004`/`_006`), but the gold credit honored
   only one of each, under-refunding the account ($8.00 instead of the policy-faithful
-  $14.50). The gold credit for `chk_ar72c5d8e3_2` is now $14.50, the task notes enumerate
-  all seven Light Blue fee errors, and the two transaction descriptions that mislabeled
-  in-allowance fees as "(AFTER 2 FREE)" (11/06 domestic, 11/09 foreign) now read "(SHOULD BE
-  FREE - 2ND OF 2)", making the fixture consistent with the policy docs. Unlike the grading
+  $14.50). The gold credit for `chk_ar72c5d8e3_2` is now $14.50 and the task notes enumerate
+  all seven Light Blue fee errors. The Light Blue fee descriptions also carried
+  answer-leaking annotations — "(SHOULD BE FREE - 1ST OF 2)", "(AFTER 2 FREE)" — that told
+  the agent which fees were erroneous instead of making it derive that from the policy docs;
+  all twelve are now plain "NON-RHO ATM FEE"/"FOREIGN ATM FEE", matching the statement-style
+  descriptions on the other three accounts. Unlike the grading
   fixes above, this changes a gold value: trajectories that refunded the old $8.00 figure
   fail task_074 under 1.0.1, while policy-faithful $14.50 refunds now pass.
 - `tau2 evaluate-trajs` now reproduces live grading when re-scoring trajectories: it applies
