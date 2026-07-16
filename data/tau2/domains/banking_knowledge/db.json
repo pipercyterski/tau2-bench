@@ -5243,7 +5243,7 @@
         "transaction_id": "btxn_ar_lb_06f",
         "account_id": "chk_ar72c5d8e3_2",
         "date": "11/06/2025",
-        "description": "NON-RHO ATM FEE (AFTER 2 FREE)",
+        "description": "NON-RHO ATM FEE (SHOULD BE FREE - 2ND OF 2)",
         "amount": -2.5,
         "type": "atm_fee",
         "status": "posted"
@@ -5297,7 +5297,7 @@
         "transaction_id": "btxn_ar_lb_09f",
         "account_id": "chk_ar72c5d8e3_2",
         "date": "11/09/2025",
-        "description": "FOREIGN ATM FEE (AFTER 2 FREE)",
+        "description": "FOREIGN ATM FEE (SHOULD BE FREE - 2ND OF 2)",
         "amount": -4.0,
         "type": "atm_fee",
         "status": "posted"
