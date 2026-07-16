@@ -104,14 +104,22 @@ Most of the fixes above were merged to `main` on July 14–15, 2026 — ahead of
 and without a version bump. That means "1.0.0" installed from `main` after that window
 already behaves like 1.0.1 on `banking_knowledge`. If you need the pre-fix behavior (for
 example, to reproduce `banking_knowledge` scores published before this release), install
-from the last commit before the fix series landed:
+from the `pre-v1.0.1` tag — the last commit before the fix series landed
+(`b51a6d69e26f0e94a9173e2e80fe8735a8dff650`):
 
 ```bash
-pip install git+https://github.com/sierra-research/tau2-bench@b51a6d69e26f0e94a9173e2e80fe8735a8dff650  # b51a6d6
+pip install git+https://github.com/sierra-research/tau2-bench@pre-v1.0.1
 ```
 
-The `v1.0.0` tag predates this commit by several months; `b51a6d6` is the recommended pin
+The `v1.0.0` tag predates this commit by several months; `pre-v1.0.1` is the recommended pin
 because it includes everything shipped since then except the grading changes.
+
+Any earlier 2026 commit of `main` grades `banking_knowledge` the same way. For example, from
+commit `2be6916` (April 2026) through `pre-v1.0.1` the evaluator, environment, orchestrator,
+banking tools, and database are byte-for-byte identical; changes in that window are
+simulation-side only (the task_053 `user_tools` fix from #328, the default banking retrieval
+config changing from `bm25` to `alltools`, and retrieval prompt updates). Any pin in that
+range reproduces the same pre-1.0.1 scores when re-grading recorded trajectories.
 
 ---
 

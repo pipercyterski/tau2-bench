@@ -45,10 +45,12 @@ tau2 evaluate-trajs --fresh-tasks path/to/results.json -o regraded/
 
 ## Reproducing pre-1.0.1 behavior
 
-Most of these fixes were merged to `main` on July 14–15, 2026, ahead of this release and without a version bump, so recent installs from `main` already include them. To reproduce the pre-fix `banking_knowledge` behavior (e.g. to match scores published before this release), pin the last commit before the fix series landed:
+Most of these fixes were merged to `main` on July 14–15, 2026, ahead of this release and without a version bump, so recent installs from `main` already include them. To reproduce the pre-fix `banking_knowledge` behavior (e.g. to match scores published before this release), pin the `pre-v1.0.1` tag — the last commit before the fix series landed (`b51a6d6`):
 
 ```bash
-pip install git+https://github.com/sierra-research/tau2-bench@b51a6d69e26f0e94a9173e2e80fe8735a8dff650  # b51a6d6
+pip install git+https://github.com/sierra-research/tau2-bench@pre-v1.0.1
 ```
+
+Grading is identical at every earlier 2026 commit of `main` (verified back to `2be6916`, April 2026); changes in that window are simulation-side only (task_053 `user_tools` fix, default retrieval config, prompts), so any pin in that range re-grades recorded trajectories identically.
 
 See [CHANGELOG.md](CHANGELOG.md) and [RELEASE_NOTES.md](RELEASE_NOTES.md) for details.

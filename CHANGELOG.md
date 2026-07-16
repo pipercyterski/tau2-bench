@@ -33,8 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Note that most of these fixes were merged to `main` on 2026-07-14/15, ahead of this release
 > and without a version bump, so an install from `main` after that window already includes
 > them. The last commit with the pre-1.0.1 `banking_knowledge` behavior is
-> `b51a6d6` — to reproduce pre-1.0.1 grading, pin it explicitly:
-> `pip install git+https://github.com/sierra-research/tau2-bench@b51a6d69e26f0e94a9173e2e80fe8735a8dff650`.
+> `b51a6d6`, tagged `pre-v1.0.1` — to reproduce pre-1.0.1 grading, pin it explicitly:
+> `pip install git+https://github.com/sierra-research/tau2-bench@pre-v1.0.1`.
+> Grading is identical at every earlier 2026 commit of `main` (verified back to `2be6916`,
+> April 2026); changes in that window are simulation-side only, so any pin in that range
+> re-grades recorded trajectories identically.
 
 ### Added
 - `tau2 evaluate-trajs --fresh-tasks` flag: re-grade trajectories against the current task
