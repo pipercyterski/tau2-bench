@@ -44,7 +44,9 @@ All other domains are unaffected.
    "(SHOULD BE FREE - 1ST OF 2)" and "(AFTER 2 FREE)" told the agent which fees were
    erroneous. The gold credit is now the policy-faithful $14.50 and all twelve annotated
    descriptions are scrubbed to plain statement text, so the agent must derive the free
-   allowance from the policy docs. Unlike the grading fixes, this changes a gold
+   allowance from the policy docs. Four "AFTER FREE ALLOWANCE" annotations of the same
+   kind on the task_072/073 Light Green accounts are scrubbed too (description-only, no
+   grading impact). Unlike the grading fixes, this changes a gold
    value: a trajectory that reproduced the old $8.00 refund fails task_074 under 1.0.1,
    while policy-faithful $14.50 refunds now pass.
 

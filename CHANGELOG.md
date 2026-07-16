@@ -82,7 +82,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   answer-leaking annotations — "(SHOULD BE FREE - 1ST OF 2)", "(AFTER 2 FREE)" — that told
   the agent which fees were erroneous instead of making it derive that from the policy docs;
   all twelve are now plain "NON-RHO ATM FEE"/"FOREIGN ATM FEE", matching the statement-style
-  descriptions on the other three accounts. Unlike the grading
+  descriptions on the other three accounts. The same class of leak was scrubbed from the
+  sibling ATM-fee tasks: four "NON-RHO ATM FEE - AFTER FREE ALLOWANCE" rows on task_072's
+  and task_073's Light Green accounts (on task_072 the annotation appeared only on the
+  legitimate fee, so its presence separated correct fees from erroneous ones). Description
+  changes don't affect grading — gold and predicted environments replay from the same
+  db.json, and no task text or assertion references these strings. Unlike the grading
   fixes above, this changes a gold value: trajectories that refunded the old $8.00 figure
   fail task_074 under 1.0.1, while policy-faithful $14.50 refunds now pass.
 - `tau2 evaluate-trajs` now reproduces live grading when re-scoring trajectories: it applies
