@@ -20,10 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 2026-07-15
 
 > **⚠️ Grading change — banking_knowledge scores are not comparable across this release.**
-> The fixes below change how `banking_knowledge` rewards are computed. Re-grading existing
-> trajectories moves scores **only upward** (no previously-passing simulation fails under the
-> new scheme), by up to ~9 points pass^1 depending on the model (e.g. GPT-5.5 xhigh:
-> 37.37 → 46.39; GPT-5.4 xhigh: 30.67 → 39.43). Scores produced with tau2-bench < 1.0.1 on
+> The fixes below change how `banking_knowledge` rewards are computed. For the grading-scheme
+> fixes, re-grading existing trajectories moves scores **only upward** (no previously-passing
+> simulation fails under the new scheme), by up to ~9 points pass^1 depending on the model
+> (e.g. GPT-5.5 xhigh: 37.37 → 46.39; GPT-5.4 xhigh: 30.67 → 39.43). One task-data fix
+> (task_074, #374) corrects a gold refund value, so trajectories that reproduced the old,
+> incorrect refund fail that task under 1.0.1. Scores produced with tau2-bench < 1.0.1 on
 > `banking_knowledge` must not be
 > compared against scores produced with >= 1.0.1. Old results files can be re-scored with
 > `tau2 evaluate-trajs --fresh-tasks <results.json>`. Other domains are unaffected.
@@ -71,6 +73,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   leaderboard scores.
 - Contradictory cash-back rate in the `banking_knowledge` Platinum Rewards knowledge-base
   document (#388)
+- **`banking_knowledge` task_074: Light Blue ATM-fee refund under-counted the documented
+  free allowance** (#374). The Light Blue Account docs grant two free out-of-network and two
+  free foreign ATM withdrawals per month (docs `_004`/`_006`), but the gold credit honored
+  only one of each, under-refunding the account ($8.00 instead of the policy-faithful
+  $14.50). The gold credit for `chk_ar72c5d8e3_2` is now $14.50 and the task notes enumerate
+  all seven Light Blue fee errors. The Light Blue fee descriptions also carried
+  answer-leaking annotations — "(SHOULD BE FREE - 1ST OF 2)", "(AFTER 2 FREE)" — that told
+  the agent which fees were erroneous instead of making it derive that from the policy docs;
+  all twelve are now plain "NON-RHO ATM FEE"/"FOREIGN ATM FEE", matching the statement-style
+  descriptions on the other three accounts. The same class of leak was scrubbed from the
+  sibling ATM-fee tasks: four "NON-RHO ATM FEE - AFTER FREE ALLOWANCE" rows on task_072's
+  and task_073's Light Green accounts (on task_072 the annotation appeared only on the
+  legitimate fee, so its presence separated correct fees from erroneous ones). Description
+  changes don't affect grading — gold and predicted environments replay from the same
+  db.json, and no task text or assertion references these strings. Unlike the grading
+  fixes above, this changes a gold value: trajectories that refunded the old $8.00 figure
+  fail task_074 under 1.0.1, while policy-faithful $14.50 refunds now pass.
 - `tau2 evaluate-trajs` now reproduces live grading when re-scoring trajectories: it applies
   the per-task `read_log_allowlist` for `banking_knowledge` (previously required-read
   assertions silently stopped discriminating on re-grade), and replays historical

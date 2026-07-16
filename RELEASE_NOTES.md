@@ -37,12 +37,28 @@ All other domains are unaffected.
    to the same tie-break convention as 083/084. No gold actions changed.
 5. **Contradictory cash-back rate in the Platinum Rewards knowledge doc** (#388). The
    document stated two different rates for the same card; the numbers now agree.
+6. **task_074 under-refunded Light Blue ATM fees against its own policy docs** (#374). The
+   Light Blue Account docs grant two free out-of-network and two free foreign ATM
+   withdrawals per month, but the gold refund honored only one of each ($8.00 instead of
+   $14.50). The fixture's fee descriptions also embedded the answer key — annotations like
+   "(SHOULD BE FREE - 1ST OF 2)" and "(AFTER 2 FREE)" told the agent which fees were
+   erroneous. The gold credit is now the policy-faithful $14.50 and all twelve annotated
+   descriptions are scrubbed to plain statement text, so the agent must derive the free
+   allowance from the policy docs. Four "AFTER FREE ALLOWANCE" annotations of the same
+   kind on the task_072/073 Light Green accounts are scrubbed too (description-only, no
+   grading impact). Unlike the grading fixes, this changes a gold
+   value: a trajectory that reproduced the old $8.00 refund fails task_074 under 1.0.1,
+   while policy-faithful $14.50 refunds now pass.
 
 #### Measured impact
 
 We re-graded the leaderboard `banking_knowledge` trajectory sets under the new scheme.
-Every score change is upward — no previously-passing simulation fails under 1.0.1 — and the
-shift is model-dependent, so relative rankings change:
+Under the grading-scheme fixes (items 1–5) every score change is upward — no
+previously-passing simulation fails — and the shift is model-dependent, so relative
+rankings change. The task_074 gold correction (item 6) can move individual task_074 trials
+in either direction; in the trajectory sets inspected, no trial matched the old $8.00 gold
+(so nothing flips down) and one gemini-3-1-pro-preview trial that applied the correct
+$14.50 refund flips to passing:
 
 | Model | pass^1 (old) | pass^1 (new) | Δ pass^1 | pass^4 (old) | pass^4 (new) | flips |
 |---|---|---|---|---|---|---|
