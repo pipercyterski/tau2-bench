@@ -30,8 +30,6 @@
 | gemini-2-5-pro | 12.76 | 13.66 | +0.9 | 1.08 | 1.03 | +4/-0 |
 | grok-4-1-fast | 12.4 | 13.14 | +0.74 | 5.21 | 5.15 | +3/-0 |
 | gpt-5-2-none | 11.08 | 12.63 | +1.55 | 4.12 | 4.12 | +1/-0 |
-| glm-5-think | 9.79 | 9.79 | 0 | 3.09 | — | +0/-0 |
-| qwen3.5-397b-a17b-think | 9.79 | 9.79 | 0 | 5.15 | 5.15 | +0/-0 |
 
 _No simulation flipped from pass to fail; every reward change is upward. pass^k values are recomputed counting infrastructure-error simulations as failed trials (the leaderboard convention); the sub-0.1-point pass^4 dips for gemini-2-5-pro and grok-4-1-fast come from that convention alignment, not from any score flip. glm-5-think's trajectory file contains only 3 trials for some tasks, so pass^4 is not recomputable; its previous value is retained. NL-assertion judgments are preserved from the original grading runs (the v1.0.1 fixes are all environment-side), so the re-grade is fully deterministic._
 
