@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > `banking_knowledge` must not be
 > compared against scores produced with >= 1.0.1. Old results files can be re-scored with
 > `tau2 evaluate-trajs --fresh-tasks <results.json>`. Other domains are unaffected.
+>
+> Note that most of these fixes were merged to `main` on 2026-07-14/15, ahead of this release
+> and without a version bump, so an install from `main` after that window already includes
+> them. The last commit with the pre-1.0.1 `banking_knowledge` behavior is
+> `b51a6d6` — to reproduce pre-1.0.1 grading, pin it explicitly:
+> `pip install git+https://github.com/sierra-research/tau2-bench@b51a6d69e26f0e94a9173e2e80fe8735a8dff650`.
 
 ### Added
 - `tau2 evaluate-trajs --fresh-tasks` flag: re-grade trajectories against the current task

@@ -82,6 +82,21 @@ ones embedded in your results file. Re-grading also now applies the same per-tas
 allowlist as live grading and tolerates cosmetic tool-output drift in trajectories recorded
 before 1.0.1.
 
+#### Reproducing pre-1.0.1 behavior
+
+Most of the fixes above were merged to `main` on July 14–15, 2026 — ahead of this release
+and without a version bump. That means "1.0.0" installed from `main` after that window
+already behaves like 1.0.1 on `banking_knowledge`. If you need the pre-fix behavior (for
+example, to reproduce `banking_knowledge` scores published before this release), install
+from the last commit before the fix series landed:
+
+```bash
+pip install git+https://github.com/sierra-research/tau2-bench@b51a6d69e26f0e94a9173e2e80fe8735a8dff650  # b51a6d6
+```
+
+The `v1.0.0` tag predates this commit by several months; `b51a6d6` is the recommended pin
+because it includes everything shipped since then except the grading changes.
+
 ---
 
 ## Version 0.2.1 - Reinforcement Learning Support 🤖
