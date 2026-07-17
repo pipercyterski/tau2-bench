@@ -1,4 +1,8 @@
 // Quick screenshot helper for local dev review.
+//
+// playwright is intentionally not a devDependency (only needed for this
+// helper). Before first use, run: npm install --no-save playwright
+//
 // Usage: node scripts/screenshot.mjs <url> <outfile> [fullpage]
 import { chromium } from 'playwright'
 
