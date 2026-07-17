@@ -119,9 +119,9 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
   }
 
   const cards = [
-    { badge: 'Core', badgeClass: 'core', title: 'Overall', models: coreTop3 },
+    { badge: 'Core', badgeClass: 'core', title: 'Retail · Airline · Telecom', models: coreTop3 },
     { badge: 'Knowledge', badgeClass: 'knowledge', title: 'Banking', models: knowledgeTop3 },
-    { badge: 'Voice', badgeClass: 'voice', title: 'Overall', models: voiceTop3 },
+    { badge: 'Voice', badgeClass: 'voice', title: 'Retail · Airline · Telecom', models: voiceTop3 },
   ]
 
   return (
