@@ -8,8 +8,22 @@ const SUBMISSIONS_BASE = import.meta.env.VITE_SUBMISSIONS_BASE_URL
 
 const NO_CACHE = { cache: 'no-cache' }
 
+const CORE_DOMAINS = ['retail', 'airline', 'telecom']
+
+// Average pass^1 across the three core domains; null unless all three exist.
+const corePass1 = (results) => {
+  const values = CORE_DOMAINS.map((d) => results[d]?.pass_1)
+  if (values.some((v) => v == null)) return null
+  return values.reduce((s, v) => s + v, 0) / values.length
+}
+
+// One preview card per leaderboard bucket: Core (τ²-bench), Knowledge
+// (τ-knowledge), and Voice (τ-voice), each showing its Overall top 3.
+// TODO(voice-banking): when banking is supported in voice mode, its scores
+// belong in the Knowledge bucket (as a text/voice split), not in Voice.
 function LeaderboardPreview({ onViewFullLeaderboard }) {
-  const [bankingTop3, setBankingTop3] = useState([])
+  const [coreTop3, setCoreTop3] = useState([])
+  const [knowledgeTop3, setKnowledgeTop3] = useState([])
   const [voiceTop3, setVoiceTop3] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -26,8 +40,9 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
       const textDirs = [...(manifest.submissions || []), ...(manifest.legacy_submissions || [])]
       const voiceDirs = manifest.voice_submissions || []
 
-      // Load text submissions and rank by banking pass^1.
-      const textModels = []
+      // Load text submissions once; they feed both the Core and Knowledge cards.
+      const coreModels = []
+      const knowledgeModels = []
       for (const dir of textDirs) {
         try {
           const res = await fetch(`${SUBMISSIONS_BASE}/${dir}/submission.json`, NO_CACHE)
@@ -37,11 +52,18 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
           // Only include standard submissions
           if (sub.submission_type && sub.submission_type !== 'standard') continue
 
-          const r = sub.results
-          const banking = r.banking_knowledge?.pass_1
+          const core = corePass1(sub.results)
+          if (core != null) {
+            coreModels.push({
+              name: sub.model_name,
+              org: sub.model_organization,
+              score: core,
+            })
+          }
 
+          const banking = sub.results.banking_knowledge?.pass_1
           if (banking != null) {
-            textModels.push({
+            knowledgeModels.push({
               name: sub.model_name,
               org: sub.model_organization,
               score: banking,
@@ -50,12 +72,13 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
         } catch { /* skip */ }
       }
 
-      textModels.sort((a, b) => b.score - a.score)
-      setBankingTop3(textModels.slice(0, 3))
+      coreModels.sort((a, b) => b.score - a.score)
+      setCoreTop3(coreModels.slice(0, 3))
+      knowledgeModels.sort((a, b) => b.score - a.score)
+      setKnowledgeTop3(knowledgeModels.slice(0, 3))
 
       // Load voice submissions and compute overall pass^1.
       const voiceModels = []
-      const voiceDomains = ['airline', 'retail', 'telecom']
       for (const dir of voiceDirs) {
         try {
           const res = await fetch(`${SUBMISSIONS_BASE}/${dir}/submission.json`, NO_CACHE)
@@ -64,9 +87,8 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
 
           if (sub.submission_type && sub.submission_type !== 'standard') continue
 
-          const r = sub.results
-          const values = voiceDomains
-            .map(d => r[d]?.pass_1)
+          const values = CORE_DOMAINS
+            .map(d => sub.results[d]?.pass_1)
             .filter(v => v != null)
 
           if (values.length > 0) {
@@ -96,65 +118,45 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
     )
   }
 
+  const cards = [
+    { badge: 'Core', badgeClass: 'core', title: 'Overall', models: coreTop3 },
+    { badge: 'Knowledge', badgeClass: 'knowledge', title: 'Banking', models: knowledgeTop3 },
+    { badge: 'Voice', badgeClass: 'voice', title: 'Overall', models: voiceTop3 },
+  ]
+
   return (
     <div className="leaderboard-preview">
       <div className="preview-tables">
-        <div className="preview-table-wrapper">
-          <h3 className="preview-table-title">
-            <span className="preview-mode-badge text">Text</span>
-            Banking
-          </h3>
-          <table className="preview-table">
-            <thead>
-              <tr>
-                <th className="preview-rank-col">#</th>
-                <th className="preview-model-col">Model</th>
-                <th className="preview-score-col">Pass^1</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bankingTop3.map((model, i) => (
-                <tr key={i} className="preview-row">
-                  <td className="preview-rank">{MEDAL_EMOJI[i]}</td>
-                  <td className="preview-model">
-                    <span className="preview-model-name">{model.name}</span>
-                    <span className="preview-model-org">{model.org}</span>
-                  </td>
-                  <td className="preview-score">{model.score.toFixed(1)}%</td>
+        {cards.map((card) => (
+          <div className="preview-table-wrapper" key={card.badge}>
+            <h3 className="preview-table-title">
+              <span className={`preview-mode-badge ${card.badgeClass}`}>{card.badge}</span>
+              {card.title}
+            </h3>
+            <table className="preview-table">
+              <thead>
+                <tr>
+                  <th className="preview-rank-col">#</th>
+                  <th className="preview-model-col">Model</th>
+                  <th className="preview-score-col">Pass^1</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="preview-more">⋯</div>
-        </div>
-        <div className="preview-table-wrapper">
-          <h3 className="preview-table-title">
-            <span className="preview-mode-badge voice">Voice</span>
-            Overall
-          </h3>
-          <table className="preview-table">
-            <thead>
-              <tr>
-                <th className="preview-rank-col">#</th>
-                <th className="preview-model-col">Model</th>
-                <th className="preview-score-col">Pass^1</th>
-              </tr>
-            </thead>
-            <tbody>
-              {voiceTop3.map((model, i) => (
-                <tr key={i} className="preview-row">
-                  <td className="preview-rank">{MEDAL_EMOJI[i]}</td>
-                  <td className="preview-model">
-                    <span className="preview-model-name">{model.name}</span>
-                    <span className="preview-model-org">{model.org}</span>
-                  </td>
-                  <td className="preview-score">{model.score.toFixed(1)}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="preview-more">⋯</div>
-        </div>
+              </thead>
+              <tbody>
+                {card.models.map((model, i) => (
+                  <tr key={i} className="preview-row">
+                    <td className="preview-rank">{MEDAL_EMOJI[i]}</td>
+                    <td className="preview-model">
+                      <span className="preview-model-name">{model.name}</span>
+                      <span className="preview-model-org">{model.org}</span>
+                    </td>
+                    <td className="preview-score">{model.score.toFixed(1)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="preview-more">⋯</div>
+          </div>
+        ))}
       </div>
       <button className="preview-cta" onClick={onViewFullLeaderboard}>
         View Full Leaderboard →

@@ -1,6 +1,6 @@
 .leaderboard-preview {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -52,9 +52,14 @@
   letter-spacing: 0.5px;
 }
 
-.preview-mode-badge.text {
+.preview-mode-badge.core {
   background: #ebf8ff;
   color: #2b6cb0;
+}
+
+.preview-mode-badge.knowledge {
+  background: #fffbeb;
+  color: #b45309;
 }
 
 .preview-mode-badge.voice {
@@ -73,18 +78,18 @@
   color: #a0aec0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 8px 16px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid #f1f5f9;
 }
 
 .preview-rank-col {
-  width: 40px;
+  width: 36px;
   text-align: center !important;
 }
 
 .preview-score-col {
-  width: 80px;
+  width: 64px;
   text-align: right !important;
 }
 
@@ -102,12 +107,12 @@
 
 .preview-rank {
   text-align: center;
-  padding: 10px 16px;
+  padding: 10px 8px;
   font-size: 16px;
 }
 
 .preview-model {
-  padding: 10px 16px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -120,7 +125,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: 130px;
 }
 
 .preview-model-org {
@@ -130,7 +135,7 @@
 }
 
 .preview-score {
-  padding: 10px 16px;
+  padding: 10px 12px;
   text-align: right;
   font-size: 15px;
   font-weight: 700;
@@ -167,7 +172,8 @@
   box-shadow: 0 4px 12px rgba(6, 95, 70, 0.25);
 }
 
-@media (max-width: 768px) {
+/* Three cards need more room than two did; stack a little earlier. */
+@media (max-width: 900px) {
   .preview-tables {
     flex-direction: column;
     gap: 16px;
