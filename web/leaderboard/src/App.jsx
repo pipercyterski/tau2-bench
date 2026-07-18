@@ -162,7 +162,7 @@ function App() {
           <span className="notification-text">
             τ³-bench is here: <a href={`${import.meta.env.BASE_URL}blog/tau-knowledge.html`} className="notification-link"><strong>τ-knowledge</strong></a> evaluates
             agents on knowledge-intensive tasks, and{' '}
-            <a href={`${import.meta.env.BASE_URL}blog/tau-voice-examples.html`} className="notification-link"><strong>τ-voice</strong></a> benchmarks
+            <a href="https://sierra.ai/blog/tau-voice-benchmarking-real-time-voice-agents-on-real-world-tasks" className="notification-link"><strong>τ-voice</strong></a> benchmarks
             real-time voice agents.
           </span>
         </div>
