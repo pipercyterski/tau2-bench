@@ -47,7 +47,7 @@ const VOICE_DOMAINS = [
 
 const BENCHMARK_CONFIG = {
   core: {
-    label: 'Core',
+    label: 'τ²-bench',
     icon: '📝',
     title: 'τ²-bench Leaderboard',
     modality: 'text',
@@ -56,7 +56,7 @@ const BENCHMARK_CONFIG = {
     breakdownDomains: ['retail', 'airline', 'telecom'],
   },
   knowledge: {
-    label: 'Knowledge',
+    label: 'τ-knowledge',
     icon: '🏦',
     title: 'τ-knowledge Leaderboard',
     modality: 'text',
@@ -65,7 +65,7 @@ const BENCHMARK_CONFIG = {
     breakdownDomains: ['banking_knowledge'],
   },
   voice: {
-    label: 'Voice',
+    label: 'τ-voice',
     icon: '🎙️',
     title: 'τ-voice Leaderboard',
     modality: 'voice',

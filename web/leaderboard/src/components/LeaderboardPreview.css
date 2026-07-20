@@ -30,16 +30,17 @@
 }
 
 .preview-table-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #4a5568;
-  padding: 14px 16px;
+  padding: 14px 12px;
   margin: 0;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   gap: 8px;
   text-align: left;
+  white-space: nowrap;
 }
 
 .preview-mode-badge {
@@ -48,8 +49,9 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  /* No uppercase: the badges are τ-track names and τ must stay lowercase */
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .preview-mode-badge.core {
