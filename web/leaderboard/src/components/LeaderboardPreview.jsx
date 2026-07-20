@@ -120,16 +120,16 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
 
   // Newest tracks first, matching the leaderboard toggle order.
   const cards = [
-    { badge: 'τ-knowledge', badgeClass: 'knowledge', mode: 'Text', domains: 'Banking', models: knowledgeTop3 },
-    { badge: 'τ-voice', badgeClass: 'voice', mode: 'Voice', domains: 'Retail · Airline · Telecom', models: voiceTop3 },
-    { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', models: coreTop3 },
+    { badge: 'τ-knowledge', badgeClass: 'knowledge', mode: 'Text', domains: 'Banking', href: '#leaderboard?benchmark=knowledge', models: knowledgeTop3 },
+    { badge: 'τ-voice', badgeClass: 'voice', mode: 'Voice', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=voice', models: voiceTop3 },
+    { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=core', models: coreTop3 },
   ]
 
   return (
     <div className="leaderboard-preview">
       <div className="preview-tables">
         {cards.map((card) => (
-          <div className="preview-table-wrapper" key={card.badge}>
+          <a className="preview-table-wrapper" href={card.href} key={card.badge}>
             <h3 className="preview-table-title">
               <span className={`preview-mode-badge ${card.badgeClass}`}>{card.badge}</span>
               <span className="preview-table-subtitle">
@@ -160,7 +160,7 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
               </tbody>
             </table>
             <div className="preview-more">⋯</div>
-          </div>
+          </a>
         ))}
       </div>
       <button className="preview-cta" onClick={onViewFullLeaderboard}>
