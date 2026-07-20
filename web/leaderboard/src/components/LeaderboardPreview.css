@@ -44,10 +44,29 @@
 }
 
 .preview-table-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   font-weight: 500;
   color: #a0aec0;
   letter-spacing: 0.2px;
+}
+
+/* The mode reads differently from the domain list: darker, heavier, and
+   separated by a vertical divider instead of the interpunct. */
+.preview-mode {
+  color: #718096;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.preview-subtitle-divider {
+  width: 1px;
+  height: 10px;
+  background: #cbd5e0;
 }
 
 .preview-mode-badge {
