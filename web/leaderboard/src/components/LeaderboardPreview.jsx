@@ -118,10 +118,11 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
     )
   }
 
+  // Newest tracks first, matching the leaderboard toggle order.
   const cards = [
-    { badge: 'τ²-bench', badgeClass: 'core', title: 'Retail · Airline · Telecom', models: coreTop3 },
     { badge: 'τ-knowledge', badgeClass: 'knowledge', title: 'Banking', models: knowledgeTop3 },
     { badge: 'τ-voice', badgeClass: 'voice', title: 'Retail · Airline · Telecom', models: voiceTop3 },
+    { badge: 'τ²-bench', badgeClass: 'core', title: 'Retail · Airline · Telecom', models: coreTop3 },
   ]
 
   return (

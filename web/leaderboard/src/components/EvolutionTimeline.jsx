@@ -1,7 +1,8 @@
 import './EvolutionTimeline.css'
 
-// One entry per release, chronological. All content is static and visible
-// without interaction; the only links are the paper/blog references.
+// One entry per release, chronological (oldest first); rendered newest-first.
+// All content is static and visible without interaction; the only links are
+// the paper/blog references.
 const MILESTONES = [
   {
     name: 'τ-bench',
@@ -96,7 +97,7 @@ function EvolutionTimeline() {
     <section className="evolution-section">
       <h2 className="evolution-title">How τ-bench has evolved</h2>
       <div className="evolution-timeline">
-        {MILESTONES.map((m) => (
+        {[...MILESTONES].reverse().map((m) => (
           <div className="evolution-entry" key={`${m.name}-${m.date}`}>
             <div className="evolution-marker">
               <span className="evolution-dot" />

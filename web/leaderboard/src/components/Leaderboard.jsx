@@ -45,16 +45,8 @@ const VOICE_DOMAINS = [
   { key: 'telecom', label: '📱 Telecom' },
 ]
 
+// Key order determines toggle order: newest tracks first.
 const BENCHMARK_CONFIG = {
-  core: {
-    label: 'τ²-bench',
-    icon: '📝',
-    title: 'τ²-bench Leaderboard',
-    modality: 'text',
-    domains: CORE_DOMAINS,
-    defaultDomain: 'overall',
-    breakdownDomains: ['retail', 'airline', 'telecom'],
-  },
   knowledge: {
     label: 'τ-knowledge',
     icon: '🏦',
@@ -70,6 +62,15 @@ const BENCHMARK_CONFIG = {
     title: 'τ-voice Leaderboard',
     modality: 'voice',
     domains: VOICE_DOMAINS,
+    defaultDomain: 'overall',
+    breakdownDomains: ['retail', 'airline', 'telecom'],
+  },
+  core: {
+    label: 'τ²-bench',
+    icon: '📝',
+    title: 'τ²-bench Leaderboard',
+    modality: 'text',
+    domains: CORE_DOMAINS,
     defaultDomain: 'overall',
     breakdownDomains: ['retail', 'airline', 'telecom'],
   },
@@ -228,13 +229,14 @@ const Leaderboard = () => {
     if (fromHash) return fromHash
 
     const fromStorage = normalizeBenchmark(localStorage.getItem('benchmark'))
-    return BENCHMARK_VALUES.has(fromStorage) ? fromStorage : 'core'
+    // Default to the first toggle position (newest track)
+    return BENCHMARK_VALUES.has(fromStorage) ? fromStorage : 'knowledge'
   })
   // Add unified domain selection state with localStorage persistence
   const [domain, setDomain] = useState(() => {
     const storedBenchmark = normalizeBenchmark(localStorage.getItem('benchmark'))
     const storedDomain = localStorage.getItem('domain')
-    const config = BENCHMARK_CONFIG[storedBenchmark] || BENCHMARK_CONFIG.core
+    const config = BENCHMARK_CONFIG[storedBenchmark] || BENCHMARK_CONFIG.knowledge
     return config.domains.some(({ key }) => key === storedDomain)
       ? storedDomain
       : config.defaultDomain
