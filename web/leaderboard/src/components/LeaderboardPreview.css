@@ -27,6 +27,18 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  /* Each card is a link to its track's full leaderboard */
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.preview-table-wrapper:hover {
+  border-color: #a7d7c5;
+  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.12);
+  transform: translateY(-2px);
 }
 
 .preview-table-title {
