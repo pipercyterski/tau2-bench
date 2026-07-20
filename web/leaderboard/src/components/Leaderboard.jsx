@@ -51,6 +51,7 @@ const BENCHMARK_CONFIG = {
     label: 'τ-knowledge',
     icon: '🏦',
     title: 'τ-knowledge Leaderboard',
+    description: 'Text agents resolving banking customer-service tasks by retrieving and reasoning over a ~700-document knowledge base.',
     modality: 'text',
     domains: KNOWLEDGE_DOMAINS,
     defaultDomain: 'banking_knowledge',
@@ -60,6 +61,7 @@ const BENCHMARK_CONFIG = {
     label: 'τ-voice',
     icon: '🎙️',
     title: 'τ-voice Leaderboard',
+    description: 'Real-time, full-duplex voice agents on retail, airline, and telecom customer-service tasks.',
     modality: 'voice',
     domains: VOICE_DOMAINS,
     defaultDomain: 'overall',
@@ -69,6 +71,7 @@ const BENCHMARK_CONFIG = {
     label: 'τ²-bench',
     icon: '📝',
     title: 'τ²-bench Leaderboard',
+    description: 'Text agents on retail, airline, and telecom customer-service tasks, where the agent and the user both act on the world.',
     modality: 'text',
     domains: CORE_DOMAINS,
     defaultDomain: 'overall',
@@ -670,6 +673,7 @@ const Leaderboard = () => {
       <div className="leaderboard-title-row">
         <h2 className="leaderboard-title">{benchConfig.title}</h2>
       </div>
+      <p className="leaderboard-subtitle">{benchConfig.description}</p>
 
       {/* Combined Controls Row — applies to both ranking and progress views */}
       <div className="leaderboard-controls">

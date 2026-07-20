@@ -120,9 +120,9 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
 
   // Newest tracks first, matching the leaderboard toggle order.
   const cards = [
-    { badge: 'τ-knowledge', badgeClass: 'knowledge', title: 'Banking', models: knowledgeTop3 },
-    { badge: 'τ-voice', badgeClass: 'voice', title: 'Retail · Airline · Telecom', models: voiceTop3 },
-    { badge: 'τ²-bench', badgeClass: 'core', title: 'Retail · Airline · Telecom', models: coreTop3 },
+    { badge: 'τ-knowledge', badgeClass: 'knowledge', subtitle: 'Text · Banking', models: knowledgeTop3 },
+    { badge: 'τ-voice', badgeClass: 'voice', subtitle: 'Voice · Retail · Airline · Telecom', models: voiceTop3 },
+    { badge: 'τ²-bench', badgeClass: 'core', subtitle: 'Text · Retail · Airline · Telecom', models: coreTop3 },
   ]
 
   return (
@@ -132,7 +132,7 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
           <div className="preview-table-wrapper" key={card.badge}>
             <h3 className="preview-table-title">
               <span className={`preview-mode-badge ${card.badgeClass}`}>{card.badge}</span>
-              {card.title}
+              <span className="preview-table-subtitle">{card.subtitle}</span>
             </h3>
             <table className="preview-table">
               <thead>

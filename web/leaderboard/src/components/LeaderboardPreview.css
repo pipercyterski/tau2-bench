@@ -43,6 +43,13 @@
   white-space: nowrap;
 }
 
+.preview-table-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: #a0aec0;
+  letter-spacing: 0.2px;
+}
+
 .preview-mode-badge {
   display: inline-block;
   padding: 2px 8px;
