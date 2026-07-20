@@ -120,7 +120,7 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
 
   // Newest tracks first, matching the leaderboard toggle order.
   const cards = [
-    { badge: 'τ-knowledge', badgeClass: 'knowledge', mode: 'Text', domains: 'Banking', href: '#leaderboard?benchmark=knowledge', models: knowledgeTop3 },
+    { badge: 'τ-knowledge', badgeClass: 'knowledge', mode: 'Text', domains: 'Banking', href: '#leaderboard?benchmark=knowledge', hoverNote: 'τ-knowledge is often referred to as “τ³ banking”', models: knowledgeTop3 },
     { badge: 'τ-voice', badgeClass: 'voice', mode: 'Voice', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=voice', models: voiceTop3 },
     { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=core', models: coreTop3 },
   ]
@@ -131,7 +131,7 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
         {cards.map((card) => (
           <a className="preview-table-wrapper" href={card.href} key={card.badge}>
             <h3 className="preview-table-title">
-              <span className={`preview-mode-badge ${card.badgeClass}`}>{card.badge}</span>
+              <span className={`preview-mode-badge ${card.badgeClass}`} title={card.hoverNote}>{card.badge}</span>
               <span className="preview-table-subtitle">
                 <span className="preview-mode">{card.mode}</span>
                 <span className="preview-subtitle-divider" aria-hidden="true" />

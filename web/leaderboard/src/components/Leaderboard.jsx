@@ -51,7 +51,10 @@ const BENCHMARK_CONFIG = {
     label: 'τ-knowledge',
     icon: '🏦',
     title: 'τ-knowledge Leaderboard',
-    description: 'Text agents resolving banking customer-service tasks by retrieving and reasoning over a ~700-document knowledge base.',
+    description: 'Text agents resolving banking customer-service tasks by retrieving and reasoning over a ~700-document knowledge base. Often referred to as “τ³\u00A0banking”.',
+    // Shown on hover wherever the track name appears without room for the
+    // full description; keeps "τ³ banking" searchers oriented.
+    hoverNote: 'τ-knowledge is often referred to as “τ³ banking”',
     modality: 'text',
     domains: KNOWLEDGE_DOMAINS,
     defaultDomain: 'banking_knowledge',
@@ -656,6 +659,7 @@ const Leaderboard = () => {
               key={key}
               className={`benchmark-toggle-option ${benchmark === key ? 'active' : ''}`}
               onClick={() => handleBenchmarkChange(key)}
+              title={BENCHMARK_CONFIG[key].hoverNote}
             >
               <span className="benchmark-icon">{BENCHMARK_CONFIG[key].icon}</span> {BENCHMARK_CONFIG[key].label}
             </button>
