@@ -36,8 +36,8 @@ const ORG_EMOJI = {
 const formatMonth = (d) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 const formatDate = (d) => d.toISOString().slice(0, 10)
 
-// benchmark is one of 'core' (τ²-bench), 'knowledge' (τ-knowledge), or
-// 'voice' (τ-voice). Core and voice share the same three domains but differ
+// benchmark is one of 'core' (τ²-bench), 'knowledge' (τ³ Banking), or
+// 'voice' (τ³ Voice). Core and voice share the same three domains but differ
 // in modality; knowledge is banking-only in text.
 const BENCHMARK_MODALITY = {
   core: 'text',
@@ -47,8 +47,8 @@ const BENCHMARK_MODALITY = {
 
 const BENCHMARK_LABEL = {
   core: 'τ²-bench',
-  knowledge: 'τ-knowledge',
-  voice: 'τ-voice',
+  knowledge: 'τ³ Banking',
+  voice: 'τ³ Voice',
 }
 
 /**

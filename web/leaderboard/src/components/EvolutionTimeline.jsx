@@ -57,7 +57,7 @@ const MILESTONES = [
   },
   {
     name: 'τ-knowledge',
-    hoverNote: 'τ-knowledge is often referred to as “τ³ banking”',
+    hoverNote: 'Appears on the leaderboard as τ³ Banking',
     date: 'March 2026',
     badge: 'τ³-bench',
     links: [
@@ -76,6 +76,7 @@ const MILESTONES = [
   },
   {
     name: 'τ-voice',
+    hoverNote: 'Appears on the leaderboard as τ³ Voice',
     date: 'March 2026',
     badge: 'τ³-bench',
     links: [
