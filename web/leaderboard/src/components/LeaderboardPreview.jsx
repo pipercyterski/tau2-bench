@@ -17,8 +17,8 @@ const corePass1 = (results) => {
   return values.reduce((s, v) => s + v, 0) / values.length
 }
 
-// One preview card per leaderboard bucket: τ³ Banking (published as
-// τ-knowledge), τ³ Voice (published as τ-voice), and τ²-bench (core),
+// One preview card per leaderboard bucket: τ³-Banking (published as
+// τ-knowledge), τ³-Voice (published as τ-voice), and τ²-bench (core),
 // each showing its Overall top 3.
 // TODO(voice-banking): when banking is supported in voice mode, its scores
 // belong in the Knowledge bucket (as a text/voice split), not in Voice.
@@ -121,10 +121,10 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
 
   // Newest tracks first, matching the leaderboard toggle order. The subtitle
   // only carries what the badge doesn't already say (e.g. no "Voice" mode
-  // under the τ³ Voice badge).
+  // under the τ³-Voice badge).
   const cards = [
-    { badge: 'τ³ Banking', badgeClass: 'knowledge', mode: 'Text', domains: 'Knowledge retrieval', href: '#leaderboard?benchmark=knowledge', hoverNote: 'τ³ Banking was published as τ-knowledge', models: knowledgeTop3 },
-    { badge: 'τ³ Voice', badgeClass: 'voice', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=voice', hoverNote: 'τ³ Voice was published as τ-voice', models: voiceTop3 },
+    { badge: 'τ³-Banking', badgeClass: 'knowledge', mode: 'Text', domains: 'Knowledge retrieval', href: '#leaderboard?benchmark=knowledge', hoverNote: 'τ³-Banking was published as τ-knowledge', models: knowledgeTop3 },
+    { badge: 'τ³-Voice', badgeClass: 'voice', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=voice', hoverNote: 'τ³-Voice was published as τ-voice', models: voiceTop3 },
     { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=core', models: coreTop3 },
   ]
 

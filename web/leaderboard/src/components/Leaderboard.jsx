@@ -3,7 +3,7 @@ import './Leaderboard.css'
 import ProgressView from './ProgressView'
 
 // The leaderboard is split into three buckets, one per benchmark track:
-// τ³ Banking (published as τ-knowledge), τ³ Voice (published as τ-voice:
+// τ³-Banking (published as τ-knowledge), τ³-Voice (published as τ-voice:
 // retail/airline/telecom in real-time voice), and τ²-bench (core:
 // retail/airline/telecom in text, near saturation).
 const BENCHMARK_VALUES = new Set(['core', 'knowledge', 'voice'])
@@ -49,24 +49,24 @@ const VOICE_DOMAINS = [
 // Key order determines toggle order: newest tracks first.
 const BENCHMARK_CONFIG = {
   knowledge: {
-    label: 'τ³ Banking',
+    label: 'τ³-Banking',
     icon: '🏦',
-    title: 'τ³ Banking Leaderboard',
+    title: 'τ³-Banking Leaderboard',
     description: 'Text agents resolving banking customer-service tasks by retrieving and reasoning over a ~700-document knowledge base. Published as τ-knowledge.',
     // Shown on hover wherever the track name appears without room for the
     // full description; maps the display name back to the paper name.
-    hoverNote: 'τ³ Banking was published as τ-knowledge',
+    hoverNote: 'τ³-Banking was published as τ-knowledge',
     modality: 'text',
     domains: KNOWLEDGE_DOMAINS,
     defaultDomain: 'banking_knowledge',
     breakdownDomains: ['banking_knowledge'],
   },
   voice: {
-    label: 'τ³ Voice',
+    label: 'τ³-Voice',
     icon: '🎙️',
-    title: 'τ³ Voice Leaderboard',
+    title: 'τ³-Voice Leaderboard',
     description: 'Real-time, full-duplex voice agents on retail, airline, and telecom customer-service tasks. Published as τ-voice.',
-    hoverNote: 'τ³ Voice was published as τ-voice',
+    hoverNote: 'τ³-Voice was published as τ-voice',
     modality: 'voice',
     domains: VOICE_DOMAINS,
     defaultDomain: 'overall',
