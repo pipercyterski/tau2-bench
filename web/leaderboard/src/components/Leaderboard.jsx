@@ -52,7 +52,7 @@ const BENCHMARK_CONFIG = {
     label: 'τ³-Banking',
     icon: '🏦',
     title: 'τ³-Banking Leaderboard',
-    description: 'Text agents resolving banking customer-service tasks by retrieving and reasoning over a ~700-document knowledge base. Published as τ-knowledge.',
+    description: 'Text agents resolving banking customer-service tasks over a ~700-document knowledge base. Published as τ-knowledge.',
     // Shown on hover wherever the track name appears without room for the
     // full description; maps the display name back to the paper name.
     hoverNote: 'τ³-Banking was published as τ-knowledge',
