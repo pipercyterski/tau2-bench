@@ -22,7 +22,7 @@ const corePass1 = (results) => {
 // each showing its Overall top 3.
 // TODO(voice-banking): when banking is supported in voice mode, its scores
 // belong in the Knowledge bucket (as a text/voice split), not in Voice.
-function LeaderboardPreview({ onViewFullLeaderboard }) {
+function LeaderboardPreview({ onViewFullLeaderboard, onNavigate }) {
   const [coreTop3, setCoreTop3] = useState([])
   const [knowledgeTop3, setKnowledgeTop3] = useState([])
   const [voiceTop3, setVoiceTop3] = useState([])
@@ -123,16 +123,28 @@ function LeaderboardPreview({ onViewFullLeaderboard }) {
   // only carries what the badge doesn't already say (e.g. no "Voice" mode
   // under the τ³-Voice badge).
   const cards = [
-    { badge: 'τ³-Banking', badgeClass: 'knowledge', mode: 'Text', domains: 'Knowledge retrieval', href: '#leaderboard?benchmark=knowledge', hoverNote: 'τ³-Banking was published as τ-knowledge', models: knowledgeTop3 },
-    { badge: 'τ³-Voice', badgeClass: 'voice', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=voice', hoverNote: 'τ³-Voice was published as τ-voice', models: voiceTop3 },
-    { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', href: '#leaderboard?benchmark=core', models: coreTop3 },
+    { badge: 'τ³-Banking', badgeClass: 'knowledge', mode: 'Text', domains: 'Knowledge retrieval', href: '/leaderboard?benchmark=knowledge', hoverNote: 'τ³-Banking was published as τ-knowledge', models: knowledgeTop3 },
+    { badge: 'τ³-Voice', badgeClass: 'voice', domains: 'Retail · Airline · Telecom', href: '/leaderboard?benchmark=voice', hoverNote: 'τ³-Voice was published as τ-voice', models: voiceTop3 },
+    { badge: 'τ²-bench', badgeClass: 'core', mode: 'Text', domains: 'Retail · Airline · Telecom', href: '/leaderboard?benchmark=core', models: coreTop3 },
   ]
 
   return (
     <div className="leaderboard-preview">
       <div className="preview-tables">
         {cards.map((card) => (
-          <a className="preview-table-wrapper" href={card.href} key={card.badge}>
+          <a
+            className="preview-table-wrapper"
+            href={card.href}
+            key={card.badge}
+            onClick={(e) => {
+              // Client-side navigation for plain clicks; let modified clicks
+              // (cmd/ctrl/middle) open a new tab via the real href.
+              if (onNavigate && !e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) {
+                e.preventDefault()
+                onNavigate(card.href)
+              }
+            }}
+          >
             <h3 className="preview-table-title">
               <span className={`preview-mode-badge ${card.badgeClass}`} title={card.hoverNote}>{card.badge}</span>
               <span className="preview-table-subtitle">

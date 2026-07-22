@@ -11,14 +11,17 @@ const BENCHMARK_VALUES = new Set(['core', 'knowledge', 'voice'])
 // Pre-bucket URLs and localStorage used benchmark=text for what is now 'core'.
 const normalizeBenchmark = (value) => (value === 'text' ? 'core' : value)
 
-const getBenchmarkFromHash = () => {
-  const hash = window.location.hash.slice(1)
-  const [route, queryString = ''] = hash.split('?')
-  // Both #leaderboard?benchmark=… and #progress?benchmark=… select the
-  // benchmark on the same view, so accept either route.
-  if (route !== 'leaderboard' && route !== 'progress') return null
+// Both /leaderboard?benchmark=… and /progress?benchmark=… select the
+// benchmark on the same view, so accept either route.
+const isLeaderboardPath = (pathname) => {
+  const path = pathname.replace(/\/$/, '') || '/'
+  return path === '/leaderboard' || path === '/progress'
+}
 
-  const value = normalizeBenchmark(new URLSearchParams(queryString).get('benchmark'))
+const getBenchmarkFromUrl = () => {
+  if (!isLeaderboardPath(window.location.pathname)) return null
+
+  const value = normalizeBenchmark(new URLSearchParams(window.location.search).get('benchmark'))
   return BENCHMARK_VALUES.has(value) ? value : null
 }
 
@@ -233,8 +236,8 @@ const Leaderboard = () => {
   // Benchmark selector: 'core' (τ²-bench), 'knowledge' (τ-knowledge), or
   // 'voice' (τ-voice)
   const [benchmark, setBenchmark] = useState(() => {
-    const fromHash = getBenchmarkFromHash()
-    if (fromHash) return fromHash
+    const fromUrl = getBenchmarkFromUrl()
+    if (fromUrl) return fromUrl
 
     const fromStorage = normalizeBenchmark(localStorage.getItem('benchmark'))
     // Default to the first toggle position (newest track)
@@ -471,39 +474,32 @@ const Leaderboard = () => {
   }, [benchmark])
 
   // Keep benchmark in URL for shareable deep links, e.g.
-  // #leaderboard?benchmark=voice or #progress?benchmark=voice
+  // /leaderboard?benchmark=voice or /progress?benchmark=voice
   useEffect(() => {
-    const currentHash = window.location.hash
-    if (!currentHash.startsWith('#leaderboard') && !currentHash.startsWith('#progress')) {
-      return
-    }
+    if (!isLeaderboardPath(window.location.pathname)) return
 
-    const hash = currentHash.slice(1)
-    const [route, queryString = ''] = hash.split('?')
-    const params = new URLSearchParams(queryString)
+    const params = new URLSearchParams(window.location.search)
     params.set('benchmark', benchmark)
     params.delete('view')
 
-    const nextHash = `${route}?${params.toString()}`
-    if (hash !== nextHash) {
-      window.history.replaceState(null, '', `#${nextHash}`)
+    const next = `${window.location.pathname}?${params.toString()}`
+    if (`${window.location.pathname}${window.location.search}` !== next) {
+      window.history.replaceState(null, '', next)
     }
   }, [benchmark])
 
-  // React to manual hash edits or browser navigation events.
+  // React to browser navigation events (back/forward).
   useEffect(() => {
-    const syncFromHash = () => {
-      const benchmarkFromHash = getBenchmarkFromHash()
-      if (benchmarkFromHash) {
-        setBenchmark(prev => (prev === benchmarkFromHash ? prev : benchmarkFromHash))
+    const syncFromUrl = () => {
+      const benchmarkFromUrl = getBenchmarkFromUrl()
+      if (benchmarkFromUrl) {
+        setBenchmark(prev => (prev === benchmarkFromUrl ? prev : benchmarkFromUrl))
       }
     }
 
-    window.addEventListener('hashchange', syncFromHash)
-    window.addEventListener('popstate', syncFromHash)
+    window.addEventListener('popstate', syncFromUrl)
     return () => {
-      window.removeEventListener('hashchange', syncFromHash)
-      window.removeEventListener('popstate', syncFromHash)
+      window.removeEventListener('popstate', syncFromUrl)
     }
   }, [])
 
@@ -1277,7 +1273,7 @@ const Leaderboard = () => {
                                 {hasTraj && (
                                   <a
                                     className="view-trajectories-link"
-                                    href={`#trajectory-visualizer?model=${encodeURIComponent(submissionInfo.submissionDir)}&domain=${key}`}
+                                    href={`/trajectory-visualizer?model=${encodeURIComponent(submissionInfo.submissionDir)}&domain=${key}`}
                                   >
                                     View trajectories →
                                   </a>

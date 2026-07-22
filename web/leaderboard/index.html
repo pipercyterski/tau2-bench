@@ -33,6 +33,19 @@
     />
     <meta name="twitter:image" content="https://taubench.com/og-image.png" />
 
+    <script>
+      // Legacy hash routes (taubench.com/#leaderboard?benchmark=voice) predate
+      // path routing. Rewrite them to path equivalents before the app boots so
+      // old shared links keep working. #home/#docs/#results map to the root.
+      ;(function () {
+        var m = window.location.hash.match(
+          /^#(home|leaderboard|progress|trajectory-visualizer|blog|docs|results)(\?[^#]*)?$/
+        )
+        if (!m) return
+        var view = m[1] === 'home' || m[1] === 'docs' || m[1] === 'results' ? '' : m[1]
+        window.history.replaceState(null, '', '/' + view + (m[2] || ''))
+      })()
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
