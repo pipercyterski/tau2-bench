@@ -11,7 +11,7 @@
   },
   "results": {
     "banking_knowledge": {
-      "pass_1": 9.278350515463918,
+      "pass_1": 10.309278350515463,
       "retrieval_config": "alltools"
     }
   },
@@ -22,9 +22,9 @@
   },
   "methodology": {
     "evaluation_date": "2026-07-12",
-    "tau2_bench_version": "1.0.0",
+    "tau2_bench_version": "1.0.1",
     "user_simulator": "gpt-5.5-2026-04-23 (xhigh)",
-    "notes": "Custom submission: first voice-banking (voice + knowledge) entry. Identical to the standard voice evaluation pipeline (audio-native, regular speech complexity, ElevenLabs eleven_v3 TTS, agent reasoning_effort=xhigh) but run on the banking_knowledge domain with retrieval-config=alltools, and the user simulator LLM is gpt-5.5-2026-04-23 at reasoning_effort=xhigh instead of the leaderboard-standard v1.0 (gpt-4.1). Not comparable to standard-user-simulator leaderboard entries.",
+    "notes": "Custom submission: first voice-banking (voice + knowledge) entry. Identical to the standard voice evaluation pipeline (audio-native, regular speech complexity, ElevenLabs eleven_v3 TTS, agent reasoning_effort=xhigh) but run on the banking_knowledge domain with retrieval-config=alltools, and the user simulator LLM is gpt-5.5-2026-04-23 at reasoning_effort=xhigh instead of the leaderboard-standard v1.0 (gpt-4.1). Not comparable to standard-user-simulator leaderboard entries. Re-evaluated under tau2-bench v1.0.1 (banking_knowledge grading/task fixes #329/#388/#397/#402/#403): all 97 trajectories re-graded with the fixed evaluate-trajs path, and the 15 calls whose agents were exposed to the pre-fix environment (transaction ordering, Platinum Rewards doc title) re-run live under the fixed environment regardless of prior outcome. task_007 flipped to pass on re-run.",
     "verification": {
       "modified_prompts": false,
       "omitted_questions": false
@@ -56,42 +56,42 @@
     },
     "domains": {
       "banking_knowledge": {
-        "response_latency_mean": 2.0380952380952393,
-        "yield_latency_mean": 0.6119440914866582,
-        "response_rate": 0.9471228615863142,
-        "yield_rate": 0.9974651457541192,
-        "agent_interruption_rate": 0.2667185069984448,
-        "selectivity_backchannel": 0.036363636363636376,
-        "selectivity_vocal_tic": 0.12403100775193798,
-        "selectivity_non_directed": 0.1454545454545455,
+        "response_latency_mean": 2.036130136986302,
+        "yield_latency_mean": 0.6110381077529566,
+        "response_rate": 0.9442198868229588,
+        "yield_rate": 0.9973787680209698,
+        "agent_interruption_rate": 0.2667744543249798,
+        "selectivity_backchannel": 0.03448275862068961,
+        "selectivity_vocal_tic": 0.1544715447154471,
+        "selectivity_non_directed": 0.1568627450980392,
         "counts": {
           "n_simulations": 97,
-          "response_total": 1286,
-          "yield_total": 789,
-          "backchannel_total": 55,
-          "vocal_tic_total": 129,
-          "non_directed_total": 165,
-          "agent_interrupts_count": 343
+          "response_total": 1237,
+          "yield_total": 763,
+          "backchannel_total": 58,
+          "vocal_tic_total": 123,
+          "non_directed_total": 153,
+          "agent_interrupts_count": 330
         }
       }
     },
     "overall": {
-      "response_latency_mean": 2.0380952380952393,
-      "yield_latency_mean": 0.6119440914866582,
-      "response_rate": 0.9471228615863142,
-      "yield_rate": 0.9974651457541192,
-      "agent_interruption_rate": 0.2667185069984448,
-      "selectivity_backchannel": 0.036363636363636376,
-      "selectivity_vocal_tic": 0.12403100775193798,
-      "selectivity_non_directed": 0.1454545454545455,
+      "response_latency_mean": 2.036130136986302,
+      "yield_latency_mean": 0.6110381077529566,
+      "response_rate": 0.9442198868229588,
+      "yield_rate": 0.9973787680209698,
+      "agent_interruption_rate": 0.2667744543249798,
+      "selectivity_backchannel": 0.03448275862068961,
+      "selectivity_vocal_tic": 0.1544715447154471,
+      "selectivity_non_directed": 0.1568627450980392,
       "counts": {
-        "agent_interrupts_count": 343,
-        "backchannel_total": 55,
+        "agent_interrupts_count": 330,
+        "backchannel_total": 58,
         "n_simulations": 97,
-        "non_directed_total": 165,
-        "response_total": 1286,
-        "vocal_tic_total": 129,
-        "yield_total": 789
+        "non_directed_total": 153,
+        "response_total": 1237,
+        "vocal_tic_total": 123,
+        "yield_total": 763
       }
     }
   }
