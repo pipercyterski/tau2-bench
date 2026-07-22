@@ -43,8 +43,16 @@ function App() {
     // Preserve existing query params when already on the target path (the
     // visualizer and leaderboard keep their state in the query string).
     if (window.location.pathname !== path) {
-      window.history.pushState(null, '', path)
+      // Keep the query string when moving between two routes of the same
+      // view (e.g. /progress → /leaderboard both render the leaderboard,
+      // and ?benchmark=… should survive the switch).
+      const sameView = getViewFromPath(window.location.pathname) === view
+      window.history.pushState(null, '', sameView ? `${path}${window.location.search}` : path)
     }
+    // If the view didn't change, React won't re-render anything, so without
+    // this a nav click from e.g. /progress (scrolled to the chart) back to
+    // /leaderboard would visibly do nothing.
+    window.scrollTo(0, 0)
   }
 
   // Navigate to an app-internal URL (path + query), e.g. from the homepage
@@ -53,6 +61,7 @@ function App() {
     window.history.pushState(null, '', url)
     setCurrentView(getViewFromPath(new URL(url, window.location.origin).pathname))
     setMobileMenuOpen(false)
+    window.scrollTo(0, 0)
   }
 
   // Toggle mobile menu

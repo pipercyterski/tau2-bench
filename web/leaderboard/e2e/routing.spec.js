@@ -104,6 +104,17 @@ test('preview card navigates client-side; back returns home', async ({ page }) =
   await expect(page.getByText('How τ-bench has evolved')).toBeVisible()
 })
 
+test('nav from /progress back to /leaderboard scrolls to top and keeps params', async ({ page }) => {
+  await page.goto('/progress?benchmark=voice')
+  // Wait for the auto-scroll down to the progress section to happen.
+  await page.waitForFunction(() => window.scrollY > 0)
+
+  await page.getByRole('button', { name: 'Leaderboard' }).click()
+  await expect(page).toHaveURL(/\/leaderboard\?benchmark=voice/)
+  await page.waitForFunction(() => window.scrollY === 0)
+  await expect(page.getByRole('heading', { name: 'τ³-Voice Leaderboard' })).toBeVisible()
+})
+
 test('nav links update path and title', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Leaderboard' }).click()
