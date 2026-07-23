@@ -270,7 +270,7 @@ const Leaderboard = () => {
     const stored = localStorage.getItem('showCustom')
     if (stored !== null) return stored === 'true'
     // Voice defaults to showing custom submissions alongside standard ones
-    const initialBenchmark = getBenchmarkFromHash() || localStorage.getItem('benchmark')
+    const initialBenchmark = getBenchmarkFromUrl() || localStorage.getItem('benchmark')
     return initialBenchmark === 'voice'
   })
   // Legacy submissions toggle
