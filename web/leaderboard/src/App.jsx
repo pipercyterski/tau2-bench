@@ -1,57 +1,67 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import { getViewFromPath, PAGE_META, SITE_ORIGIN, VIEW_PATHS } from './routes'
 import TrajectoryVisualizer from './components/TrajectoryVisualizer'
 import Leaderboard from './components/Leaderboard'
 import LeaderboardPreview from './components/LeaderboardPreview'
 import EvolutionTimeline from './components/EvolutionTimeline'
 import Blog from './components/Blog'
 
-function App() {
-  
-  // Initialize currentView based on URL hash (strip query params for view matching)
-  const getViewFromHash = (hash) => {
-    const base = hash.split('?')[0]
-    if (base === 'leaderboard') return 'leaderboard'
-    // #progress is a deep-link to the Progress-over-time panel inside the
-    // leaderboard view. The view is the leaderboard; the in-page scroll to
-    // #progress is handled by the effect below.
-    if (base === 'progress') return 'leaderboard'
-    if (base === 'trajectory-visualizer') return 'trajectory-visualizer'
-    if (base === 'blog') return 'blog'
-    if (base === 'results' || base === 'docs') return '__deprecated__'
-    return 'home'
-  }
+// Update the document head to match the current view. The prerender step
+// (scripts/prerender.mjs) snapshots the DOM after this runs, which is how
+// each prerendered page gets its own title/description/canonical tags.
+const setHeadContent = (selector, attr, value) => {
+  const el = document.head.querySelector(selector)
+  if (el) el.setAttribute(attr, value)
+}
 
-  const getInitialView = () => {
-    const hash = window.location.hash.slice(1)
-    const view = getViewFromHash(hash)
-    if (view === '__deprecated__') {
-      window.history.replaceState(null, '', '#home')
-      return 'home'
-    }
-    return view
-  }
-  
-  const [currentView, setCurrentView] = useState(getInitialView())
+const applyPageMeta = (view) => {
+  const meta = PAGE_META[view]
+  if (!meta) return
+  const url = `${SITE_ORIGIN}${VIEW_PATHS[view] || '/'}`
+  document.title = meta.title
+  setHeadContent('meta[name="description"]', 'content', meta.description)
+  setHeadContent('link[rel="canonical"]', 'href', url)
+  setHeadContent('meta[property="og:url"]', 'content', url)
+  setHeadContent('meta[property="og:title"]', 'content', meta.title)
+  setHeadContent('meta[property="og:description"]', 'content', meta.description)
+  setHeadContent('meta[name="twitter:title"]', 'content', meta.title)
+  setHeadContent('meta[name="twitter:description"]', 'content', meta.description)
+}
+
+function App() {
+
+  const [currentView, setCurrentView] = useState(() => getViewFromPath(window.location.pathname))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Handle navigation with URL updates
   const navigateTo = (view) => {
     setCurrentView(view)
     setMobileMenuOpen(false) // Close mobile menu when navigating
-    if (view === 'home') {
-      window.history.pushState(null, '', '#home')
-    } else if (view === 'leaderboard') {
-      window.history.pushState(null, '', '#leaderboard')
-    } else if (view === 'blog') {
-      window.history.pushState(null, '', '#blog')
-    } else if (view === 'trajectory-visualizer') {
-      // Preserve existing query params if already on the visualizer
-      const currentHash = window.location.hash || ''
-      if (!currentHash.startsWith('#trajectory-visualizer')) {
-        window.history.pushState(null, '', '#trajectory-visualizer')
-      }
+    const path = VIEW_PATHS[view]
+    if (!path) return
+    // Preserve existing query params when already on the target path (the
+    // visualizer and leaderboard keep their state in the query string).
+    if (window.location.pathname !== path) {
+      // Keep the query string when moving between two routes of the same
+      // view (e.g. /progress → /leaderboard both render the leaderboard,
+      // and ?benchmark=… should survive the switch).
+      const sameView = getViewFromPath(window.location.pathname) === view
+      window.history.pushState(null, '', sameView ? `${path}${window.location.search}` : path)
     }
+    // If the view didn't change, React won't re-render anything, so without
+    // this a nav click from e.g. /progress (scrolled to the chart) back to
+    // /leaderboard would visibly do nothing.
+    window.scrollTo(0, 0)
+  }
+
+  // Navigate to an app-internal URL (path + query), e.g. from the homepage
+  // preview cards: '/leaderboard?benchmark=voice'.
+  const navigateToUrl = (url) => {
+    window.history.pushState(null, '', url)
+    setCurrentView(getViewFromPath(new URL(url, window.location.origin).pathname))
+    setMobileMenuOpen(false)
+    window.scrollTo(0, 0)
   }
 
   // Toggle mobile menu
@@ -61,12 +71,12 @@ function App() {
 
 
 
-  // Scroll to a specific section if the hash refers to one (e.g. #progress).
-  // Tries a few times with rAF + small timeouts so it works even if the
-  // target hasn't mounted yet (data-loading async views).
-  const scrollToSectionForHash = (hash) => {
-    const base = hash.split('?')[0]
-    const sectionId = base === 'progress' ? 'progress' : null
+  // Scroll to a specific section if the path refers to one (/progress is the
+  // leaderboard scrolled to the Progress-over-time panel). Tries a few times
+  // with rAF + small timeouts so it works even if the target hasn't mounted
+  // yet (data-loading async views).
+  const scrollToSectionForPath = (pathname) => {
+    const sectionId = pathname.replace(/\/$/, '') === '/progress' ? 'progress' : null
     if (!sectionId) return
     const tryScroll = (attemptsLeft) => {
       const el = document.getElementById(sectionId)
@@ -79,22 +89,17 @@ function App() {
     requestAnimationFrame(() => tryScroll(20))
   }
 
+  // Keep the document head (title, description, canonical, og:*) in sync
+  // with the current view.
+  useEffect(() => {
+    applyPageMeta(currentView)
+  }, [currentView])
+
   // Listen for browser back/forward button clicks and handle mobile menu
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1)
-      const view = getViewFromHash(hash)
-      if (view === '__deprecated__') {
-        window.history.replaceState(null, '', '#home')
-        setCurrentView('home')
-      } else {
-        setCurrentView(view)
-        scrollToSectionForHash(hash)
-      }
-    }
-
     const handlePopState = () => {
-      handleHashChange()
+      setCurrentView(getViewFromPath(window.location.pathname))
+      scrollToSectionForPath(window.location.pathname)
     }
 
     // Close mobile menu when clicking outside
@@ -105,20 +110,13 @@ function App() {
     }
 
     // Listen to events
-    window.addEventListener('hashchange', handleHashChange)
     window.addEventListener('popstate', handlePopState)
     document.addEventListener('click', handleClickOutside)
 
-    // Set initial URL if none exists
-    if (!window.location.hash) {
-      window.history.replaceState(null, '', '#home')
-    } else {
-      // Honor an initial deep-link like #progress on first paint.
-      scrollToSectionForHash(window.location.hash.slice(1))
-    }
+    // Honor an initial deep-link like /progress on first paint.
+    scrollToSectionForPath(window.location.pathname)
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange)
       window.removeEventListener('popstate', handlePopState)
       document.removeEventListener('click', handleClickOutside)
     }
@@ -188,7 +186,10 @@ function App() {
                   retrieve knowledge, and follow policy across enterprise domains — in text and voice.
                 </p>
 
-                <LeaderboardPreview onViewFullLeaderboard={() => navigateTo('leaderboard')} />
+                <LeaderboardPreview
+                  onViewFullLeaderboard={() => navigateTo('leaderboard')}
+                  onNavigate={navigateToUrl}
+                />
               </div>
             </div>
           </section>
