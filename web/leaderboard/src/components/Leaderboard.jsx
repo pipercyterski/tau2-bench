@@ -785,12 +785,11 @@ const Leaderboard = () => {
         <div className="domain-scope-note">
           <span className="domain-scope-icon">ⓘ</span>
           <span>
-            Banking puts the full policy corpus in the agent's context, so it is
-            scored on its own — see the{' '}
+            For voice agents on retrieval tasks, see the{' '}
             <button className="domain-scope-link" onClick={() => setDomain('banking_knowledge')}>
               🏦 Banking
             </button>
-            {' '}domain. Overall covers Retail, Airline and Telecom only.
+            {' '}domain. Overall does not include Banking.
           </span>
         </div>
       )}
