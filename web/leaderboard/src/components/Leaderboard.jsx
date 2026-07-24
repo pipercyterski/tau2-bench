@@ -246,9 +246,15 @@ const Leaderboard = () => {
   })
   // Add unified domain selection state with localStorage persistence
   const [domain, setDomain] = useState(() => {
+    // Resolve the benchmark the same way its own initializer does (URL wins),
+    // so a direct load of ?benchmark=voice gets voice's default domain rather
+    // than one stored under another track.
     const storedBenchmark = normalizeBenchmark(localStorage.getItem('benchmark'))
-    const storedDomain = localStorage.getItem('domain')
-    const config = BENCHMARK_CONFIG[storedBenchmark] || BENCHMARK_CONFIG.knowledge
+    const urlBenchmark = getBenchmarkFromUrl()
+    const config = BENCHMARK_CONFIG[urlBenchmark || storedBenchmark] || BENCHMARK_CONFIG.knowledge
+    const storedDomain = (!urlBenchmark || urlBenchmark === storedBenchmark)
+      ? localStorage.getItem('domain')
+      : null
     return config.domains.some(({ key }) => key === storedDomain)
       ? storedDomain
       : config.defaultDomain
