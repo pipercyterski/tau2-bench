@@ -74,7 +74,9 @@ const BENCHMARK_CONFIG = {
     modality: 'voice',
     domains: VOICE_DOMAINS,
     defaultDomain: 'overall',
-    breakdownDomains: ['retail', 'airline', 'telecom'],
+    // Banking is excluded from the Overall average but still gets a breakdown
+    // card, so a banking-only submission has somewhere to show its score.
+    breakdownDomains: ['retail', 'airline', 'telecom', 'banking_knowledge'],
   },
   core: {
     label: 'τ²-bench',
