@@ -787,11 +787,12 @@ const Leaderboard = () => {
         <div className="domain-scope-note">
           <span className="domain-scope-icon">ⓘ</span>
           <span>
-            For voice agents on retrieval tasks, see the{' '}
+            See the new{' '}
             <button className="domain-scope-link" onClick={() => setDomain('banking_knowledge')}>
               🏦 Banking
             </button>
-            {' '}domain. Overall does not include Banking.
+            {' '}domain for voice agent performance on long policy tasks.
+            Overall does not include Banking.
           </span>
         </div>
       )}

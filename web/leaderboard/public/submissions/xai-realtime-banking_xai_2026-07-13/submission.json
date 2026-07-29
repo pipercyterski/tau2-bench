@@ -24,7 +24,7 @@
     "evaluation_date": "2026-07-13",
     "tau2_bench_version": "1.0.1",
     "user_simulator": "gpt-5.5-2026-04-23 (xhigh)",
-    "notes": "Combined voice+knowledge track: banking_knowledge domain run through the audio-native voice pipeline (regular speech complexity, alltools retrieval). Custom user simulator gpt-5.5-2026-04-23 (reasoning_effort=xhigh). Evaluated via xAI's 'xai-realtime' endpoint, which does not disclose the served Grok voice model version and exposes no reasoning-effort control, so the Released and Reasoning columns are intentionally empty rather than unknown. 1 trial per task. Re-evaluated under tau2-bench v1.0.1 (banking_knowledge grading/task fixes #329/#388/#397/#402/#403): all 97 trajectories re-graded with the fixed evaluate-trajs path (zero flips), and the 34 calls whose agents were exposed to the pre-fix environment (transaction ordering, Platinum Rewards doc title) re-run live under the fixed environment regardless of prior outcome (+6 passes: task_001/023/025/057 via the doc fix, task_093/095 via the ordering fix; -1: previously-passing task_058 lost on re-run).",
+    "notes": "Combined voice+knowledge track: banking_knowledge domain run through the audio-native voice pipeline (regular speech complexity, alltools retrieval). Custom user simulator gpt-5.5-2026-04-23 (reasoning_effort=xhigh). Evaluated via xAI's 'xai-realtime' endpoint, which does not disclose the served Grok voice model version; Released is recorded from xAI's Grok Voice Think Fast 1.0 announcement (2026-04-23), the voice model line behind the endpoint. The endpoint exposes no reasoning-effort level, so Reasoning is recorded as enabled without a level. 1 trial per task. Re-evaluated under tau2-bench v1.0.1 (banking_knowledge grading/task fixes #329/#388/#397/#402/#403): all 97 trajectories re-graded with the fixed evaluate-trajs path (zero flips), and the 34 calls whose agents were exposed to the pre-fix environment (transaction ordering, Platinum Rewards doc title) re-run live under the fixed environment regardless of prior outcome (+6 passes: task_001/023/025/057 via the doc fix, task_093/095 via the ordering fix; -1: previously-passing task_058 lost on re-run).",
     "verification": {
       "modified_prompts": false,
       "omitted_questions": false
@@ -88,5 +88,11 @@
         "yield_total": 1205
       }
     }
+  },
+  "reasoning_effort": "enabled",
+  "model_release": {
+    "release_date": "2026-04-23",
+    "announcement_url": "https://x.ai/news/grok-voice-think-fast-1",
+    "announcement_title": "Grok Voice Think Fast 1.0"
   }
 }
