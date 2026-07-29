@@ -242,7 +242,7 @@
   align-items: flex-start;
   justify-content: center;
   gap: 10px;
-  max-width: 760px;
+  max-width: 840px;
   margin: -40px auto 48px;
   padding: 12px 20px;
   background: #ecfdf5;
@@ -280,6 +280,16 @@
   .domain-scope-note {
     margin: -24px 16px 40px;
     font-size: 13px;
+  }
+}
+
+/* The note reads as one sentence, so keep it on one line once there's room for
+   it (~792px incl. padding). Below this it wraps instead of overflowing. */
+@media (min-width: 900px) {
+  .domain-scope-note {
+    width: fit-content;
+    white-space: nowrap;
+    align-items: center;
   }
 }
 

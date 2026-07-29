@@ -276,10 +276,9 @@ const Leaderboard = () => {
   })
   const [showCustom, setShowCustom] = useState(() => {
     const stored = localStorage.getItem('showCustom')
-    if (stored !== null) return stored === 'true'
-    // Voice defaults to showing custom submissions alongside standard ones
-    const initialBenchmark = getBenchmarkFromUrl() || localStorage.getItem('benchmark')
-    return initialBenchmark === 'voice'
+    // Every track defaults to standard-only: custom rows aren't comparable to
+    // the rest of the board, so they're opt-in rather than mixed in by default.
+    return stored === null ? false : stored === 'true'
   })
   // Legacy submissions toggle
   const [showLegacy, setShowLegacy] = useState(() => {
