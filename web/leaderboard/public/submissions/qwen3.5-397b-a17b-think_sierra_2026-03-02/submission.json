@@ -23,21 +23,39 @@
       "pass_2": 75.67,
       "pass_3": 71.5,
       "pass_4": 68.0,
-      "cost": null
+      "cost": null,
+      "user_cost": 0.01793,
+      "total_cost": 0.01793,
+      "duration_seconds": 1394.6,
+      "agent_time_seconds": 1044.86,
+      "user_time_seconds": 349.48,
+      "tool_time_seconds": 0.0
     },
     "retail": {
       "pass_1": 84.43,
       "pass_2": 74.42,
       "pass_3": 66.45,
       "pass_4": 59.65,
-      "cost": null
+      "cost": null,
+      "user_cost": 0.01413,
+      "total_cost": 0.01413,
+      "duration_seconds": 703.49,
+      "agent_time_seconds": 502.84,
+      "user_time_seconds": 200.52,
+      "tool_time_seconds": 0.0
     },
     "telecom": {
       "pass_1": 97.81,
       "pass_2": 95.76,
       "pass_3": 93.86,
       "pass_4": 92.11,
-      "cost": null
+      "cost": null,
+      "user_cost": 0.06279,
+      "total_cost": 0.06279,
+      "duration_seconds": 841.37,
+      "agent_time_seconds": 381.65,
+      "user_time_seconds": 459.65,
+      "tool_time_seconds": 0.0
     },
     "banking_knowledge": {
       "pass_1": 9.79,
@@ -45,7 +63,13 @@
       "pass_3": 5.41,
       "pass_4": 5.15,
       "cost": null,
-      "retrieval_config": "text-emb-3-large"
+      "retrieval_config": "text-emb-3-large",
+      "user_cost": 0.02061,
+      "total_cost": 0.02061,
+      "duration_seconds": 1213.0,
+      "agent_time_seconds": 979.24,
+      "user_time_seconds": 216.12,
+      "tool_time_seconds": 17.62
     }
   },
   "reasoning_effort": "enabled",

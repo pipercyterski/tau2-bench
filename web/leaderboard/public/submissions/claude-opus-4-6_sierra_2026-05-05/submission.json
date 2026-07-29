@@ -24,7 +24,13 @@
       "pass_3": 14.18,
       "pass_4": 11.34,
       "cost": null,
-      "retrieval_config": "alltools"
+      "retrieval_config": "alltools",
+      "user_cost": 0.02784,
+      "total_cost": 0.02784,
+      "duration_seconds": 149.74,
+      "agent_time_seconds": 126.16,
+      "user_time_seconds": 19.06,
+      "tool_time_seconds": 4.49
     }
   },
   "reasoning_effort": "max",

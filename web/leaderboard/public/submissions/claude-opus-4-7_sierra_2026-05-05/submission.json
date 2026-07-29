@@ -24,7 +24,13 @@
       "pass_3": 18.04,
       "pass_4": 15.46,
       "cost": null,
-      "retrieval_config": "alltools"
+      "retrieval_config": "alltools",
+      "user_cost": 0.02672,
+      "total_cost": 0.02672,
+      "duration_seconds": 149.73,
+      "agent_time_seconds": 127.68,
+      "user_time_seconds": 19.32,
+      "tool_time_seconds": 2.71
     }
   },
   "reasoning_effort": "max",
