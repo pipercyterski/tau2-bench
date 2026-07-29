@@ -15,7 +15,12 @@ When someone opens a PR with a new `submission.json`:
 Check the submission.json manually:
 - Directory name follows `{model_name}_{org}_{date}` convention
 - `manifest.json` is updated (correct array: `submissions`, `voice_submissions`, or `legacy_submissions`)
-- `submission_type` is `"standard"` or `"custom"` (if custom: check `methodology.notes` and `references`)
+- `submission_type` is `"standard"` or `"custom"`. Reserve `"custom"` for architectural changes
+  to the system under test (routers, added agent components, extra tools, replaced retrieval) or
+  models trained on tau2-bench domains. A different user simulator, reasoning effort, retrieval
+  config, or prompt tweak is **standard** — it gets disclosed in `methodology`, not reclassified.
+  (If custom: check `methodology.notes` and `references`.)
+- `methodology.user_simulator` is accurate — non-reference simulators are flagged in the UI
 - Contact info is present
 - For voice: `modality` is `"voice"`, `voice_config` is present
 

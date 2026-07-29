@@ -162,7 +162,9 @@ class Verification(BaseModelNoExtra):
 
     modified_prompts: Optional[bool] = Field(
         None,
-        description="Whether any modifications were made to user simulator or agent prompts",
+        description="Whether any modifications were made to user simulator or agent prompts. "
+        "Disclosure only: prompt changes do not by themselves make a submission 'custom', "
+        "and do not affect verification status",
     )
     omitted_questions: Optional[bool] = Field(
         None,
@@ -409,8 +411,14 @@ class Submission(BaseModelNoExtra):
     submission_date: date = Field(..., description="Date of submission")
     submission_type: Literal["standard", "custom"] = Field(
         "standard",
-        description="Type of submission: 'standard' uses the default tau2-bench scaffold, "
-        "'custom' uses modified scaffolds (multi-model routers, additional tools, custom prompting, etc.)",
+        description="Type of submission, drawn at the architecture of the system under test. "
+        "'standard' is an off-the-shelf model in the default tau2-bench scaffold; configuration "
+        "differences (a different user simulator, reasoning effort, retrieval config, prompt "
+        "adjustments, seeds) are still standard and are disclosed via methodology instead. "
+        "'custom' is an architectural change to the system under test (multi-model routers, added "
+        "agent components such as supervisors or tool-call gates, tools beyond the standard set, "
+        "replaced retrieval subsystems, modified control flow) or a model trained/fine-tuned on "
+        "tau2-bench domains",
     )
     modality: Literal["text", "voice"] = Field(
         "text",

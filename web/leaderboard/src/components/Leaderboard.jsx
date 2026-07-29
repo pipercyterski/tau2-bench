@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './Leaderboard.css'
 import ProgressView from './ProgressView'
+import { isReferenceUserSim, NON_REFERENCE_USER_SIM_TITLE } from '../utils/userSimulator'
 
 // The leaderboard is split into three buckets, one per benchmark track:
 // τ³-Banking (published as τ-knowledge), τ³-Voice (published as τ-voice:
@@ -417,16 +418,16 @@ const Leaderboard = () => {
             // Voice-specific fields
             voiceConfig: submission.voice_config || null,
             interactionMetrics: submission.interaction_metrics || null,
-            // Add verification status
-            // For 'custom' submissions, we relax the modified_prompts constraint
-            // Custom submissions are allowed to modify prompts as long as they have trajectories and don't omit questions
-            // For voice submissions, trajectories are never available so skip that check
+            // Add verification status.
+            // Verification is about auditability, not configuration: a submission is verified
+            // when we can review its trajectories and it evaluated every task. Prompt changes
+            // are a disclosed configuration choice (shown separately in the details panel) and
+            // do not affect this, for standard or custom submissions alike.
+            // For voice submissions, trajectories are never available so skip that check.
             isVerified: modality === 'voice'
-              ? (submission.methodology?.verification?.omitted_questions === false &&
-                 (submission.submission_type === 'custom' || submission.methodology?.verification?.modified_prompts === false))
-              : (submission.trajectories_available && 
-                 submission.methodology?.verification?.omitted_questions === false &&
-                 (submission.submission_type === 'custom' || submission.methodology?.verification?.modified_prompts === false)),
+              ? submission.methodology?.verification?.omitted_questions === false
+              : (submission.trajectories_available &&
+                 submission.methodology?.verification?.omitted_questions === false),
             verificationDetails: submission.methodology?.verification || null,
             // Submission type: 'standard' (default) or 'custom'
             submissionType: submission.submission_type || 'standard'
@@ -749,11 +750,11 @@ const Leaderboard = () => {
                   <h4>Submission Types</h4>
                   <div className="filter-info-item">
                     <strong>Standard</strong>
-                    <p>Results using the default τ-bench scaffold: a base LLM with the standard tool set and prompts.</p>
+                    <p>An off-the-shelf model running in the default τ-bench scaffold. Configuration differences — a different user simulator, reasoning effort, retrieval config, or prompt adjustments — are still standard, and are disclosed in the row and its details.</p>
                   </div>
                   <div className="filter-info-item">
                     <strong>Custom</strong>
-                    <p>Results using modified scaffolds, such as multi-model routers, additional tools, custom prompting strategies, or other orchestration approaches.</p>
+                    <p>An architectural change to the system under test: multi-model routers, added agent components such as supervisors or tool-call gates, tools beyond the standard set, or replaced retrieval subsystems — plus models trained or fine-tuned on τ-bench domains.</p>
                   </div>
                   <div className="filter-info-item">
                     <strong>Legacy (v1)</strong>
@@ -1142,7 +1143,9 @@ const Leaderboard = () => {
                        )}
                      </td>
                      
-                     {/* User Simulator */}
+                     {/* User Simulator. Non-reference simulators are marked: the
+                         submission is still standard, but its scores are not
+                         directly comparable to reference-simulator rows. */}
                      <td className="user-sim-info">
                        {model.data.userSimulator ? (
                          isVoice && model.data.userSimulator.startsWith('v') ? (
@@ -1153,8 +1156,16 @@ const Leaderboard = () => {
                              className="user-sim-name user-sim-version-link"
                              title="View voice user simulator source at this version"
                            >{model.data.userSimulator}</a>
-                         ) : (
+                         ) : isReferenceUserSim(model.data.userSimulator, isVoice) ? (
                            <span className="user-sim-name">{model.data.userSimulator}</span>
+                         ) : (
+                           <span
+                             className="user-sim-name user-sim-nonreference"
+                             title={NON_REFERENCE_USER_SIM_TITLE}
+                           >
+                             {model.data.userSimulator}
+                             <span className="user-sim-nonreference-marker" aria-hidden="true">*</span>
+                           </span>
                          )
                        ) : (
                          <span className="no-data">—</span>
@@ -1509,11 +1520,9 @@ const Leaderboard = () => {
                           {(() => {
                             const isVoiceSub = selectedSubmission.modality === 'voice'
                             const verified = isVoiceSub
-                              ? (selectedSubmission.methodology.verification.omitted_questions === false &&
-                                 (selectedSubmission.submission_type === 'custom' || selectedSubmission.methodology.verification.modified_prompts === false))
-                              : (selectedSubmission.trajectories_available && 
-                                 selectedSubmission.methodology.verification.omitted_questions === false &&
-                                 (selectedSubmission.submission_type === 'custom' || selectedSubmission.methodology.verification.modified_prompts === false))
+                              ? selectedSubmission.methodology.verification.omitted_questions === false
+                              : (selectedSubmission.trajectories_available &&
+                                 selectedSubmission.methodology.verification.omitted_questions === false)
                             return verified
                               ? <span className="sd-badge sd-verified">Verified</span>
                               : <span className="sd-badge sd-unverified">Unverified</span>

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { isReferenceUserSim } from '../utils/userSimulator'
 import './ProgressView.css'
 
 const ORG_LOGOS = {
@@ -97,6 +98,11 @@ const extractEntries = (
     return true
   }
 
+  // When a model has several runs, prefer the one that used the reference user
+  // simulator before preferring the higher score. A non-reference simulator
+  // shifts scores, so letting it win the dedup would bend the trend line; fall
+  // back to a non-reference run only when it is the model's only run.
+  const isVoiceBenchmark = BENCHMARK_MODALITY[benchmark] === 'voice'
   const bestByModel = new Map()
   for (const [key, model] of Object.entries(passKData)) {
     if (!passesFilters(model)) continue
@@ -104,9 +110,12 @@ const extractEntries = (
     if (score === null) continue
     const sub = fullSubmissionData[key] || {}
     const modelName = sub.model_name || model.modelName
+    const isReference = isReferenceUserSim(model.userSimulator, isVoiceBenchmark)
     const prev = bestByModel.get(modelName)
-    if (!prev || score > prev.score) {
-      bestByModel.set(modelName, { key, score })
+    const wins = !prev
+      || (isReference !== prev.isReference ? isReference : score > prev.score)
+    if (wins) {
+      bestByModel.set(modelName, { key, score, isReference })
     }
   }
 

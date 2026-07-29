@@ -1456,6 +1456,20 @@
   line-height: 1.2;
 }
 
+/* Simulator that differs from the leaderboard reference: the row is still a
+   standard submission, but its scores are not directly comparable. Marked with
+   a glyph as well as color, so the signal does not depend on color alone. */
+.user-sim-name.user-sim-nonreference {
+  color: #92400e;
+  cursor: help;
+}
+
+.user-sim-nonreference-marker {
+  margin-left: 3px;
+  font-weight: 700;
+  color: #b45309;
+}
+
 a.user-sim-version-link {
   color: #3182ce;
   text-decoration: none;

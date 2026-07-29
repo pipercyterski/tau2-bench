@@ -657,7 +657,16 @@ def prepare_submission(
         "Should this model be highlighted as new on the leaderboard?", default=True
     )
 
-    # Submission type
+    # Submission type. 'custom' is reserved for architectural changes to the
+    # system under test — configuration differences (user simulator, reasoning
+    # effort, retrieval config, prompt tweaks) stay 'standard' and are disclosed
+    # through the methodology fields below.
+    console.print(
+        "\n[dim]'custom' = architectural change (routers, added agent components, extra "
+        "tools, replaced retrieval) or a model trained on tau2-bench domains.\n"
+        "A different user simulator, reasoning effort, or prompt tweak is still "
+        "'standard' — just disclose it.[/dim]"
+    )
     submission_type = Prompt.ask(
         "Submission type",
         choices=["standard", "custom"],
