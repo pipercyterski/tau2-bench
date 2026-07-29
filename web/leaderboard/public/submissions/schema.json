@@ -471,7 +471,7 @@
             }
           ],
           "default": null,
-          "description": "For text: model name (e.g. 'gpt-4.1-2025-04-14'). For voice: version identifier (e.g. 'v1.0') anchored to git tag voice-user-sim-<version>.",
+          "description": "For text: model name (e.g. 'gpt-4.1-2025-04-14'). For voice: a published version identifier (e.g. 'v1.0', 'v2.0') from VOICE_USER_SIMULATOR_VERSIONS, anchored to git tag voice-user-sim-<version>. Voice submissions may not name an arbitrary model.",
           "title": "User Simulator"
         },
         "notes": {

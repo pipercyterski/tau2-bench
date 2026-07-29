@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { isReferenceUserSim } from '../utils/userSimulator'
+import { RANKING_VOICE_USER_SIM } from '../utils/userSimulator'
 import './ProgressView.css'
 
 const ORG_LOGOS = {
@@ -98,10 +98,11 @@ const extractEntries = (
     return true
   }
 
-  // When a model has several runs, prefer the one that used the reference user
-  // simulator before preferring the higher score. A non-reference simulator
-  // shifts scores, so letting it win the dedup would bend the trend line; fall
-  // back to a non-reference run only when it is the model's only run.
+  // When a voice model has runs on several user-simulator versions, plot the one
+  // the leaderboard ranks on before preferring the higher score: v2.0 is a
+  // stronger simulator than v1.0, so letting it win the dedup would bend the
+  // trend line. Fall back to another version only when it is the model's only
+  // run. Text simulators are unversioned, so there the higher score just wins.
   const isVoiceBenchmark = BENCHMARK_MODALITY[benchmark] === 'voice'
   const bestByModel = new Map()
   for (const [key, model] of Object.entries(passKData)) {
@@ -110,12 +111,13 @@ const extractEntries = (
     if (score === null) continue
     const sub = fullSubmissionData[key] || {}
     const modelName = sub.model_name || model.modelName
-    const isReference = isReferenceUserSim(model.userSimulator, isVoiceBenchmark)
+    const isRanked =
+      !isVoiceBenchmark || model.userSimulator === RANKING_VOICE_USER_SIM
     const prev = bestByModel.get(modelName)
     const wins = !prev
-      || (isReference !== prev.isReference ? isReference : score > prev.score)
+      || (isRanked !== prev.isRanked ? isRanked : score > prev.score)
     if (wins) {
-      bestByModel.set(modelName, { key, score, isReference })
+      bestByModel.set(modelName, { key, score, isRanked })
     }
   }
 

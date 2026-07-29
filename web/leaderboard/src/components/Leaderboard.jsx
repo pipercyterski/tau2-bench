@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './Leaderboard.css'
 import ProgressView from './ProgressView'
-import { isReferenceUserSim, NON_REFERENCE_USER_SIM_TITLE } from '../utils/userSimulator'
+import { isVoiceUserSimVersion } from '../utils/userSimulator'
 
 // The leaderboard is split into three buckets, one per benchmark track:
 // τ³-Banking (published as τ-knowledge), τ³-Voice (published as τ-voice:
@@ -1143,12 +1143,11 @@ const Leaderboard = () => {
                        )}
                      </td>
                      
-                     {/* User Simulator. Non-reference simulators are marked: the
-                         submission is still standard, but its scores are not
-                         directly comparable to reference-simulator rows. */}
+                     {/* User Simulator. Voice rows show a published version, which
+                         links to the git tag pinning that simulator. */}
                      <td className="user-sim-info">
                        {model.data.userSimulator ? (
-                         isVoice && model.data.userSimulator.startsWith('v') ? (
+                         isVoice && isVoiceUserSimVersion(model.data.userSimulator) ? (
                            <a
                              href={`https://github.com/sierra-research/tau2-bench/tree/voice-user-sim-${model.data.userSimulator}`}
                              target="_blank"
@@ -1156,16 +1155,8 @@ const Leaderboard = () => {
                              className="user-sim-name user-sim-version-link"
                              title="View voice user simulator source at this version"
                            >{model.data.userSimulator}</a>
-                         ) : isReferenceUserSim(model.data.userSimulator, isVoice) ? (
-                           <span className="user-sim-name">{model.data.userSimulator}</span>
                          ) : (
-                           <span
-                             className="user-sim-name user-sim-nonreference"
-                             title={NON_REFERENCE_USER_SIM_TITLE}
-                           >
-                             {model.data.userSimulator}
-                             <span className="user-sim-nonreference-marker" aria-hidden="true">*</span>
-                           </span>
+                           <span className="user-sim-name">{model.data.userSimulator}</span>
                          )
                        ) : (
                          <span className="no-data">—</span>

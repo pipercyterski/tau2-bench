@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import VoiceViewer from './VoiceViewer'
-import { nonReferenceUserSimLabel } from '../utils/userSimulator'
+import { voiceUserSimLabel } from '../utils/userSimulator'
 import './TrajectoryVisualizer.css'
 
 const SUBMISSIONS_BASE = import.meta.env.VITE_SUBMISSIONS_BASE_URL
@@ -567,7 +567,7 @@ const TrajectoryVisualizer = () => {
                   <optgroup label="τ-bench (Text)">
                     {submissions.filter(s => s.modality === 'text').map(s => (
                       <option key={s.dir} value={s.dir}>
-                        {s.model_name}{s.reasoning_effort ? ` [${s.reasoning_effort.charAt(0).toUpperCase() + s.reasoning_effort.slice(1)}]` : ''} ({s.model_organization}){s.submission_type === 'custom' ? ' [Custom]' : ''}{nonReferenceUserSimLabel(s.user_simulator, false)}
+                        {s.model_name}{s.reasoning_effort ? ` [${s.reasoning_effort.charAt(0).toUpperCase() + s.reasoning_effort.slice(1)}]` : ''} ({s.model_organization}){s.submission_type === 'custom' ? ' [Custom]' : ''}
                       </option>
                     ))}
                   </optgroup>
@@ -576,7 +576,7 @@ const TrajectoryVisualizer = () => {
                   <optgroup label="τ-voice (Voice)">
                     {submissions.filter(s => s.modality === 'voice').map(s => (
                       <option key={s.dir} value={s.dir}>
-                        {s.model_name} ({s.model_organization}){s.submission_type === 'custom' ? ' [Custom]' : ''}{nonReferenceUserSimLabel(s.user_simulator, true)}
+                        {s.model_name} ({s.model_organization}){s.submission_type === 'custom' ? ' [Custom]' : ''}{voiceUserSimLabel(s.user_simulator)}
                       </option>
                     ))}
                   </optgroup>

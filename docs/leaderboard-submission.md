@@ -34,7 +34,7 @@ Standard submissions run a **general-purpose, off-the-shelf LLM** as the agent i
 
 Configuration choices do **not** make a submission custom. All of the following are still standard:
 
-- A different user simulator model (e.g. running the simulator on `gpt-5.5` instead of the leaderboard default)
+- A different user simulator — for voice, a different published simulator version (see [Voice User Simulator Versions](#voice-user-simulator-versions)); for text, a different simulator model
 - A different reasoning / thinking effort level
 - Prompt adjustments to the agent policy or system instructions
 - A different retrieval configuration for `banking_knowledge` (report it in `retrieval_config`)
@@ -42,7 +42,7 @@ Configuration choices do **not** make a submission custom. All of the following 
 
 If you're evaluating an off-the-shelf LLM in the default scaffold, your submission is **standard**. You don't need to specify `submission_type` in your JSON (it defaults to `"standard"`).
 
-> **Disclose your configuration.** Choices like the above change how comparable your numbers are to other rows, so they must be reported: `methodology.user_simulator`, `reasoning_effort`, `results.<domain>.retrieval_config`, and `methodology.verification.modified_prompts` are all surfaced on the leaderboard. They are metadata on a standard row, not a separate submission type. Rows that used a non-reference user simulator are flagged in the **User Sim** column.
+> **Disclose your configuration.** Choices like the above change how comparable your numbers are to other rows, so they must be reported: `methodology.user_simulator`, `reasoning_effort`, `results.<domain>.retrieval_config`, and `methodology.verification.modified_prompts` are all surfaced on the leaderboard. They are metadata on a standard row, not a separate submission type.
 
 ### Custom Submissions
 
@@ -155,7 +155,22 @@ Now continue to [Step 3: Validate Your Submission](#step-3-validate-your-submiss
 
 Voice submissions evaluate audio-native models using full-duplex (simultaneous) communication. The voice user simulator is a multi-component system (LLM, TTS via ElevenLabs, transcription via Deepgram, audio effects pipeline, and decision models) that requires specific API keys and infrastructure. Because of this complexity, we recommend that you **open a PR and contact us** so we can coordinate running the evaluation.
 
-The voice user simulator is versioned separately via `VOICE_USER_SIMULATOR_VERSION` in `src/tau2/config.py`, with each version anchored to a git tag (`voice-user-sim-<version>`) for reproducibility.
+### Voice User Simulator Versions
+
+The voice user simulator is published as discrete versions, registered in `VOICE_USER_SIMULATOR_VERSIONS` in `src/tau2/config.py` and anchored to a git tag (`voice-user-sim-<version>`) for reproducibility:
+
+| Version | Simulator LLM | Reasoning effort |
+|---|---|---|
+| `v1.0` | `gpt-4.1-2025-04-14` | — |
+| `v2.0` | `gpt-5.5-2026-04-23` | `xhigh` |
+
+A version **pins the simulator's LLM.** The simulator's strength materially shifts voice scores — the same agent at the same reasoning effort scores several points higher against `v2.0` than `v1.0` — so results are only comparable within a version.
+
+Set `methodology.user_simulator` to a published version identifier, e.g. `"v2.0"`. **Voice submissions may not name an arbitrary model**; validation rejects anything outside the registry. To evaluate against a different simulator, publish it as a new version in `VOICE_USER_SIMULATOR_VERSIONS` and tag it `voice-user-sim-<version>`.
+
+`VOICE_USER_SIMULATOR_VERSION` names the version the leaderboard currently ranks on. Where a model has runs on more than one version, the progress chart plots that version so the trend line stays internally consistent.
+
+Text submissions are unconstrained: record the simulator model directly (e.g. `"gpt-5.2"`).
 
 ### Existing Provider (Adapter Already Integrated)
 
@@ -600,7 +615,7 @@ See `web/leaderboard/public/submissions/A_EXAMPLE_new-model_example-org_2025-01-
 
 ### Voice Submission
 
-Voice submissions set `modality` to `"voice"` and include a `voice_config` object. Set `methodology.user_simulator` to the voice user simulator version (e.g., `"v1.0"` — see git tag `voice-user-sim-v1.0`).
+Voice submissions set `modality` to `"voice"` and include a `voice_config` object. Set `methodology.user_simulator` to a published voice user simulator version (e.g., `"v1.0"` — see [Voice User Simulator Versions](#voice-user-simulator-versions)).
 
 ```json
 {
@@ -685,7 +700,7 @@ See `web/leaderboard/public/submissions/A_EXAMPLE_voice-model_example-org_2026-0
 - [ ] `modality` is `"voice"`, `trajectories_available` is `false`
 - [ ] `voice_config` includes `provider` and `model`
 - [ ] `manifest.json` updated (`voice_submissions` array)
-- [ ] `methodology.user_simulator` set to voice user sim version (e.g., `"v1.0"`)
+- [ ] `methodology.user_simulator` set to a **published** voice user sim version (`"v1.0"` / `"v2.0"`), never a raw model name
 - [ ] PR description includes link to externally hosted trajectory data
 - [ ] **New provider:** PR includes audio-native adapter implementation and documentation
 - [ ] Results use "regular" speech complexity only
