@@ -18,6 +18,7 @@ Usage:
 """
 
 import argparse
+import datetime
 import json
 import subprocess
 import sys
@@ -51,6 +52,23 @@ COST_TIME_FIELDS = [
     "user_time_seconds",
     "tool_time_seconds",
 ]
+
+# Official first-party list prices (USD per 1M tokens) used to estimate agent
+# cost for runs that did not record per-message costs (self-hosted models or
+# internal gateways). Keyed by the exact agent_info.llm string found in the
+# trajectories. Sources (checked 2026-07-29):
+#   GLM-5: docs.z.ai/guides/overview/pricing
+#   Qwen3.5-397B-A17B: Alibaba Cloud Model Studio, international/Singapore
+#   Claude Opus 4.6/4.7: platform.claude.com/docs/en/about-claude/pricing
+USAGE_PRICING: dict[str, tuple[str, float, float]] = {
+    "openai/glm-5-fp8": ("GLM-5", 1.00, 3.20),
+    "openai/qwen3.5-397b": ("Qwen3.5-397B-A17B", 0.60, 3.60),
+    "claude-opus-4-6": ("Claude Opus 4.6", 5.00, 25.00),
+    "claude-opus-4-7": ("Claude Opus 4.7", 5.00, 25.00),
+}
+
+# Marker used to keep the methodology note idempotent across reruns.
+ESTIMATE_NOTE_MARKER = "estimated from trajectory token usage"
 
 console = Console()
 
@@ -96,17 +114,55 @@ def _repair_trimmed_messages(data: dict) -> int:
     return repaired
 
 
-def compute_domain_cost_time(results_path: Path) -> tuple[str, dict]:
+def estimate_agent_costs_from_usage(results: TrajectoryResults) -> str | None:
+    """Estimate per-simulation agent cost from token usage at list prices.
+
+    Applies only when the run recorded no agent costs at all and the agent
+    model has an entry in USAGE_PRICING. Sets sim.agent_cost in place so
+    compute_metrics aggregates it exactly like a recorded cost. Returns a
+    description of the pricing applied, or None if not applicable.
+    """
+    if any(sim.agent_cost for sim in results.simulations):
+        return None
+    agent_info = results.info.agent_info
+    pricing = USAGE_PRICING.get(agent_info.llm) if agent_info else None
+    if pricing is None:
+        return None
+    label, input_per_m, output_per_m = pricing
+    priced_any = False
+    for sim in results.simulations:
+        cost = 0.0
+        found = False
+        for msg in sim.messages or []:
+            usage = getattr(msg, "usage", None)
+            if getattr(msg, "role", None) == "assistant" and usage:
+                cost += (
+                    usage.get("prompt_tokens", 0) * input_per_m
+                    + usage.get("completion_tokens", 0) * output_per_m
+                ) / 1e6
+                found = True
+        if found:
+            sim.agent_cost = cost
+            priced_any = True
+    if not priced_any:
+        return None
+    return f"{label} list price ${input_per_m}/M input, ${output_per_m}/M output"
+
+
+def compute_domain_cost_time(results_path: Path) -> tuple[str, dict, str | None]:
     """Compute the cost/time field values for one domain's trajectory file.
 
-    Returns (domain_name, {field: value}) with None values included so a
-    field that can't be derived is explicitly recorded as absent.
+    Returns (domain_name, {field: value}, estimate_note). Values include None
+    so a field that can't be derived is explicitly recorded as absent;
+    estimate_note describes the pricing used when the agent cost had to be
+    estimated from token usage.
     """
     with open(results_path) as f:
         raw = json.load(f)
     _repair_trimmed_messages(raw)
     results = TrajectoryResults.model_validate(raw)
     domain = results.info.environment_info.domain_name
+    estimate_note = estimate_agent_costs_from_usage(results)
     metrics = compute_metrics(results)
     domain_results = build_domain_results(metrics, include_time=True)
     values = {field: getattr(domain_results, field) for field in COST_TIME_FIELDS}
@@ -115,7 +171,7 @@ def compute_domain_cost_time(results_path: Path) -> tuple[str, dict]:
     if values["cost"] == 0.0:
         values["cost"] = None
         values["total_cost"] = None
-    return domain, values
+    return domain, values, estimate_note
 
 
 def backfill_submission(submission_name: str, cache_dir: Path, dry_run: bool) -> bool:
@@ -145,9 +201,12 @@ def backfill_submission(submission_name: str, cache_dir: Path, dry_run: bool) ->
         return True
 
     changed = False
+    estimated_domains: dict[str, str] = {}
     for results_path in results_files:
         try:
-            domain, values = compute_domain_cost_time(results_path)
+            domain, values, estimate_note = compute_domain_cost_time(results_path)
+            if estimate_note:
+                estimated_domains[domain] = estimate_note
         except Exception as e:
             # Truncate: pydantic errors on big files can be megabytes long,
             # and rich takes minutes to render them.
@@ -183,6 +242,22 @@ def backfill_submission(submission_name: str, cache_dir: Path, dry_run: bool) ->
         console.print(
             f"  {domain}: " + ("; ".join(summary) if summary else "no change")
         )
+
+    if estimated_domains:
+        methodology = data.setdefault("methodology", {})
+        notes = methodology.get("notes") or ""
+        if ESTIMATE_NOTE_MARKER not in notes:
+            today = datetime.date.today().isoformat()
+            pricing_detail = "; ".join(sorted(set(estimated_domains.values())))
+            note = (
+                f"Agent cost ({', '.join(sorted(estimated_domains))}) backfilled "
+                f"on {today}: {ESTIMATE_NOTE_MARKER} at official list prices "
+                f"({pricing_detail}); the original run did not record "
+                "per-message costs."
+            )
+            methodology["notes"] = f"{notes} {note}".strip()
+            changed = True
+            console.print(f"  [cyan]Added methodology note: {note}[/cyan]")
 
     if dry_run:
         console.print("  [yellow]Dry run: submission.json not modified[/yellow]")
