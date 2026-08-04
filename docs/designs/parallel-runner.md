@@ -117,9 +117,10 @@ infrastructure-error files convincing `--auto-resume` a cell was complete.
   interleaving across providers falls out of the lease policy instead of
   being orchestrated per-cell.
 - **Queue + leases**: in-memory FIFO per provider with a lease table. A lease
-  has a TTL derived from the run's ceiling (`timeout_seconds ×
-  VOICE_TIMEOUT_SAFETY_FACTOR` for voice); an expired lease requeues the unit
-  with `attempt += 1`, up to a retry cap.
+  has a fixed 300s TTL kept alive by worker heartbeats (every ~30s from a
+  dedicated thread — the worker's main loop can block for minutes posting
+  multi-MB voice results, so heartbeating from it starves under load); an
+  expired lease requeues the unit with `attempt += 1`, up to a retry cap.
 - **Admission control**: at lease time the controller checks (a) the global
   in-flight cap (host budget analog), (b) the unit's per-provider cap
   (`--provider-limit openai=40,gemini=20`). This is the answer to "workers

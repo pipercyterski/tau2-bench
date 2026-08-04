@@ -13,6 +13,7 @@ import argparse
 import os
 import socket
 import sys
+import threading
 import time
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from pathlib import Path
@@ -33,10 +34,14 @@ HEARTBEAT_INTERVAL_SECONDS = 30.0
 POLL_INTERVAL_SECONDS = 1.0
 POST_RETRIES = 3
 
-# /complete posts carry a full SimulationRun (voice sims with verbose tick
+# /complete and /fail carry a full SimulationRun (voice sims with verbose tick
 # logs run to many MB) and the controller may be mid-checkpoint-write when
 # the request lands, so read/write get minutes, not the httpx 5s default.
 HTTP_TIMEOUT = httpx.Timeout(300.0, connect=10.0)
+
+# /lease and /heartbeat are tiny; failing fast and retrying beats waiting
+# minutes on a stuck controller.
+CONTROL_TIMEOUT_SECONDS = 30.0
 
 
 class ControllerClient:
@@ -55,11 +60,12 @@ class ControllerClient:
             base_url=base_url, headers=headers, timeout=HTTP_TIMEOUT
         )
 
-    def _post(self, path: str, payload: dict) -> dict:
+    def _post(self, path: str, payload: dict, timeout: Optional[float] = None) -> dict:
         last_error: Optional[Exception] = None
         for attempt in range(POST_RETRIES):
             try:
-                response = self._client.post(path, json=payload)
+                kwargs = {} if timeout is None else {"timeout": timeout}
+                response = self._client.post(path, json=payload, **kwargs)
                 response.raise_for_status()
                 return response.json()
             except httpx.HTTPError as e:
@@ -69,7 +75,9 @@ class ControllerClient:
         raise last_error
 
     def lease(self, worker_id: str) -> dict:
-        return self._post("/lease", {"worker_id": worker_id})
+        return self._post(
+            "/lease", {"worker_id": worker_id}, timeout=CONTROL_TIMEOUT_SECONDS
+        )
 
     def complete(self, worker_id: str, unit_id: str, result: dict) -> dict:
         return self._post(
@@ -83,7 +91,62 @@ class ControllerClient:
         )
 
     def heartbeat(self, worker_id: str, unit_ids: list[str]) -> dict:
-        return self._post("/heartbeat", {"worker_id": worker_id, "unit_ids": unit_ids})
+        return self._post(
+            "/heartbeat",
+            {"worker_id": worker_id, "unit_ids": unit_ids},
+            timeout=CONTROL_TIMEOUT_SECONDS,
+        )
+
+
+class HeartbeatThread(threading.Thread):
+    """Keeps leases alive independently of the worker's main loop.
+
+    The main loop blocks on /complete posts (multi-MB voice results) and on
+    execute_lease setup, so heartbeating from there starves under load: in the
+    first field run a ~3-minute stall expired live leases and the controller
+    re-ran sims that were still going. A lease the controller reports lost is
+    remembered so its zombie sim stops being heartbeated and its eventual
+    result is expected to come back stale.
+    """
+
+    def __init__(
+        self,
+        client: ControllerClient,
+        worker_id: str,
+        inflight_ids,
+        interval: float,
+    ):
+        super().__init__(daemon=True, name="tau2-worker-heartbeat")
+        self._client = client
+        self._worker_id = worker_id
+        self._inflight_ids = inflight_ids
+        self._interval = interval
+        self._stop_event = threading.Event()
+        self.lost: set[str] = set()
+
+    def run(self) -> None:
+        while not self._stop_event.wait(self._interval):
+            self.beat()
+
+    def beat(self) -> None:
+        unit_ids = [u for u in self._inflight_ids() if u not in self.lost]
+        if not unit_ids:
+            return
+        try:
+            leases = self._client.heartbeat(self._worker_id, unit_ids)["leases"]
+        except Exception as e:
+            logger.warning(f"Heartbeat failed (will retry): {e}")
+            return
+        for unit_id, alive in leases.items():
+            if not alive:
+                self.lost.add(unit_id)
+                logger.warning(
+                    f"Lease lost for {unit_id}; the controller has requeued it "
+                    "and this attempt's result will be discarded as stale"
+                )
+
+    def stop(self) -> None:
+        self._stop_event.set()
 
 
 def execute_lease(payload: dict) -> SimulationRun:
@@ -143,26 +206,43 @@ def worker_loop(
     Returns a process exit code; exits when the controller reports done."""
     executor = ThreadPoolExecutor(max_workers=slots)
     inflight: dict[Future, str] = {}
-    last_heartbeat = time.monotonic()
+    inflight_lock = threading.Lock()
     preregistered: set = set()
+
+    def inflight_ids() -> list[str]:
+        with inflight_lock:
+            return list(inflight.values())
+
+    heartbeats = HeartbeatThread(
+        client, worker_id, inflight_ids, interval=heartbeat_interval
+    )
+    heartbeats.start()
 
     try:
         while True:
             # Report finished sims.
             for future in [f for f in list(inflight) if f.done()]:
-                unit_id = inflight.pop(future)
+                with inflight_lock:
+                    unit_id = inflight.pop(future)
                 try:
                     sim = future.result()
                 except BaseException as e:
                     logger.error(f"Unit {unit_id} failed in worker: {e}")
-                    client.fail(worker_id, unit_id, f"{type(e).__name__}: {e}")
+                    resp = client.fail(worker_id, unit_id, f"{type(e).__name__}: {e}")
                 else:
-                    client.complete(worker_id, unit_id, sim.model_dump(mode="json"))
-
-            # Keep leases alive while sims run.
-            if inflight and time.monotonic() - last_heartbeat >= heartbeat_interval:
-                client.heartbeat(worker_id, list(inflight.values()))
-                last_heartbeat = time.monotonic()
+                    resp = client.complete(
+                        worker_id, unit_id, sim.model_dump(mode="json")
+                    )
+                status = resp.get("status")
+                if status == "stale":
+                    logger.warning(
+                        f"Result for {unit_id} arrived after its lease was lost; "
+                        "the controller discarded it as stale"
+                    )
+                elif status == "requeued":
+                    logger.info(
+                        f"Controller requeued {unit_id} (infrastructure_error result)"
+                    )
 
             # Fill free slots.
             if len(inflight) < slots:
@@ -170,7 +250,8 @@ def worker_loop(
                 if body["status"] == "unit":
                     _maybe_preregister_livekit(body["run"], preregistered)
                     future = executor.submit(execute_lease, body)
-                    inflight[future] = body["unit"]["unit_id"]
+                    with inflight_lock:
+                        inflight[future] = body["unit"]["unit_id"]
                     continue  # try to fill the next slot immediately
                 if body["status"] == "done" and not inflight:
                     logger.info("Controller reports done; worker exiting")
@@ -182,6 +263,7 @@ def worker_loop(
             else:
                 time.sleep(poll_interval)
     finally:
+        heartbeats.stop()
         executor.shutdown(wait=False, cancel_futures=True)
 
 

@@ -6,6 +6,7 @@ simulation execution is monkeypatched so no LLM is called.
 """
 
 import json
+import time
 import uuid
 
 import httpx
@@ -276,3 +277,64 @@ class TestWorkerLoop:
         sims = _load_sims(controller.save_path)
         assert len(sims) == 2
         assert all(s["termination_reason"] == "infrastructure_error" for s in sims)
+
+
+class _RecordingClient:
+    """Stands in for ControllerClient in HeartbeatThread tests."""
+
+    def __init__(self, leases_by_call: list[dict]):
+        self.calls: list[list[str]] = []
+        self._leases_by_call = leases_by_call
+
+    def heartbeat(self, worker_id: str, unit_ids: list[str]) -> dict:
+        self.calls.append(list(unit_ids))
+        return {
+            "leases": self._leases_by_call[
+                min(len(self.calls) - 1, len(self._leases_by_call) - 1)
+            ]
+        }
+
+
+class TestHeartbeatThread:
+    def test_beat_posts_inflight_ids(self):
+        client = _RecordingClient([{"u1": True, "u2": True}])
+        hb = worker_mod.HeartbeatThread(
+            client, "w1", lambda: ["u1", "u2"], interval=999
+        )
+        hb.beat()
+        hb.beat()
+        assert client.calls == [["u1", "u2"], ["u1", "u2"]]
+        assert hb.lost == set()
+
+    def test_lost_lease_is_remembered_and_not_beaten_again(self):
+        client = _RecordingClient([{"u1": False, "u2": True}, {"u2": True}])
+        hb = worker_mod.HeartbeatThread(
+            client, "w1", lambda: ["u1", "u2"], interval=999
+        )
+        hb.beat()
+        assert hb.lost == {"u1"}
+        hb.beat()
+        assert client.calls[1] == ["u2"]
+
+    def test_heartbeat_errors_do_not_kill_the_thread(self):
+        class ExplodingClient:
+            def heartbeat(self, worker_id, unit_ids):
+                raise RuntimeError("controller unreachable")
+
+        hb = worker_mod.HeartbeatThread(
+            ExplodingClient(), "w1", lambda: ["u1"], interval=999
+        )
+        hb.beat()  # must not raise
+        assert hb.lost == set()
+
+    def test_thread_beats_periodically_until_stopped(self):
+        client = _RecordingClient([{"u1": True}])
+        hb = worker_mod.HeartbeatThread(client, "w1", lambda: ["u1"], interval=0.01)
+        hb.start()
+        deadline = time.monotonic() + 2.0
+        while len(client.calls) < 3 and time.monotonic() < deadline:
+            time.sleep(0.01)
+        hb.stop()
+        hb.join(timeout=2.0)
+        assert len(client.calls) >= 3
+        assert not hb.is_alive()
