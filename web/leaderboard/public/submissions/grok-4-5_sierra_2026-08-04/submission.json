@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-07-16",
+    "announcement_url": "https://x.ai/news/grok-4-5",
+    "announcement_title": "Introducing Grok 4.5"
   }
 }

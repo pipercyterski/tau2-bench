@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-06-16",
+    "announcement_url": "https://z.ai/blog/glm-5.2",
+    "announcement_title": "GLM-5.2: Built for Long-Horizon Tasks"
   }
 }

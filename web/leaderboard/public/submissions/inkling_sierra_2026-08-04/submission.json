@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-07-15",
+    "announcement_url": "https://thinkingmachines.ai/news/introducing-inkling/",
+    "announcement_title": "Inkling: Our Open-Weights Model"
   }
 }

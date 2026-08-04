@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-07-24",
+    "announcement_url": "https://www.anthropic.com/news/claude-opus-5",
+    "announcement_title": "Introducing Claude Opus 5"
   }
 }

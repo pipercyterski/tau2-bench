@@ -37,7 +37,8 @@
     }
   },
   "model_release": {
-    "release_date": "2026-04-22",
-    "announcement_url": null
+    "release_date": "2026-04-23",
+    "announcement_url": "https://openai.com/index/introducing-gpt-5-5/",
+    "announcement_title": "Introducing GPT-5.5"
   }
 }

@@ -38,6 +38,7 @@
   },
   "model_release": {
     "release_date": "2026-04-16",
-    "announcement_url": null
+    "announcement_url": "https://www.anthropic.com/news/claude-opus-4-7",
+    "announcement_title": "Introducing Claude Opus 4.7"
   }
 }

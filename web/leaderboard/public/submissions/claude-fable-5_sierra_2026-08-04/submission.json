@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-06-09",
+    "announcement_url": "https://www.anthropic.com/news/claude-fable-5-mythos-5",
+    "announcement_title": "Claude Fable 5 and Claude Mythos 5"
   }
 }

@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-07-19",
+    "announcement_url": "https://docs.qoder.com/events/qwen-max-preview",
+    "announcement_title": "Qwen3.8-Max-Preview launch"
   }
 }

@@ -35,5 +35,10 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
+  },
+  "model_release": {
+    "release_date": "2026-07-16",
+    "announcement_url": "https://www.kimi.com/blog/kimi-k3",
+    "announcement_title": "Kimi K3: Open Frontier Intelligence"
   }
 }
