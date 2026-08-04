@@ -1,4 +1,5 @@
 import json
+import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional
 
@@ -1108,7 +1109,13 @@ class ConsoleDisplay:
                 "green" if pass_k > 0.8 else ("yellow" if pass_k > 0.5 else "red")
             )
             table.add_row(f"   Pass^{k}", f"[{pk_color}]{pass_k:.3f}[/]")
-        table.add_row("💰 Avg Cost/Conversation", f"${metrics.avg_agent_cost:.4f}")
+        avg_cost = metrics.avg_agent_cost
+        cost_str = (
+            f"${avg_cost:.4f}"
+            if avg_cost is not None and not math.isnan(avg_cost)
+            else "n/a"
+        )
+        table.add_row("💰 Avg Cost/Conversation", cost_str)
         table.add_row("", "")
 
         # Action metrics

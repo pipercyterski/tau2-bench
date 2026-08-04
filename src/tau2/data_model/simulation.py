@@ -53,6 +53,7 @@ from tau2.data_model.audio_effects import EffectTimeline
 from tau2.data_model.message import Message, Tick
 from tau2.data_model.persona import PersonaConfig
 from tau2.data_model.tasks import Action, EnvAssertion, RewardType, Task
+from tau2.data_model.usage import SessionUsage
 from tau2.data_model.voice import SpeechComplexity, SpeechEnvironment, VoiceSettings
 from tau2.environment.environment import EnvironmentInfo
 from tau2.environment.toolkit import ToolType
@@ -1265,6 +1266,11 @@ class SimulationRun(BaseModel):
     )
     user_cost: Optional[float] = Field(
         description="The cost of the user.", default=None
+    )
+    agent_usage: Optional[SessionUsage] = Field(
+        description="Aggregated provider usage (and cost breakdown) for the "
+        "agent side. Populated for audio-native full-duplex runs.",
+        default=None,
     )
     reward_info: Optional[RewardInfo] = Field(
         description="The reward received by the agent.", default=None

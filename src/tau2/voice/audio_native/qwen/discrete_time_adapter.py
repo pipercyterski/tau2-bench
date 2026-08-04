@@ -48,6 +48,7 @@ from tau2.config import (
     DEFAULT_QWEN_VOICE,
 )
 from tau2.data_model.message import ToolCall
+from tau2.data_model.usage import UsageRecord
 from tau2.environment.tool import Tool
 from tau2.voice.audio_native.adapter import DiscreteTimeAdapter
 from tau2.voice.audio_native.async_loop import BackgroundAsyncLoop
@@ -383,6 +384,15 @@ class DiscreteTimeQwenAdapter(DiscreteTimeAdapter):
 
         elif isinstance(event, QwenResponseDoneEvent):
             logger.debug("Response done (turn complete)")
+            if event.usage:
+                self.record_usage(
+                    UsageRecord.from_openai_realtime_usage(
+                        event.usage,
+                        provider="qwen",
+                        model=self.model,
+                        scope_id=event.response_id,
+                    )
+                )
 
         elif isinstance(event, QwenAudioDoneEvent):
             logger.debug(f"Audio done for item {event.item_id}")

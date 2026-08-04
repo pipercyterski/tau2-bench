@@ -89,6 +89,7 @@ def build_command(
     seed: int = DEFAULT_SEED,
     user_llm: str = DEFAULT_LLM_USER,
     max_concurrency: int = 8,
+    max_steps_seconds: int | None = None,
 ) -> list[str]:
     cmd = [
         "uv",
@@ -122,6 +123,8 @@ def build_command(
         cmd.extend(["--cascaded-config", spec.cascaded_config])
     if num_tasks is not None:
         cmd.extend(["--num-tasks", str(num_tasks)])
+    if max_steps_seconds is not None:
+        cmd.extend(["--max-steps-seconds", str(max_steps_seconds)])
     return cmd
 
 
@@ -148,6 +151,12 @@ def main():
         help=f"Comma-separated speech complexities. Default: {','.join(DEFAULT_COMPLEXITIES)}",
     )
     parser.add_argument("--num-tasks", type=int, default=None)
+    parser.add_argument(
+        "--max-steps-seconds",
+        type=int,
+        default=None,
+        help="Cap conversation duration in seconds (passed through to tau2 run).",
+    )
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--user-llm", type=str, default=DEFAULT_LLM_USER)
     parser.add_argument("--max-concurrency", type=int, default=8)
@@ -189,6 +198,7 @@ def main():
             seed=args.seed,
             user_llm=args.user_llm,
             max_concurrency=args.max_concurrency,
+            max_steps_seconds=args.max_steps_seconds,
         )
         print(f"  $ {' '.join(cmd)}")
         result = subprocess.run(cmd)
