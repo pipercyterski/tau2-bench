@@ -361,6 +361,25 @@ class BaseRunConfig(BaseModel):
             default=DEFAULT_MAX_CONCURRENCY,
         ),
     ]
+    workers: Annotated[
+        int,
+        Field(
+            description="Number of worker processes to spawn. 0 (default) runs "
+            "simulations in this process; N > 0 makes this process a controller "
+            "that schedules and checkpoints while N workers execute, each "
+            "holding up to max_concurrency simulations in flight.",
+            default=0,
+        ),
+    ]
+    provider_limits: Annotated[
+        Optional[dict[str, int]],
+        Field(
+            description="Max concurrently-running simulations per provider, "
+            "enforced at lease time in controller mode (workers > 0), "
+            'e.g. {"openai": 40, "gemini": 20}.',
+            default=None,
+        ),
+    ]
     seed: Annotated[
         Optional[int],
         Field(

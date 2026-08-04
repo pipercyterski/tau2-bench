@@ -1,0 +1,223 @@
+"""tau2 worker process: leases simulation units from a controller, runs them,
+and posts results back. It never touches results.json — the controller is the
+single checkpoint writer. Kill a worker and its leases expire back into the
+queue; nothing is lost.
+
+Run as ``tau2 worker --controller http://host:port --slots 10`` or
+``python -m tau2.runner.worker ...``. See docs/designs/parallel-runner.md.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import socket
+import sys
+import time
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
+from pathlib import Path
+from typing import Optional
+
+import httpx
+from loguru import logger
+
+from tau2.data_model.simulation import SimulationRun, TextRunConfig, VoiceRunConfig
+from tau2.data_model.tasks import Task
+from tau2.evaluator.evaluator import EvaluationType
+from tau2.runner.work import WorkUnit
+
+AUTH_TOKEN_ENV = "TAU2_CONTROLLER_TOKEN"
+
+DEFAULT_SLOTS = 10
+HEARTBEAT_INTERVAL_SECONDS = 30.0
+POLL_INTERVAL_SECONDS = 1.0
+POST_RETRIES = 3
+
+
+class ControllerClient:
+    """HTTP TaskSource client. ``client`` is injectable for in-process tests
+    (httpx ASGITransport)."""
+
+    def __init__(
+        self,
+        base_url: Optional[str] = None,
+        client: Optional[httpx.Client] = None,
+        token: Optional[str] = None,
+    ):
+        token = token or os.environ.get(AUTH_TOKEN_ENV)
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        self._client = client or httpx.Client(
+            base_url=base_url, headers=headers, timeout=30.0
+        )
+
+    def _post(self, path: str, payload: dict) -> dict:
+        last_error: Optional[Exception] = None
+        for attempt in range(POST_RETRIES):
+            try:
+                response = self._client.post(path, json=payload)
+                response.raise_for_status()
+                return response.json()
+            except httpx.HTTPError as e:
+                last_error = e
+                if attempt < POST_RETRIES - 1:
+                    time.sleep(1.0 * (attempt + 1))
+        raise last_error
+
+    def lease(self, worker_id: str) -> dict:
+        return self._post("/lease", {"worker_id": worker_id})
+
+    def complete(self, worker_id: str, unit_id: str, result: dict) -> dict:
+        return self._post(
+            "/complete",
+            {"worker_id": worker_id, "unit_id": unit_id, "result": result},
+        )
+
+    def fail(self, worker_id: str, unit_id: str, error: str) -> dict:
+        return self._post(
+            "/fail", {"worker_id": worker_id, "unit_id": unit_id, "error": error}
+        )
+
+    def heartbeat(self, worker_id: str, unit_ids: list[str]) -> dict:
+        return self._post("/heartbeat", {"worker_id": worker_id, "unit_ids": unit_ids})
+
+
+def execute_lease(payload: dict) -> SimulationRun:
+    """Execute one leased unit: rebuild the run context from the payload and
+    run the same code the local loop runs. No checkpoint fns, no monitor —
+    the result goes back to the controller."""
+    from tau2.runner.batch import _BatchContext, make_voice_run_settings, run_unit
+    from tau2.runner.helpers import get_info
+
+    unit = WorkUnit.model_validate(payload["unit"])
+    run = payload["run"]
+    config_cls = VoiceRunConfig if run["config_kind"] == "voice" else TextRunConfig
+    config = config_cls.model_validate(run["config"])
+    task = Task.model_validate(run["task"])
+    save_dir = Path(run["save_dir"]) if run.get("save_dir") else None
+
+    user_voice_settings, user_persona_config = make_voice_run_settings(config)
+    info = get_info(
+        config,
+        user_persona_config=user_persona_config,
+        user_voice_settings=user_voice_settings,
+    )
+    ctx = _BatchContext(
+        config=config,
+        evaluation_type=EvaluationType(run["evaluation_type"]),
+        save_dir=save_dir,
+        user_voice_settings=user_voice_settings,
+        user_persona_config=user_persona_config,
+        info=info,
+        console_display=False,
+    )
+    return run_unit(ctx, task, unit.trial, unit.seed, unit.progress_str)
+
+
+def _maybe_preregister_livekit(run_payload: dict, registered: set) -> None:
+    """LiveKit plugins must be registered on the worker's main thread before
+    sim threads spawn (same constraint as the local loop)."""
+    if "livekit" in registered:
+        return
+    audio_config = (run_payload.get("config") or {}).get("audio_native_config") or {}
+    if audio_config.get("provider") == "livekit":
+        from tau2.voice.audio_native.livekit import preregister_livekit_plugins
+
+        preregister_livekit_plugins()
+        registered.add("livekit")
+
+
+def worker_loop(
+    client: ControllerClient,
+    worker_id: str,
+    slots: int,
+    poll_interval: float = POLL_INTERVAL_SECONDS,
+    heartbeat_interval: float = HEARTBEAT_INTERVAL_SECONDS,
+) -> int:
+    """Lease → execute → report, keeping up to ``slots`` sims in flight.
+    Returns a process exit code; exits when the controller reports done."""
+    executor = ThreadPoolExecutor(max_workers=slots)
+    inflight: dict[Future, str] = {}
+    last_heartbeat = time.monotonic()
+    preregistered: set = set()
+
+    try:
+        while True:
+            # Report finished sims.
+            for future in [f for f in list(inflight) if f.done()]:
+                unit_id = inflight.pop(future)
+                try:
+                    sim = future.result()
+                except BaseException as e:
+                    logger.error(f"Unit {unit_id} failed in worker: {e}")
+                    client.fail(worker_id, unit_id, f"{type(e).__name__}: {e}")
+                else:
+                    client.complete(worker_id, unit_id, sim.model_dump(mode="json"))
+
+            # Keep leases alive while sims run.
+            if inflight and time.monotonic() - last_heartbeat >= heartbeat_interval:
+                client.heartbeat(worker_id, list(inflight.values()))
+                last_heartbeat = time.monotonic()
+
+            # Fill free slots.
+            if len(inflight) < slots:
+                body = client.lease(worker_id)
+                if body["status"] == "unit":
+                    _maybe_preregister_livekit(body["run"], preregistered)
+                    future = executor.submit(execute_lease, body)
+                    inflight[future] = body["unit"]["unit_id"]
+                    continue  # try to fill the next slot immediately
+                if body["status"] == "done" and not inflight:
+                    logger.info("Controller reports done; worker exiting")
+                    return 0
+
+            # Wait for a sim to finish (or poll again for work).
+            if inflight:
+                wait(list(inflight), timeout=poll_interval, return_when=FIRST_COMPLETED)
+            else:
+                time.sleep(poll_interval)
+    finally:
+        executor.shutdown(wait=False, cancel_futures=True)
+
+
+def run_worker_command(
+    controller: str, slots: int = DEFAULT_SLOTS, worker_id: Optional[str] = None
+) -> int:
+    if worker_id is None:
+        worker_id = f"{socket.gethostname()}-{os.getpid()}"
+    logger.info(f"Worker {worker_id} connecting to {controller} with {slots} slot(s)")
+    client = ControllerClient(base_url=controller)
+    try:
+        return worker_loop(client, worker_id=worker_id, slots=slots)
+    except httpx.HTTPError as e:
+        logger.error(f"Lost contact with controller {controller}: {e}")
+        return 1
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="tau2 worker: executes simulations for a tau2 controller."
+    )
+    parser.add_argument(
+        "--controller",
+        required=True,
+        help="Controller base URL, e.g. http://127.0.0.1:8321",
+    )
+    parser.add_argument(
+        "--slots",
+        type=int,
+        default=DEFAULT_SLOTS,
+        help=f"Concurrent simulations this worker holds (default {DEFAULT_SLOTS}).",
+    )
+    parser.add_argument(
+        "--worker-id",
+        default=None,
+        help="Worker identity in controller logs (default: hostname-pid).",
+    )
+    args = parser.parse_args(argv)
+    return run_worker_command(
+        controller=args.controller, slots=args.slots, worker_id=args.worker_id
+    )
+
+
+if __name__ == "__main__":
+    sys.exit(main())
