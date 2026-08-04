@@ -338,3 +338,58 @@ class TestHeartbeatThread:
         hb.join(timeout=2.0)
         assert len(client.calls) >= 3
         assert not hb.is_alive()
+
+
+class _RecordingMonitor:
+    def __init__(self):
+        self.started: list[str] = []
+        self.finished: list[str] = []
+
+    def task_started(self, key, trial):
+        self.started.append(key)
+
+    def task_finished(self, key):
+        self.finished.append(key)
+
+    def task_restarted(self, key):
+        pass
+
+
+class TestMultiRunMonitorKeys:
+    def test_monitor_keys_are_run_scoped_so_runs_do_not_collide(self, tmp_path):
+        """Two runs share task ids; 4 in-flight sims must show as 4, not 2."""
+        monitor = _RecordingMonitor()
+        runs = []
+        for name in ["run_a", "run_b"]:
+            config = _make_config()
+            tasks = get_tasks("mock", task_ids=config.task_ids)
+            prep = prepare_batch(
+                config,
+                tasks,
+                save_path=tmp_path / name / "results.json",
+                save_dir=tmp_path / name,
+                console_display=False,
+            )
+            runs.append(ControllerRun.from_prep(name, prep))
+        ctrl = Controller(runs, max_attempts=2, monitor=monitor)
+
+        with TestClient(ctrl.build_app()) as client:
+            leased = []
+            while True:
+                body = client.post("/lease", json={"worker_id": "w1"}).json()
+                if body["status"] != "unit":
+                    break
+                leased.append(WorkUnit.model_validate(body["unit"]))
+            assert len(leased) == 4
+            assert len(set(monitor.started)) == 4
+
+            for unit in leased:
+                client.post(
+                    "/complete",
+                    json={
+                        "worker_id": "w1",
+                        "unit_id": unit.unit_id,
+                        "result": _make_sim(unit).model_dump(mode="json"),
+                    },
+                )
+        assert sorted(monitor.finished) == sorted(monitor.started)

@@ -176,6 +176,14 @@ class Controller:
 
     # ---- Core handlers (transport-independent) ----
 
+    def _monitor_key(self, unit: WorkUnit) -> str:
+        # task_id.trial collides across runs (every run has a task 0), which
+        # made 8 in-flight sims display as 6 — so multi-run controllers scope
+        # the key by run. Single runs keep the familiar short form.
+        if len(self.runs) > 1:
+            return f"{unit.run_id}/{unit.task_id}.{unit.trial}"
+        return f"{unit.task_id}.{unit.trial}"
+
     def handle_lease(self, worker_id: str) -> dict:
         unit = self.queue.lease(worker_id)
         if unit is None:
@@ -184,7 +192,7 @@ class Controller:
             return {"status": "wait"}
         run = self.runs[unit.run_id]
         if self.monitor:
-            self.monitor.task_started(f"{unit.task_id}.{unit.trial}", unit.trial)
+            self.monitor.task_started(self._monitor_key(unit), unit.trial)
         return {
             "status": "unit",
             "unit": unit.model_dump(mode="json"),
@@ -208,7 +216,7 @@ class Controller:
             )
             if outcome == FailOutcome.REQUEUED:
                 if self.monitor:
-                    self.monitor.task_restarted(f"{unit.task_id}.{unit.trial}")
+                    self.monitor.task_restarted(self._monitor_key(unit))
                 return {"status": "requeued"}
             if outcome == FailOutcome.STALE:
                 return {"status": "stale"}
@@ -225,7 +233,7 @@ class Controller:
         if outcome == FailOutcome.REQUEUED and self.monitor:
             unit = self._unit_from_id(unit_id)
             if unit:
-                self.monitor.task_restarted(f"{unit.task_id}.{unit.trial}")
+                self.monitor.task_restarted(self._monitor_key(unit))
         return {"status": outcome.value}
 
     def handle_heartbeat(self, worker_id: str, unit_ids: list[str]) -> dict:
@@ -258,7 +266,9 @@ class Controller:
                 run.save_fn(sim)
             run.simulation_results.simulations.append(sim)
         if self.monitor:
-            self.monitor.task_finished(f"{sim.task_id}.{sim.trial}")
+            unit = self._unit_from_id(unit_id)
+            key = self._monitor_key(unit) if unit else f"{sim.task_id}.{sim.trial}"
+            self.monitor.task_finished(key)
 
     def _run_for_unit(self, unit_id: str) -> Optional[ControllerRun]:
         return self._run_by_unit_id.get(unit_id)
