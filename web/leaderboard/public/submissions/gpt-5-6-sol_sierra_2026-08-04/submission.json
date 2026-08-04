@@ -1,8 +1,8 @@
 {
-  "model_name": "GPT-5.5",
+  "model_name": "GPT-5.6-sol",
   "model_organization": "OpenAI",
   "submitting_organization": "Sierra",
-  "submission_date": "2026-05-05",
+  "submission_date": "2026-08-04",
   "submission_type": "standard",
   "modality": "text",
   "contact_info": {
@@ -14,10 +14,10 @@
     "retail": null,
     "telecom": null,
     "banking_knowledge": {
-      "pass_1": 44.58762886597938,
-      "pass_2": 37.62886597938145,
-      "pass_3": 33.24742268041237,
-      "pass_4": 29.896907216494846,
+      "pass_1": 46.90721649484536,
+      "pass_2": 37.28522336769759,
+      "pass_3": 31.958762886597935,
+      "pass_4": 27.835051546391753,
       "cost": null,
       "retrieval_config": "alltools"
     }
@@ -35,9 +35,5 @@
       "modified_prompts": false,
       "omitted_questions": false
     }
-  },
-  "model_release": {
-    "release_date": "2026-04-22",
-    "announcement_url": null
   }
 }
