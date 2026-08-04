@@ -23,7 +23,10 @@
     }
   },
   "is_new": true,
-  "trajectories_available": false,
+  "trajectories_available": true,
+  "trajectory_files": {
+    "banking_knowledge": "banking_knowledge_results.json"
+  },
   "references": [],
   "reasoning_effort": "xhigh",
   "methodology": {
