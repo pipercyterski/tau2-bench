@@ -148,7 +148,9 @@ class UsageRecord(BaseModel):
         Thought tokens are billed as (text) output tokens.
         """
 
-        def _modality(details: Optional[List[Dict[str, Any]]], name: str) -> Optional[int]:
+        def _modality(
+            details: Optional[List[Dict[str, Any]]], name: str
+        ) -> Optional[int]:
             if not details:
                 return None
             total = None

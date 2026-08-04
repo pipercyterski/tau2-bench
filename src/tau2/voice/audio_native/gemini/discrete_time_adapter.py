@@ -510,7 +510,9 @@ class DiscreteTimeGeminiAdapter(DiscreteTimeAdapter):
                     thoughts_token_count=event.thoughts_token_count,
                     prompt_tokens_details=event.prompt_tokens_details,
                     response_tokens_details=event.response_tokens_details,
-                    raw=event.model_dump(exclude={"type", "event_id"}, exclude_none=True),
+                    raw=event.model_dump(
+                        exclude={"type", "event_id"}, exclude_none=True
+                    ),
                 )
             )
 

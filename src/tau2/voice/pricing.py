@@ -274,8 +274,14 @@ def compute_record_cost(record: UsageRecord) -> Optional[float]:
 
     has_tokens = any(
         getattr(record, f) is not None
-        for f in ("input_tokens", "output_tokens", "input_text_tokens",
-                  "input_audio_tokens", "output_text_tokens", "output_audio_tokens")
+        for f in (
+            "input_tokens",
+            "output_tokens",
+            "input_text_tokens",
+            "input_audio_tokens",
+            "output_text_tokens",
+            "output_audio_tokens",
+        )
     )
     if has_tokens:
         token_part = _token_cost(record, rates)
@@ -288,9 +294,7 @@ def compute_record_cost(record: UsageRecord) -> Optional[float]:
 
     if record.audio_input_seconds:
         if rates.per_audio_input_minute is None:
-            logger.warning(
-                f"No per-minute rate for {record.provider}/{record.model}"
-            )
+            logger.warning(f"No per-minute rate for {record.provider}/{record.model}")
             return None
         total += record.audio_input_seconds / 60 * rates.per_audio_input_minute
 

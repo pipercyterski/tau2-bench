@@ -51,13 +51,13 @@ from tau2.voice.audio_native.nova.events import (
     NovaAudioOutputEvent,
     NovaBargeInEvent,
     NovaCompletionEndEvent,
-    NovaUsageEvent,
     NovaContentStartEvent,
     NovaSpeechEndedEvent,
     NovaSpeechStartedEvent,
     NovaTextOutputEvent,
     NovaTimeoutEvent,
     NovaToolUseEvent,
+    NovaUsageEvent,
 )
 from tau2.voice.audio_native.nova.provider import (
     NOVA_BYTES_PER_SECOND,

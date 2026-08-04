@@ -41,7 +41,9 @@ class TestOpenAIStyleParsing:
 
     def test_ga_payload(self):
         record = UsageRecord.from_openai_realtime_usage(
-            self.OPENAI_USAGE, provider="openai", model="gpt-realtime-1.5",
+            self.OPENAI_USAGE,
+            provider="openai",
+            model="gpt-realtime-1.5",
             scope_id="resp_1",
         )
         assert record.provider == "openai"
@@ -75,7 +77,9 @@ class TestOpenAIStyleParsing:
 
     def test_missing_details(self):
         record = UsageRecord.from_openai_realtime_usage(
-            {"input_tokens": 10, "output_tokens": 5}, provider="xai", model="xai-realtime"
+            {"input_tokens": 10, "output_tokens": 5},
+            provider="xai",
+            model="xai-realtime",
         )
         assert record.input_tokens == 10
         assert record.input_text_tokens is None
@@ -238,8 +242,12 @@ class TestPricing:
         # dated snapshot resolves via longest prefix
         r = lookup_rates("openai", "gpt-realtime-1.5-2026-03-01")
         assert r is not None and r.input_audio == 32.00
-        assert lookup_rates("deepgram", "aura-asteria-en").per_million_characters == 15.0
-        assert lookup_rates("deepgram", "aura-2-thalia-en").per_million_characters == 30.0
+        assert (
+            lookup_rates("deepgram", "aura-asteria-en").per_million_characters == 15.0
+        )
+        assert (
+            lookup_rates("deepgram", "aura-2-thalia-en").per_million_characters == 30.0
+        )
         assert lookup_rates("openai", "no-such-model") is None
 
     def test_openai_realtime_cost_math(self):
