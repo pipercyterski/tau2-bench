@@ -1,4 +1,4 @@
-"""Discrete-time audio native adapter for Qwen Omni Flash Realtime API.
+"""Discrete-time audio native adapter for Qwen Omni Realtime API.
 
 This adapter provides a tick-based interface for Qwen Realtime API, designed
 for discrete-time simulation where audio time is the primary clock.
@@ -45,6 +45,7 @@ from tau2.config import (
     DEFAULT_AUDIO_NATIVE_CONNECT_TIMEOUT,
     DEFAULT_AUDIO_NATIVE_DISCONNECT_TIMEOUT,
     DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER,
+    DEFAULT_QWEN_VOICE,
 )
 from tau2.data_model.message import ToolCall
 from tau2.environment.tool import Tool
@@ -78,7 +79,7 @@ from tau2.voice.audio_native.tick_result import (
 class DiscreteTimeQwenAdapter(DiscreteTimeAdapter):
     """Adapter for discrete-time full-duplex simulation with Qwen Realtime API.
 
-    Implements DiscreteTimeAdapter for Qwen Omni Flash Realtime API.
+    Implements DiscreteTimeAdapter for Qwen Omni Realtime API.
 
     This adapter runs an async event loop in a background thread to communicate
     with the Qwen API, while exposing a synchronous interface for the agent
@@ -103,7 +104,7 @@ class DiscreteTimeQwenAdapter(DiscreteTimeAdapter):
         model: Optional[str] = None,
         reasoning_effort: Optional[str] = None,
         provider: Optional[QwenRealtimeProvider] = None,
-        voice: str = "Cherry",
+        voice: str = DEFAULT_QWEN_VOICE,
     ):
         """Initialize the discrete-time Qwen adapter.
 
@@ -114,7 +115,7 @@ class DiscreteTimeQwenAdapter(DiscreteTimeAdapter):
                 If provider is also provided, this is ignored.
             reasoning_effort: Not supported by Qwen. Must be None.
             provider: Optional provider instance. Created lazily if not provided.
-            voice: Voice to use. Default: Cherry.
+            voice: Voice to use. Default: DEFAULT_QWEN_VOICE.
         """
         if reasoning_effort is not None:
             raise ValueError(

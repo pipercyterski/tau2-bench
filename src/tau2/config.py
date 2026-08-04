@@ -183,8 +183,11 @@ DEFAULT_NOVA_OUTPUT_SAMPLE_RATE = 24000  # fixed, API-defined
 DEFAULT_QWEN_REALTIME_URL = (
     "wss://dashscope-intl.aliyuncs.com/api-ws/v1/realtime"  # fixed
 )
-DEFAULT_QWEN_MODEL = "qwen3-omni-flash-realtime"  # overridable
-DEFAULT_QWEN_VOICE = "Cherry"  # overridable
+# Qwen3.5-Omni realtime models support tool calling over WebSocket
+# (the older qwen3-omni-flash-realtime accepted tool configs but never
+# invoked them). Flash variant: qwen3.5-omni-flash-realtime.
+DEFAULT_QWEN_MODEL = "qwen3.5-omni-plus-realtime"  # overridable
+DEFAULT_QWEN_VOICE = "Tina"  # overridable; Qwen3.5-Omni-Realtime default voice
 DEFAULT_QWEN_INPUT_SAMPLE_RATE = 16000  # fixed, API-defined
 DEFAULT_QWEN_OUTPUT_SAMPLE_RATE = 24000  # fixed, API-defined
 
