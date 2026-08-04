@@ -577,8 +577,11 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
             usage_records = self.agent.get_usage_records()
             if usage_records:
                 agent_usage = build_session_usage(usage_records)
-                if agent_usage.cost is not None:
-                    agent_cost = agent_usage.cost
+                # Authoritative even when None: per-message sums exclude
+                # cumulative meters, so falling back to them would report a
+                # misleading $0 (xAI) or partial sum (LiveKit) for a session
+                # that is actually unpriced.
+                agent_cost = agent_usage.cost
                 logger.info(
                     f"Agent usage: {agent_usage.num_raw_records} records, "
                     f"cost={agent_usage.cost} ({agent_usage.cost_breakdown})"

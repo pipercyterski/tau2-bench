@@ -438,6 +438,34 @@ class TestSessionUsage:
         usage = build_session_usage(records)
         assert usage.cost == pytest.approx(1.5 * 0.05)
 
+    def test_unpriced_cumulative_meter_diverges_from_tick_cost(self):
+        """Regression: unpriced session must not fall back to per-message $0.
+
+        With an unpriced model, non-billable token deltas still tick-cost 0.0
+        while the billable cumulative meter makes the session unpriceable.
+        The orchestrator must take agent_cost from the session ledger (None),
+        never from summing per-message costs.
+        """
+        records = [
+            UsageRecord(
+                provider="xai",
+                model="new-unpriced-model",
+                component="realtime",
+                input_tokens=1000,
+                billable=False,
+            ),
+            UsageRecord(
+                provider="xai",
+                model="new-unpriced-model",
+                component="realtime",
+                semantics="cumulative",
+                scope_id="audio-session-1",
+                audio_input_seconds=60.0,
+            ),
+        ]
+        assert compute_tick_cost(records) == 0.0
+        assert build_session_usage(records).cost is None
+
 
 # =============================================================================
 # get_cost per-side independence
