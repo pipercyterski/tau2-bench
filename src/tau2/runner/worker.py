@@ -33,6 +33,11 @@ HEARTBEAT_INTERVAL_SECONDS = 30.0
 POLL_INTERVAL_SECONDS = 1.0
 POST_RETRIES = 3
 
+# /complete posts carry a full SimulationRun (voice sims with verbose tick
+# logs run to many MB) and the controller may be mid-checkpoint-write when
+# the request lands, so read/write get minutes, not the httpx 5s default.
+HTTP_TIMEOUT = httpx.Timeout(300.0, connect=10.0)
+
 
 class ControllerClient:
     """HTTP TaskSource client. ``client`` is injectable for in-process tests
@@ -47,7 +52,7 @@ class ControllerClient:
         token = token or os.environ.get(AUTH_TOKEN_ENV)
         headers = {"Authorization": f"Bearer {token}"} if token else {}
         self._client = client or httpx.Client(
-            base_url=base_url, headers=headers, timeout=30.0
+            base_url=base_url, headers=headers, timeout=HTTP_TIMEOUT
         )
 
     def _post(self, path: str, payload: dict) -> dict:
@@ -109,6 +114,7 @@ def execute_lease(payload: dict) -> SimulationRun:
         user_persona_config=user_persona_config,
         info=info,
         console_display=False,
+        llm_log_mode_value=run.get("llm_log_mode"),
     )
     return run_unit(ctx, task, unit.trial, unit.seed, unit.progress_str)
 

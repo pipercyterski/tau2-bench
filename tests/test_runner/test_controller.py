@@ -99,6 +99,9 @@ class TestControllerHttpContract:
             assert run["config_kind"] == "text"
             assert run["config"]["domain"] == "mock"
             assert run["task"]["id"] == unit["task_id"]
+            # The CLI's --llm-log-mode only reaches worker processes through
+            # the lease payload ("latest" is the ContextVar default).
+            assert run["llm_log_mode"] == "latest"
 
     def test_complete_writes_exactly_one_checkpoint_entry(self, controller):
         with _client(controller) as client:

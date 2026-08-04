@@ -45,6 +45,7 @@ from tau2.runner.work import (
     WorkUnit,
 )
 from tau2.utils.display import ConsoleDisplay, Text
+from tau2.utils.llm_utils import llm_log_mode
 from tau2.utils.utils import DATA_DIR, get_now
 
 AUTH_TOKEN_ENV = "TAU2_CONTROLLER_TOKEN"
@@ -103,6 +104,10 @@ class ControllerRun:
         self.save_fn = save_fn
         self.save_dir = save_dir
         self.evaluation_type = evaluation_type
+        # Captured at registration time (main thread): uvicorn handler threads
+        # get a fresh ContextVar context, and workers are separate processes,
+        # so the CLI's --llm-log-mode has to travel in the lease payload.
+        self.llm_log_mode = llm_log_mode.get()
 
     @classmethod
     def from_prep(cls, run_id: str, prep: BatchPrep) -> "ControllerRun":
@@ -129,6 +134,7 @@ class ControllerRun:
             "task": self.tasks_by_id[unit.task_id].model_dump(mode="json"),
             "evaluation_type": self.evaluation_type.value,
             "save_dir": str(self.save_dir) if self.save_dir else None,
+            "llm_log_mode": self.llm_log_mode,
         }
 
 
