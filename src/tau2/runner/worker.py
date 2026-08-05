@@ -145,6 +145,12 @@ class HeartbeatThread(threading.Thread):
                     "and this attempt's result will be discarded as stale"
                 )
 
+    def leased(self, unit_id: str) -> None:
+        """A fresh lease supersedes a lost one. Unit ids omit the attempt
+        number, so a requeued unit re-leased by this same worker would
+        otherwise stay muted forever and expire mid-sim again."""
+        self.lost.discard(unit_id)
+
     def stop(self) -> None:
         self._stop_event.set()
 
@@ -249,6 +255,7 @@ def worker_loop(
                 body = client.lease(worker_id)
                 if body["status"] == "unit":
                     _maybe_preregister_livekit(body["run"], preregistered)
+                    heartbeats.leased(body["unit"]["unit_id"])
                     future = executor.submit(execute_lease, body)
                     with inflight_lock:
                         inflight[future] = body["unit"]["unit_id"]

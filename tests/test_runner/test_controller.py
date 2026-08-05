@@ -393,3 +393,15 @@ class TestMultiRunMonitorKeys:
                     },
                 )
         assert sorted(monitor.finished) == sorted(monitor.started)
+
+    def test_releasing_a_lost_unit_resumes_its_heartbeats(self):
+        """Unit ids omit the attempt number: a requeued unit re-leased by the
+        same worker must be heartbeated again, not stay muted forever."""
+        client = _RecordingClient([{"u1": False}, {"u1": True}])
+        hb = worker_mod.HeartbeatThread(client, "w1", lambda: ["u1"], interval=999)
+        hb.beat()
+        assert hb.lost == {"u1"}
+        hb.leased("u1")
+        hb.beat()
+        assert client.calls[-1] == ["u1"]
+        assert hb.lost == set()
