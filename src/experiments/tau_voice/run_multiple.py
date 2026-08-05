@@ -19,7 +19,7 @@ With --workers N the combos are registered as producers in one controller and
 run concurrently across N worker processes (see docs/designs/parallel-runner.md):
 
     python -m experiments.tau_voice.run_multiple --providers openai,gemini \\
-        --save-to data/exp/run --workers 4 --provider-limit openai=20,gemini=20
+        --save-to data/exp/run --workers 4
 """
 
 import argparse
@@ -33,6 +33,7 @@ from tau2.config import DEFAULT_AUDIO_NATIVE_MODELS, DEFAULT_LLM_USER, DEFAULT_S
 
 DEFAULT_DOMAINS = ["airline", "retail"]
 DEFAULT_COMPLEXITIES = ["control", "regular"]
+DEFAULT_PROVIDER_LIMITS = "gemini=40,openai=40,xai=40,livekit=10,nova=5,qwen=5"
 
 
 @dataclass
@@ -223,8 +224,9 @@ def main():
     parser.add_argument(
         "--provider-limit",
         type=str,
-        default=None,
-        help='Per-provider concurrency caps with --workers, e.g. "openai=20,gemini=20".',
+        default=DEFAULT_PROVIDER_LIMITS,
+        help="Per-provider concurrency caps with --workers. "
+        f"Default: {DEFAULT_PROVIDER_LIMITS}",
     )
     args = parser.parse_args()
 
