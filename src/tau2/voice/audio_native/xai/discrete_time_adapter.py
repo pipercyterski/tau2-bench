@@ -41,6 +41,7 @@ from tau2.config import (
     DEFAULT_AUDIO_NATIVE_DISCONNECT_TIMEOUT,
     DEFAULT_AUDIO_NATIVE_TICK_TIMEOUT_BUFFER,
     DEFAULT_XAI_MODEL,
+    DEFAULT_XAI_VOICE,
 )
 from tau2.data_model.message import ToolCall
 from tau2.data_model.usage import UsageRecord
@@ -95,28 +96,35 @@ class DiscreteTimeXAIAdapter(DiscreteTimeAdapter):
         self,
         tick_duration_ms: int,
         send_audio_instant: bool = True,
+        model: Optional[str] = None,
         reasoning_effort: Optional[str] = None,
         provider: Optional[XAIRealtimeProvider] = None,
-        voice: str = "Ara",
+        voice: str = DEFAULT_XAI_VOICE,
     ):
         """Initialize the discrete-time xAI adapter.
 
         Args:
             tick_duration_ms: Duration of each tick in milliseconds. Must be > 0.
             send_audio_instant: If True, send audio in one call (discrete-time mode).
-            reasoning_effort: Not supported by xAI. Must be None.
+            model: Model to use (e.g. grok-voice-think-fast-2.0). Defaults to
+                DEFAULT_XAI_MODEL.
+            reasoning_effort: "high" or "none". If None, the API default
+                ("high") applies.
             provider: Optional provider instance. Created lazily if not provided.
-            voice: Voice to use. One of: Ara, Rex, Sal, Eve, Leo. Default: Ara.
+            voice: Voice to use (lowercase voice ID). Default: ara.
         """
-        if reasoning_effort is not None:
+        if reasoning_effort is not None and reasoning_effort not in ("high", "none"):
             raise ValueError(
-                f"xAI provider does not support reasoning_effort (got '{reasoning_effort}')"
+                f"xAI reasoning_effort must be 'high' or 'none' "
+                f"(got '{reasoning_effort}')"
             )
         super().__init__(tick_duration_ms, send_audio_instant=send_audio_instant)
 
         self._chunk_size = int(
             self.audio_format.bytes_per_second * self._voip_interval_ms / 1000
         )
+        self.model = model or DEFAULT_XAI_MODEL
+        self.reasoning_effort = reasoning_effort
         self.voice = voice
 
         # Provider - created lazily if not provided
@@ -135,6 +143,7 @@ class DiscreteTimeXAIAdapter(DiscreteTimeAdapter):
         """Get the provider, creating it if needed."""
         if self._provider is None:
             self._provider = XAIRealtimeProvider(
+                model=self.model,
                 voice=self.voice,
                 audio_format=XAIAudioFormat.PCMU,  # G.711 μ-law
             )
@@ -198,6 +207,7 @@ class DiscreteTimeXAIAdapter(DiscreteTimeAdapter):
             system_prompt=system_prompt,
             tools=tools,
             vad_config=vad_config,
+            reasoning_effort=self.reasoning_effort,
         )
 
     def _make_audio_usage_record(self) -> Optional[UsageRecord]:
@@ -212,7 +222,7 @@ class DiscreteTimeXAIAdapter(DiscreteTimeAdapter):
             return None
         return UsageRecord(
             provider="xai",
-            model=DEFAULT_XAI_MODEL,
+            model=self.model,
             component="realtime",
             semantics="cumulative",
             scope_id=f"audio-session-{self._session_counter}",
@@ -395,7 +405,7 @@ class DiscreteTimeXAIAdapter(DiscreteTimeAdapter):
                 record = UsageRecord.from_openai_realtime_usage(
                     usage,
                     provider="xai",
-                    model=DEFAULT_XAI_MODEL,
+                    model=self.model,
                     scope_id=(event.response or {}).get("id"),
                 )
                 record.billable = False

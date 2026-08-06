@@ -366,7 +366,7 @@ class DiscreteTimeAdapter(ABC):
 # ---------------------------------------------------------------------------
 
 # Providers where the model is determined by the endpoint, not a parameter
-_PROVIDERS_WITH_ENDPOINT_DETERMINED_MODEL = ("xai",)
+_PROVIDERS_WITH_ENDPOINT_DETERMINED_MODEL: tuple[str, ...] = ()
 
 
 def create_adapter(
@@ -455,6 +455,7 @@ def create_adapter(
         adapter = DiscreteTimeXAIAdapter(
             tick_duration_ms=tick_duration_ms,
             send_audio_instant=send_audio_instant,
+            model=model,
             reasoning_effort=reasoning_effort,
         )
     elif provider == "nova":
