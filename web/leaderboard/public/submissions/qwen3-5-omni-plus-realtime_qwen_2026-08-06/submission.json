@@ -127,13 +127,13 @@
       "selectivity_vocal_tic": 0.3636149140735827,
       "selectivity_non_directed": 0.14511018401478495,
       "counts": {
-        "n_simulations": 278,
-        "response_total": 4151,
-        "yield_total": 3575,
+        "agent_interrupts_count": 1375,
         "backchannel_total": 196,
-        "vocal_tic_total": 388,
+        "n_simulations": 278,
         "non_directed_total": 367,
-        "agent_interrupts_count": 1375
+        "response_total": 4151,
+        "vocal_tic_total": 388,
+        "yield_total": 3575
       }
     }
   },
