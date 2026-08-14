@@ -8,7 +8,7 @@ Resource names are configured when the module is loaded:
 
 * ``TAU2_MODAL_APP_NAME`` (default: ``tau2-experiments``)
 * ``TAU2_MODAL_VOLUME_NAME`` (default: ``tau2-experiment-results``)
-* ``TAU2_MODAL_SECRET_NAMES`` (default: ``tau2-experiment-keys``)
+* ``TAU2_MODAL_SECRET_NAMES`` (defaults to evaluation and review secrets)
 
 Example::
 
@@ -34,11 +34,18 @@ APP_NAME = os.environ.get("TAU2_MODAL_APP_NAME", "tau2-experiments")
 VOLUME_NAME = os.environ.get("TAU2_MODAL_VOLUME_NAME", "tau2-experiment-results")
 SECRET_NAMES = tuple(
     name.strip()
-    for name in os.environ.get("TAU2_MODAL_SECRET_NAMES", "tau2-experiment-keys").split(
-        ","
-    )
+    for name in os.environ.get(
+        "TAU2_MODAL_SECRET_NAMES",
+        "tau2-experiment-keys,tau2-experiment-review-key",
+    ).split(",")
     if name.strip()
 )
+
+if len(SECRET_NAMES) != 2:
+    raise ValueError(
+        "TAU2_MODAL_SECRET_NAMES must contain exactly two Secret names: "
+        "evaluation and review"
+    )
 
 REMOTE_REPO = Path("/root/tau2")
 RESULTS_ROOT = Path("/results")

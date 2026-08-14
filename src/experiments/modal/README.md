@@ -4,14 +4,14 @@
 runner is provider-agnostic: providers, models, domains, speech complexities,
 user simulators, and user-simulator arguments are all command-line inputs.
 
-Create a private Modal environment, a Secret containing the API keys required
+Create a private Modal environment, Secrets containing the API keys required
 by the selected providers, and (optionally) a Volume. Configure their names
 before invoking the launcher:
 
 ```bash
 export TAU2_MODAL_APP_NAME=tau2-experiments
 export TAU2_MODAL_VOLUME_NAME=tau2-experiment-results
-export TAU2_MODAL_SECRET_NAMES=tau2-experiment-keys
+export TAU2_MODAL_SECRET_NAMES=tau2-experiment-keys,tau2-experiment-review-key
 
 modal run --detach --env tau-bench \
   src/experiments/modal/run_tau_voice.py::run \
@@ -22,8 +22,8 @@ modal run --detach --env tau-bench \
 ```
 
 The launcher has no web endpoint. Results stay in the configured private Modal
-Volume. API credentials are supplied through Modal Secrets and are excluded
-from the uploaded repository image.
+Volume. API credentials are supplied through two Modal Secrets (evaluation and
+review) and are excluded from the uploaded repository image.
 
 To intentionally continue an existing checkpoint, pass `--resume`. Without
 that flag, the launcher refuses to reuse a non-empty result directory.
