@@ -27,7 +27,6 @@ def test_pine_model_uses_pine_environment(monkeypatch):
 def test_pine_model_requires_pine_base_url(monkeypatch):
     monkeypatch.setenv("PINE_API_KEY", "pine-key")
     monkeypatch.delenv("PINE_REALTIME_BASE_URL", raising=False)
-    monkeypatch.delenv("TAU2_OPENAI_REALTIME_BASE_URL", raising=False)
 
     with pytest.raises(ValueError, match="PINE_REALTIME_BASE_URL"):
         OpenAIRealtimeProvider(model="pine-voice-preview")

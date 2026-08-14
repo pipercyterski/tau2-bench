@@ -6,12 +6,18 @@ Provider syntax: "provider", "provider:model", or "provider:model:reasoning"
   - openai                           (default model, no reasoning)
   - openai:gpt-realtime-1.5          (specific model)
   - openai:gpt-realtime-1.5:high     (model + reasoning effort)
+  - openai:pine-voice-preview        (Pine's OpenAI-compatible model)
   - livekit                           (default cascaded config)
   - livekit::openai-thinking          (default model + cascaded config)
+
+Pine models use the normal OpenAI provider syntax. Set ``PINE_API_KEY`` and
+``PINE_REALTIME_BASE_URL``; the OpenAI realtime provider selects them
+automatically for model names beginning with ``pine-``.
 
 Usage:
     python -m experiments.tau_voice.run_multiple --providers openai,gemini --save-to data/exp/my_run
     python -m experiments.tau_voice.run_multiple --providers openai:gpt-realtime-1.5:high --save-to data/exp/run --num-tasks 5
+    python -m experiments.tau_voice.run_multiple --providers openai:pine-voice-preview --save-to data/exp/pine
     python -m experiments.tau_voice.run_multiple --providers livekit,livekit::openai-thinking --save-to data/exp/run
 
 By default the grid runs sequentially, one `tau2 run` subprocess per combo.

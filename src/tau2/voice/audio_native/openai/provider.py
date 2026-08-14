@@ -38,9 +38,6 @@ load_dotenv()
 PINE_MODEL_PREFIX = "pine-"
 PINE_API_KEY_ENV = "PINE_API_KEY"
 PINE_REALTIME_BASE_URL_ENV = "PINE_REALTIME_BASE_URL"
-# Compatibility with the names used by early internal Pine evaluation jobs.
-LEGACY_PINE_API_KEY_ENV = "TAU2_OPENAI_REALTIME_API_KEY"
-LEGACY_PINE_REALTIME_BASE_URL_ENV = "TAU2_OPENAI_REALTIME_BASE_URL"
 
 
 class OpenAIVADMode(str, Enum):
@@ -140,14 +137,8 @@ class OpenAIRealtimeProvider:
         """
         self.model = model or self.DEFAULT_MODEL
         if self.model.startswith(PINE_MODEL_PREFIX):
-            self.base_url = os.environ.get(
-                PINE_REALTIME_BASE_URL_ENV
-            ) or os.environ.get(LEGACY_PINE_REALTIME_BASE_URL_ENV)
-            self.api_key = (
-                api_key
-                or os.environ.get(PINE_API_KEY_ENV)
-                or os.environ.get(LEGACY_PINE_API_KEY_ENV)
-            )
+            self.base_url = os.environ.get(PINE_REALTIME_BASE_URL_ENV)
+            self.api_key = api_key or os.environ.get(PINE_API_KEY_ENV)
             if not self.base_url:
                 raise ValueError(
                     "Pine Realtime base URL not provided. Set "
