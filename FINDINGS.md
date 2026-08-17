@@ -23,7 +23,8 @@ stated rather than blurred.
 | 9 | `tools.mdx` documents 1 `when` operator, validator accepts 4 | **docs bug** | anyone guarding a write |
 | 10 | An API key can create a model but never fix it | **bug** | key-driven setup |
 | 11 | Check page prints raw model ids, not names | **bug** | reading any result |
-| 12 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
+| 12 | Working set binds on argument *names*; qualified ids never resolve | product gap | **any real API** |
+| 13 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
 
 The two worth acting on first are different in character. **§1** is the one that
 blocks selling this evaluation shape to anyone else — a customer whose
@@ -332,7 +333,58 @@ lookup alone would still leave old checks unreadable once a model is retired.
 
 ---
 
-## 12. Seeding advisories fire on the natural key spelling
+## 12. The working set binds on argument *names*, so qualified ids never resolve
+
+**What happened.** A run failed with the agent apologising twice for a "system
+error", having just told the user the item was available:
+
+> *turn 9* — "I have checked the current inventory: the high brightness, black,
+> AC adapter desk lamp **is available**."
+> *turn 10* — "Although the … desk lamp appears in our inventory, there is a
+> **system error** preventing the exchange."
+
+The declared reads said available; the simulated write refused. Final ledger: 0
+mutations. The agent transferred to a human and the task was lost.
+
+**Why.** The world engine builds a call's working set by matching each
+**argument name** against the id tokens of the declared types — for `item` with
+`id_field: item_id` those are `item_id`, `item_ids`, `itemid`, `item`. For
+`exchange_delivered_order_items(order_id, item_ids, new_item_ids,
+payment_method_id)`:
+
+| argument | binds | why |
+|---|---|---|
+| `order_id` | ✅ | matches `order`'s tokens |
+| `item_ids` | ✅ | the plural token is included |
+| `new_item_ids` | ❌ | a *qualified* name matches no token |
+| `payment_method_id` | ❌ | there is no `payment_method` entity — see §2 |
+
+The two arguments the tool exists to validate are precisely the two the
+simulator cannot see. Combined with a fail-closed instruction, unresolvable
+became "does not exist", and valid exchanges became system errors.
+
+**Why this generalizes past us.** Qualified id arguments are not exotic, they
+are the norm in real APIs: `source_account_id`, `target_user_id`, `new_owner_id`,
+`replacement_sku`. Every one of them silently fails to bind. The documented
+advice — *"name tool arguments after the entity they fetch"* — is sound for an
+agent you are writing, and inapplicable to the case the platform is actually
+sold for: **you cannot rename the customer's API.** And per the same page, the
+explore loop's work is logged server-side only, so a working set that never
+contains what calls need is invisible until it collapses into a refusal.
+
+Note how §2 propagates here. Because payment methods cannot be promoted out of
+`user`, *no* argument naming one can ever bind, on any tool. A nesting
+limitation in the ontology becomes a validation limitation in the simulator.
+
+**Shape of the ask.** Let a tool declare its own argument→entity bindings —
+`{"arg": "new_item_ids", "entity_type": "item"}` — the same way `ledger_read`
+already lets a projection say which type a `where` field belongs to. Name-based
+inference is a good default and a bad contract; a customer whose API is already
+written needs to be able to state the mapping.
+
+---
+
+## 13. Seeding advisories fire on the natural key spelling
 
 `initial_state` keyed `orders` against a declared `order` normalizes correctly
 and emits an advisory preferring the singular. That is a fine default, but the

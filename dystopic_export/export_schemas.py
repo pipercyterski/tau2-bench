@@ -314,15 +314,35 @@ def _declared_raises(tool: Any) -> list[str]:
 # is the shape `dystopic_entry.render_retail` already converts into tau2's exact
 # `f"Error: {e}"` rendering *and* flags as an errored tool message. A bare string
 # would pass through unrendered and un-flagged -- right text, wrong error bit.
+#
+# The second paragraph is a correction, not decoration. The first version said an
+# argument naming something absent from the world "IS a violation", and a live
+# run showed the cost: the simulator refused two valid desk-lamp exchanges in a
+# row with a system error, having just reported the same item as available. The
+# working set is built by matching ARGUMENT NAMES against a declared type's id
+# tokens (item_id / item_ids / itemid / item), so `new_item_ids` binds to
+# nothing, and `payment_method_id` binds to nothing either because payment
+# methods live nested inside `user` rather than as their own entity type. Those
+# are exactly the two arguments an exchange must validate. Fail-closed plus
+# unresolvable equals a false error, so the contract now distinguishes "looked up
+# and found absent" from "could not look up".
 _FAILURE_CONTRACT = """\
-Preconditions. This call FAILS unless every condition below holds. On any \
-violation return exactly {{"error": "<reason>"}} -- an object with that single \
-key and nothing else -- choosing <reason> verbatim from the message list. The \
-caller renders it as the string `Error: <reason>`, which is exactly what the \
-real environment produces (`f"Error: {{e}}"` over the raised ValueError). Never \
-answer a violating call with a success object, and never invent an id, an item, \
-a payment method or an order that the world does not already contain -- an \
-argument naming something absent from the world IS a violation.
+Preconditions. On a violation return exactly {{"error": "<reason>"}} -- an \
+object with that single key and nothing else -- choosing <reason> verbatim from \
+the message list. The caller renders it as the string `Error: <reason>`, which \
+is exactly what the real environment produces (`f"Error: {{e}}"` over the raised \
+ValueError). Never answer a violating call with a success object.
+
+Fail only on a violation you can POSITIVELY establish from world state -- an \
+entity you looked up and found absent, or a value you looked up and found to \
+conflict. If you cannot resolve an argument either way, treat its precondition \
+as SATISFIED and return the success response. Not every argument is retrievable: \
+only ids whose argument NAME matches a declared entity's id tokens land in your \
+working set, so a qualified name like `new_item_ids`, or an id for something the \
+ontology holds nested inside another entity rather than as its own type (a \
+payment method), can be unresolvable while being perfectly valid. Treating "I \
+could not look this up" as "this does not exist" turns valid calls into system \
+errors and strands the conversation.
 
 Conditions checked (from the upstream implementation):
 {conditions}
