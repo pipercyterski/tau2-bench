@@ -6,7 +6,29 @@ deterministic reward, authored by people who had never heard of us. Anything it
 cannot express is something a customer with a stateful agent will also hit.
 
 These are the gaps found while porting the retail domain. Ordered by how much
-they'd cost a real customer.
+they'd cost a real customer. Everything here is platform-facing — our own port
+mistakes are not findings, and where a problem was partly ours (§6) the split is
+stated rather than blurred.
+
+| # | Finding | Kind | Hurts |
+|---|---|---|---|
+| 1 | No state/ledger scorer target | product gap | any stateful agent |
+| 2 | Nested-map members can't be declaratively updated | product gap | APIs returning maps of sub-objects |
+| 3 | CLI reports a successful dispatch as a failure | **bug** | every first-time suite run |
+| 4 | Connected repos still need hand-written `requirements` | papercut | every code-agent port |
+| 5 | In-app checks clone the default branch, no `--ref` | product gap | every port, before merge |
+| 6 | A refused write is indistinguishable from a success | product gap | any validated write path |
+| 7 | Only the final turn's tool-call bodies are retrievable | observability | every multi-turn triage |
+| 8 | `behavior_instructions` names the wrong consumer | **naming / silent** | multi-turn ports |
+| 9 | `tools.mdx` documents 1 `when` operator, validator accepts 4 | **docs bug** | anyone guarding a write |
+| 10 | An API key can create a model but never fix it | **bug** | key-driven setup |
+| 11 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
+
+The two worth acting on first are different in character. **§1** is the one that
+blocks selling this evaluation shape to anyone else — a customer whose
+correctness *is* the end state cannot assert on it. **§8** is the one most
+likely to be silently mis-set by the next person, and its only symptom is an
+inflated pass rate, which is the worst failure an eval platform can have.
 
 ---
 
@@ -248,7 +270,34 @@ would conclude the tool cannot be guarded.
 
 ---
 
-## 10. Seeding advisories fire on the natural key spelling
+## 10. An API key can create an org model but can never fix one
+
+`POST /orgs/{id}/models` accepts a `pk_live_` key (`get_authorized_user_or_api_key`).
+`PATCH`, `DELETE` and set-default on that same resource all require a Firebase
+user (`get_authorized_user`) and `401` for a key.
+
+So the one credential that can *create* a model cannot correct a typo in it,
+retire it, or change which model is default. Every registration made by a key is
+permanent and immutable to that key.
+
+That asymmetry has already cost this org something. Its single model (`321`,
+`claude-sonnet-4-5`) carries a stored `max_tokens: 4096` — the stale form
+default from before that field became derivable — and it backs the judge, the
+user simulator and the world simulator simultaneously. It cannot be cleared with
+a key. The only workaround is to register a *second* model with `max_tokens:
+null` and re-point every role at it, which leaves the broken row in the
+catalogue forever.
+
+We deliberately deferred registering anything for this experiment for exactly
+that reason: with a key, model registration is a one-way door.
+
+**Shape of the ask.** Either let a key that may create a model also PATCH and
+DELETE it, or reject key-authenticated creates entirely. Create-but-never-amend
+is the one combination that accumulates permanent mistakes.
+
+---
+
+## 11. Seeding advisories fire on the natural key spelling
 
 `initial_state` keyed `orders` against a declared `order` normalizes correctly
 and emits an advisory preferring the singular. That is a fine default, but the
