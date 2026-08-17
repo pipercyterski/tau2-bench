@@ -224,3 +224,9 @@ data/simulations/.credentials/
 
 # Cursor IDE
 .cursor/
+# Generated platform artifacts. Regenerate with:
+#   uv run python -m dystopic_export.export_world --domain retail --out worlds/retail.json
+# The world is a 2.5 MB derivative of data/tau2/domains/retail/db.json; it lives on
+# the platform as a World variant, not in git.
+worlds/
+native_arm/results/*.raw.json
