@@ -7,16 +7,32 @@ One tau2 ``Task`` becomes one scenario POST body (``POST
 /api/agents/{id}/scenarios``). The mapping is not mechanical everywhere, so the
 three judgement calls are spelled out here rather than buried in the code:
 
-**1. Where the user-simulator prompt goes.** tau2 builds its user simulator's
-system prompt as ``simulation_guidelines.md`` + ``<scenario>str(UserScenario)
-</scenario>`` (``user_simulator.py::system_prompt``). That whole block is the
-scenario's ``behavior_instructions`` -- it is exactly "what the simulated
-counterpart knows and how it must behave", which is what the field is for, and
-reproducing it verbatim is the only way our user simulator withholds
-information on the same schedule tau2's does (progressive disclosure is a
-*guideline*, not task data; drop it and the simulator volunteers the order id
-on turn one and every task gets easier). ``user_instruction`` gets only
-``reason_for_call`` -- the opener the conversation starts from.
+**1. Where the user-simulator prompt goes, and what turn 0 may contain.**
+tau2 builds its user simulator's system prompt as ``simulation_guidelines.md``
++ ``<scenario>str(UserScenario)</scenario>`` (``user_simulator.py::system_prompt``).
+That whole block goes into ``conversation.user_simulator_persona``, verbatim --
+it is what drives the model-as-user turns, and reproducing it unparaphrased is
+the only way our simulator withholds information on the same schedule tau2's
+does (progressive disclosure is a *guideline*, not task data; drop it and the
+simulator volunteers the order id on turn one and every task gets easier).
+
+Two axes it must NOT go in, both of which are easy to reach for and wrong:
+
+* ``user_instruction`` is documented as "the per-row prompt **the agent
+  receives**" and is seeded as the user's opening message. Putting
+  ``reason_for_call`` there hands the agent the entire goal -- constraints, ids
+  and all -- before it asks anything, which is a materially easier benchmark
+  than tau2 and would inflate every pass rate. So turn 0 is a fixed contentless
+  greeting (``OPENER``) and the goal is elicited, as upstream intends.
+* ``behavior_instructions`` is "free-text guidance fed into the Odyssey
+  simulator" -- the **world** simulator, the component that invents tool
+  responses. User-roleplay rules aimed there are both the wrong consumer and a
+  route for the user's goal to leak into the world's behaviour. We emit none.
+
+The one disclosed deviation: tau2's opener is *generated* by the simulator and
+so carries some signal ("I'd like to exchange a water bottle"); ours carries
+none. That makes our version marginally harder than tau2, not easier -- the
+safe direction to err in.
 
 **2. completion vs refusal.** tau2 has no refusal flag, so we derive it from
 the reference trajectory, using tau2's own ``mutates_state`` marking (the
@@ -65,6 +81,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from functools import lru_cache
 import re
 import sys
 from pathlib import Path
@@ -99,6 +116,12 @@ PERSONA_FALLBACK = (
     "unremarkable customer."
 )
 
+# Turn 0, identical for every task. It must reveal nothing: the whole point of
+# tau2's interaction model is that the agent elicits the goal from the user.
+# See _opener() for why this is a constant rather than the task's own
+# reason_for_call.
+OPENER = "Hi, I need some help with my account please."
+
 
 def _load_tasks(domain: str, split: str) -> list[Any]:
     """Load a split through tau2's own loader, so we inherit its validation."""
@@ -132,6 +155,7 @@ def _mutating_tools(domain: str) -> set[str]:
     }
 
 
+@lru_cache(maxsize=1)
 def _user_sim_guidelines() -> str:
     """tau2's global user-simulator guidelines, persona slot collapsed.
 
@@ -146,36 +170,69 @@ def _user_sim_guidelines() -> str:
     )
 
 
-def _behavior_instructions(task: Any, guidelines: str) -> str:
-    """Reproduce ``UserSimulator.system_prompt`` for this task."""
-    return f"{guidelines}\n\n<scenario>\n{task.user_scenario}\n</scenario>"
+def _goal_text(task: Any) -> str:
+    """What the user actually wants, as free text.
 
-
-def _opener(task: Any) -> str:
-    """The situation the user opens with.
-
-    Structured instructions keep the opener (``reason_for_call``) separate from
-    the behavioral rules; a bare-string scenario has no such split, so the whole
-    string is the opener and ``behavior_instructions`` carries it again.
+    Never shown to the agent -- it is read only by the export's own heuristics
+    (refusal detection, scenario grouping), which need the goal even though the
+    opener deliberately withholds it.
     """
     instructions = task.user_scenario.instructions
     reason = getattr(instructions, "reason_for_call", None)
     return reason if reason is not None else str(instructions)
 
 
-def _persona(task: Any) -> str:
-    """The persona the user simulator plays.
+def _opener(task: Any) -> str:
+    """Turn 0: what the agent actually receives, and it must NOT be the goal.
 
-    ``persona`` mode fails closed on an empty persona, and retail populates
-    ``UserScenario.persona`` on no task at all -- the trait lives in
-    ``task_instructions`` ("You are sad and cautious."), which is a persona in
-    everything but field name. 20 of the 114 retail tasks leave even that as a
-    bare ".", hence the fallback.
+    In tau2 the user simulator holds ``reason_for_call`` in its system prompt
+    and reveals it conversationally; the agent has to elicit it. On this
+    platform ``user_instruction`` is documented as "the per-row prompt **the
+    agent receives**" and is seeded as the user's first message -- so putting
+    ``reason_for_call`` here would hand the agent the entire goal, constraints
+    and ids included, before it has asked anything. That is a materially easier
+    benchmark, and it would inflate every pass rate we report.
+
+    So turn 0 is a fixed, contentless greeting and the goal lives only in the
+    persona. One deviation to disclose: tau2's opener is *generated* by the
+    simulator and therefore carries some signal ("I'd like to exchange a water
+    bottle"), whereas ours carries none. Our version is slightly HARDER than
+    tau2, not easier -- the safe direction to err in, and the agent still has to
+    do the eliciting either way.
     """
-    if task.user_scenario.persona:
-        return task.user_scenario.persona
-    trait = (getattr(task.user_scenario.instructions, "task_instructions", "") or "").strip()
-    return trait if len(trait.strip(".")) > 1 else PERSONA_FALLBACK
+    return OPENER
+
+
+def _persona(task: Any) -> str:
+    """Everything the simulated user knows -- tau2's own UserSimulator prompt.
+
+    This is the field the model-as-user turns are driven from, so it carries
+    what tau2 puts in the simulator's system prompt: the global simulation
+    guidelines, then the whole ``<scenario>`` block (reason_for_call, known and
+    unknown info, and the personality trait). Reproducing tau2's own prompt
+    verbatim is the point -- the user side is not something we should be
+    paraphrasing if we want the interaction to be comparable.
+
+    Deliberately NOT ``behavior_instructions``: that axis is documented as
+    "free-text guidance fed into the Odyssey simulator", i.e. the WORLD
+    simulator. Putting user-roleplay rules there would aim them at the component
+    that invents tool responses, which is both the wrong consumer and an
+    invitation to leak the user's goal into the world's behaviour.
+    """
+    scenario = task.user_scenario
+    trait = (getattr(scenario.instructions, "task_instructions", "") or "").strip()
+    if scenario.persona:
+        trait = scenario.persona
+    elif len(trait.strip(".")) <= 1:
+        # 20 of 114 retail tasks leave the trait as a bare "."; persona mode
+        # fails closed on an empty persona, so give it a neutral one.
+        trait = PERSONA_FALLBACK
+
+    return (
+        f"{_user_sim_guidelines()}\n\n"
+        f"<scenario>\n{scenario}\n</scenario>\n\n"
+        f"<persona>\n{trait}\n</persona>"
+    )
 
 
 def _render_call(action: Any) -> str:
@@ -270,7 +327,7 @@ def _is_refusal(task: Any, mutating: set[str]) -> bool:
         return False
     if "transfer_to_human_agents" in names:
         return True
-    return bool(_MUTATION_REQUEST.search(_opener(task)))
+    return bool(_MUTATION_REQUEST.search(_goal_text(task)))
 
 
 def _is_defective(task: Any) -> bool:
@@ -308,7 +365,7 @@ def _nl_assertions_graded(criteria: Any) -> list[str]:
 
 
 def build_scenario(
-    task: Any, mutating: set[str], guidelines: str, domain: str = "retail"
+    task: Any, mutating: set[str], domain: str = "retail"
 ) -> dict[str, Any]:
     criteria = task.evaluation_criteria
     actions = (criteria.actions if criteria else None) or []
@@ -318,8 +375,9 @@ def build_scenario(
     scenario: dict[str, Any] = {
         "name": f"{domain}/{task.id}",
         "scenario_group": _scenario_group(task, mutating),
+        # No behavior_instructions: that axis feeds the WORLD simulator, and
+        # everything the simulated USER knows belongs in the persona instead.
         "user_instruction": _opener(task),
-        "behavior_instructions": _behavior_instructions(task, guidelines),
         "expected_outcome": "refusal" if refusal else "completion",
         "expected_tool_sequence": [
             a.name for a in actions if a.requestor == "assistant"
@@ -358,9 +416,8 @@ def main(argv: list[str] | None = None) -> int:
 
     tasks = _load_tasks(args.domain, args.split)
     mutating = _mutating_tools(args.domain)
-    guidelines = _user_sim_guidelines()
 
-    scenarios = [build_scenario(t, mutating, guidelines, args.domain) for t in tasks]
+    scenarios = [build_scenario(t, mutating, args.domain) for t in tasks]
     golden = [build_golden(t, args.domain) for t in tasks]
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
