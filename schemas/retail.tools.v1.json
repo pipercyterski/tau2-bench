@@ -23,7 +23,7 @@
   },
   {
     "name": "cancel_pending_order",
-    "description": "Cancel a pending order. If the order is already processed or delivered,\n\nit cannot be cancelled. The agent needs to explain the cancellation detail\nand ask for explicit user confirmation (yes/no) to proceed. If the user confirms,\nthe order status will be changed to 'cancelled' and the payment will be refunded.\nThe refund will be added to the user's gift card balance immediately if the payment\nwas made using a gift card, otherwise the refund would take 5-7 business days to process.\nThe function returns the order details after the cancellation.",
+    "description": "Cancel a pending order. If the order is already processed or delivered,\n\nit cannot be cancelled. The agent needs to explain the cancellation detail\nand ask for explicit user confirmation (yes/no) to proceed. If the user confirms,\nthe order status will be changed to 'cancelled' and the payment will be refunded.\nThe refund will be added to the user's gift card balance immediately if the payment\nwas made using a gift card, otherwise the refund would take 5-7 business days to process.\nThe function returns the order details after the cancellation.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - (upstream documents no Raises: section; the messages below are the checks)\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-pending order cannot be cancelled'\n  - 'Invalid reason'\n  - 'User not found'\n  - 'Payment method not found'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -83,14 +83,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -122,13 +114,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -166,10 +151,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -196,11 +177,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -303,21 +279,80 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1006327",
+          "user_id": "james_johnson_9321",
+          "address": {
+            "address1": "593 Cedar Avenue",
+            "address2": "Suite 826",
+            "city": "Chicago",
+            "country": "USA",
+            "state": "IL",
+            "zip": "60625"
+          },
+          "items": [
+            {
+              "name": "Action Camera",
+              "product_id": "3377618313",
+              "item_id": "5925362855",
+              "price": 503.51,
+              "options": {
+                "resolution": "1080p",
+                "waterproof": "yes",
+                "color": "black"
+              }
+            },
+            {
+              "name": "Wristwatch",
+              "product_id": "6066914160",
+              "item_id": "1994478369",
+              "price": 2025.51,
+              "options": {
+                "strap material": "silicone",
+                "dial color": "black"
+              }
+            },
+            {
+              "name": "Jigsaw Puzzle",
+              "product_id": "1808611083",
+              "item_id": "5172162216",
+              "price": 48.51,
+              "options": {
+                "pieces": "2000",
+                "theme": "landscape",
+                "difficulty level": "intermediate"
+              }
+            }
+          ],
+          "status": "cancelled",
+          "fulfillments": [],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 2577.53,
+              "payment_method_id": "credit_card_4998749"
+            },
+            {
+              "transaction_type": "refund",
+              "amount": 2577.53,
+              "payment_method_id": "credit_card_4998749"
+            }
+          ],
+          "cancel_reason": "no longer needed",
+          "exchange_items": null,
+          "exchange_new_items": null,
+          "exchange_payment_method_id": null,
+          "exchange_price_difference": null,
+          "return_items": null,
+          "return_payment_method_id": null
+        }
+      ]
     }
   },
   {
     "name": "exchange_delivered_order_items",
-    "description": "Exchange items in a delivered order to new items of the same product type.\n\nFor a delivered order, return or exchange can be only done once by the agent.\nThe agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.",
+    "description": "Exchange items in a delivered order to new items of the same product type.\n\nFor a delivered order, return or exchange can be only done once by the agent.\nThe agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the order is not delivered.\n  - If the items to be exchanged do not exist.\n  - If the new items do not exist or do not match the old items.\n  - If the number of items to be exchanged does not match.\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-delivered order cannot be exchanged'\n  - 'Number of <item_id> not found.'\n  - 'The number of items to be exchanged should match.'\n  - 'Item <item_id> not found'\n  - 'Product not found'\n  - 'Variant not found'\n  - 'New item <new_item_id> not found or available'\n  - 'User not found'\n  - 'Payment method not found'\n  - 'Insufficient gift card balance to pay for the price difference'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -395,14 +430,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -434,13 +461,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -478,10 +498,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -508,11 +524,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -615,16 +626,74 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1067251",
+          "user_id": "raj_sanchez_2970",
+          "address": {
+            "address1": "557 Sunset Drive",
+            "address2": "Suite 454",
+            "city": "San Diego",
+            "country": "USA",
+            "state": "CA",
+            "zip": "92147"
+          },
+          "items": [
+            {
+              "name": "Wireless Earbuds",
+              "product_id": "9924732112",
+              "item_id": "6452271382",
+              "price": 258.84,
+              "options": {
+                "color": "blue",
+                "battery life": "4 hours",
+                "water resistance": "IPX4"
+              }
+            },
+            {
+              "name": "Grill",
+              "product_id": "6819683148",
+              "item_id": "7848293342",
+              "price": 942.71,
+              "options": {
+                "type": "charcoal",
+                "size": "medium",
+                "features": "side burner"
+              }
+            }
+          ],
+          "status": "exchange requested",
+          "fulfillments": [
+            {
+              "tracking_id": [
+                "787450420748"
+              ],
+              "item_ids": [
+                "6452271382",
+                "7848293342"
+              ]
+            }
+          ],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 1201.55,
+              "payment_method_id": "credit_card_3362387"
+            }
+          ],
+          "cancel_reason": null,
+          "exchange_items": [
+            "6452271382"
+          ],
+          "exchange_new_items": [
+            "1646531091"
+          ],
+          "exchange_payment_method_id": "credit_card_3362387",
+          "exchange_price_difference": -26.35,
+          "return_items": null,
+          "return_payment_method_id": null
+        }
+      ]
     }
   },
   {
@@ -1287,7 +1356,7 @@
   },
   {
     "name": "modify_pending_order_address",
-    "description": "Modify the shipping address of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.",
+    "description": "Modify the shipping address of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the order is not pending.\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-pending order cannot be modified'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -1377,14 +1446,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -1416,13 +1477,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1460,10 +1514,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1490,11 +1540,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1597,21 +1642,75 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1006327",
+          "user_id": "james_johnson_9321",
+          "address": {
+            "address1": "593 Cedar Avenue",
+            "address2": "Suite 826",
+            "city": "Chicago",
+            "country": "USA",
+            "state": "IL",
+            "zip": "60625"
+          },
+          "items": [
+            {
+              "name": "Action Camera",
+              "product_id": "3377618313",
+              "item_id": "5925362855",
+              "price": 503.51,
+              "options": {
+                "resolution": "1080p",
+                "waterproof": "yes",
+                "color": "black"
+              }
+            },
+            {
+              "name": "Wristwatch",
+              "product_id": "6066914160",
+              "item_id": "1994478369",
+              "price": 2025.51,
+              "options": {
+                "strap material": "silicone",
+                "dial color": "black"
+              }
+            },
+            {
+              "name": "Jigsaw Puzzle",
+              "product_id": "1808611083",
+              "item_id": "5172162216",
+              "price": 48.51,
+              "options": {
+                "pieces": "2000",
+                "theme": "landscape",
+                "difficulty level": "intermediate"
+              }
+            }
+          ],
+          "status": "pending",
+          "fulfillments": [],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 2577.53,
+              "payment_method_id": "credit_card_4998749"
+            }
+          ],
+          "cancel_reason": null,
+          "exchange_items": null,
+          "exchange_new_items": null,
+          "exchange_payment_method_id": null,
+          "exchange_price_difference": null,
+          "return_items": null,
+          "return_payment_method_id": null
+        }
+      ]
     }
   },
   {
     "name": "modify_pending_order_items",
-    "description": "Modify items in a pending order to new items of the same product type. For a pending order, this function can only be called once. The agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.",
+    "description": "Modify items in a pending order to new items of the same product type. For a pending order, this function can only be called once. The agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the order is not pending.\n  - If the items to be modified do not exist.\n  - If the new items do not exist or do not match the old items.\n  - If the number of items to be modified does not match.\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-pending order cannot be modified'\n  - '<item_id> not found'\n  - 'The number of items to be exchanged should match'\n  - 'The new item id should be different from the old item id'\n  - 'Item <item_id> not found'\n  - 'Product not found'\n  - 'Variant not found'\n  - 'New item <new_item_id> not found or available'\n  - 'User not found'\n  - 'Payment method not found'\n  - 'Insufficient gift card balance to pay for the new item'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -1689,14 +1788,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -1728,13 +1819,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1772,10 +1856,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1802,11 +1882,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -1909,21 +1984,80 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1006327",
+          "user_id": "james_johnson_9321",
+          "address": {
+            "address1": "593 Cedar Avenue",
+            "address2": "Suite 826",
+            "city": "Chicago",
+            "country": "USA",
+            "state": "IL",
+            "zip": "60625"
+          },
+          "items": [
+            {
+              "name": "Action Camera",
+              "product_id": "3377618313",
+              "item_id": "6117189161",
+              "price": 481.5,
+              "options": {
+                "resolution": "4K",
+                "waterproof": "yes",
+                "color": "silver"
+              }
+            },
+            {
+              "name": "Wristwatch",
+              "product_id": "6066914160",
+              "item_id": "1994478369",
+              "price": 2025.51,
+              "options": {
+                "strap material": "silicone",
+                "dial color": "black"
+              }
+            },
+            {
+              "name": "Jigsaw Puzzle",
+              "product_id": "1808611083",
+              "item_id": "5172162216",
+              "price": 48.51,
+              "options": {
+                "pieces": "2000",
+                "theme": "landscape",
+                "difficulty level": "intermediate"
+              }
+            }
+          ],
+          "status": "pending (item modified)",
+          "fulfillments": [],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 2577.53,
+              "payment_method_id": "credit_card_4998749"
+            },
+            {
+              "transaction_type": "refund",
+              "amount": 22.00999999999999,
+              "payment_method_id": "credit_card_4998749"
+            }
+          ],
+          "cancel_reason": null,
+          "exchange_items": null,
+          "exchange_new_items": null,
+          "exchange_payment_method_id": null,
+          "exchange_price_difference": null,
+          "return_items": null,
+          "return_payment_method_id": null
+        }
+      ]
     }
   },
   {
     "name": "modify_pending_order_payment",
-    "description": "Modify the payment method of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.",
+    "description": "Modify the payment method of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the order is not pending.\n  - If the payment method does not exist.\n  - If the payment history has more than one payment.\n  - If the new payment method is the same as the current one.\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-pending order cannot be modified'\n  - 'User not found'\n  - 'Payment method not found'\n  - 'There should be exactly one payment for a pending order'\n  - 'The new payment method should be different from the current one'\n  - 'Insufficient gift card balance to pay for the order'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -1983,14 +2117,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -2022,13 +2148,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2066,10 +2185,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2096,11 +2211,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2203,21 +2313,85 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1068289",
+          "user_id": "yara_patel_8545",
+          "address": {
+            "address1": "736 Willow Lane",
+            "address2": "Suite 550",
+            "city": "Fort Worth",
+            "country": "USA",
+            "state": "TX",
+            "zip": "76130"
+          },
+          "items": [
+            {
+              "name": "Headphones",
+              "product_id": "6992792935",
+              "item_id": "3374679624",
+              "price": 370.53,
+              "options": {
+                "type": "over-ear",
+                "connectivity": "wired",
+                "color": "black"
+              }
+            },
+            {
+              "name": "Grill",
+              "product_id": "6819683148",
+              "item_id": "5946177616",
+              "price": 1057.24,
+              "options": {
+                "type": "gas",
+                "size": "portable",
+                "features": "none"
+              }
+            },
+            {
+              "name": "Wristwatch",
+              "product_id": "6066914160",
+              "item_id": "1994478369",
+              "price": 2025.51,
+              "options": {
+                "strap material": "silicone",
+                "dial color": "black"
+              }
+            }
+          ],
+          "status": "pending",
+          "fulfillments": [],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 3453.28,
+              "payment_method_id": "gift_card_9105630"
+            },
+            {
+              "transaction_type": "payment",
+              "amount": 3453.28,
+              "payment_method_id": "paypal_5398626"
+            },
+            {
+              "transaction_type": "refund",
+              "amount": 3453.28,
+              "payment_method_id": "gift_card_9105630"
+            }
+          ],
+          "cancel_reason": null,
+          "exchange_items": null,
+          "exchange_new_items": null,
+          "exchange_payment_method_id": null,
+          "exchange_price_difference": null,
+          "return_items": null,
+          "return_payment_method_id": null
+        }
+      ]
     }
   },
   {
     "name": "modify_user_address",
-    "description": "Modify the default address of a user. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.",
+    "description": "Modify the default address of a user. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the user is not found.\n\nExact failure messages this call can produce:\n  - 'User not found'",
     "input_schema": {
       "properties": {
         "user_id": {
@@ -2287,10 +2461,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "first_name",
-            "last_name"
-          ],
           "type": "object"
         },
         "address": {
@@ -2321,14 +2491,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "email": {
@@ -2358,12 +2520,6 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "source",
-                  "id",
-                  "brand",
-                  "last_four"
-                ],
                 "type": "object"
               },
               {
@@ -2382,11 +2538,6 @@
                     "type": "number"
                   }
                 },
-                "required": [
-                  "source",
-                  "id",
-                  "balance"
-                ],
                 "type": "object"
               },
               {
@@ -2401,10 +2552,6 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "source",
-                  "id"
-                ],
                 "type": "object"
               }
             ]
@@ -2420,20 +2567,43 @@
           "type": "array"
         }
       },
-      "required": [
-        "user_id",
-        "name",
-        "address",
-        "email",
-        "payment_methods",
-        "orders"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "user_id": "aarav_anderson_8794",
+          "name": {
+            "first_name": "Aarav",
+            "last_name": "Anderson"
+          },
+          "address": {
+            "address1": "931 Maple Drive",
+            "address2": "Suite 985",
+            "city": "Philadelphia",
+            "country": "USA",
+            "state": "PA",
+            "zip": "19031"
+          },
+          "email": "aarav.anderson9752@example.com",
+          "payment_methods": {
+            "gift_card_7245904": {
+              "source": "gift_card",
+              "id": "gift_card_7245904",
+              "balance": 17.0
+            }
+          },
+          "orders": [
+            "#W4316152",
+            "#W9311069",
+            "#W9300146",
+            "#W3220203",
+            "#W3470184"
+          ]
+        }
+      ]
     }
   },
   {
     "name": "return_delivered_order_items",
-    "description": "Return some items of a delivered order.\n\nThe order status will be changed to 'return requested'.\nThe agent needs to explain the return detail and ask for explicit user confirmation (yes/no) to proceed.\nThe user will receive follow-up email for how and where to return the item.",
+    "description": "Return some items of a delivered order.\n\nThe order status will be changed to 'return requested'.\nThe agent needs to explain the return detail and ask for explicit user confirmation (yes/no) to proceed.\nThe user will receive follow-up email for how and where to return the item.\n\nPreconditions. This call FAILS unless every condition below holds. On any violation return exactly {\"error\": \"<reason>\"} -- an object with that single key and nothing else -- choosing <reason> verbatim from the message list. The caller renders it as the string `Error: <reason>`, which is exactly what the real environment produces (`f\"Error: {e}\"` over the raised ValueError). Never answer a violating call with a success object, and never invent an id, an item, a payment method or an order that the world does not already contain -- an argument naming something absent from the world IS a violation.\n\nConditions checked (from the upstream implementation):\n  - If the order is not delivered.\n  - If the payment method is not the original payment method or a gift card.\n  - If the items to be returned do not exist.\n\nExact failure messages this call can produce:\n  - 'Order not found'\n  - 'Non-delivered order cannot be returned'\n  - 'User not found'\n  - 'Payment method not found'\n  - 'Payment method should be the original payment method'\n  - 'Some item not found'",
     "input_schema": {
       "properties": {
         "order_id": {
@@ -2502,14 +2672,6 @@
               "type": "string"
             }
           },
-          "required": [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "state",
-            "zip"
-          ],
           "type": "object"
         },
         "items": {
@@ -2541,13 +2703,6 @@
                 "type": "object"
               }
             },
-            "required": [
-              "name",
-              "product_id",
-              "item_id",
-              "price",
-              "options"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2585,10 +2740,6 @@
                 "type": "array"
               }
             },
-            "required": [
-              "tracking_id",
-              "item_ids"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2615,11 +2766,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "transaction_type",
-              "amount",
-              "payment_method_id"
-            ],
             "type": "object"
           },
           "type": "array"
@@ -2722,16 +2868,72 @@
           "description": "Payment method ID for the return"
         }
       },
-      "required": [
-        "order_id",
-        "user_id",
-        "address",
-        "items",
-        "status",
-        "fulfillments",
-        "payment_history"
-      ],
-      "type": "object"
+      "examples": [
+        {
+          "order_id": "#W1023987",
+          "user_id": "sophia_garcia_1101",
+          "address": {
+            "address1": "197 Elm Street",
+            "address2": "Suite 737",
+            "city": "San Antonio",
+            "country": "USA",
+            "state": "TX",
+            "zip": "78263"
+          },
+          "items": [
+            {
+              "name": "Luggage Set",
+              "product_id": "5426915165",
+              "item_id": "8926329222",
+              "price": 452.28,
+              "options": {
+                "piece count": "2-piece",
+                "color": "black",
+                "material": "softshell"
+              }
+            },
+            {
+              "name": "Pet Bed",
+              "product_id": "2747247837",
+              "item_id": "5067898160",
+              "price": 209.95,
+              "options": {
+                "size": "medium",
+                "material": "memory foam",
+                "color": "brown"
+              }
+            }
+          ],
+          "status": "return requested",
+          "fulfillments": [
+            {
+              "tracking_id": [
+                "974703204371"
+              ],
+              "item_ids": [
+                "8926329222",
+                "5067898160"
+              ]
+            }
+          ],
+          "payment_history": [
+            {
+              "transaction_type": "payment",
+              "amount": 662.23,
+              "payment_method_id": "gift_card_9450778"
+            }
+          ],
+          "cancel_reason": null,
+          "exchange_items": null,
+          "exchange_new_items": null,
+          "exchange_payment_method_id": null,
+          "exchange_price_difference": null,
+          "return_items": [
+            "8926329222"
+          ],
+          "return_payment_method_id": "gift_card_9450778"
+        }
+      ]
     }
   },
   {

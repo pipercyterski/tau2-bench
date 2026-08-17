@@ -118,7 +118,137 @@ carry work-in-progress for it to be testable in-app at all.
 
 ---
 
-## 6. Seeding advisories fire on the natural key spelling
+## 6. A refused write is indistinguishable from a successful one
+
+**What happened.** An agent called
+
+```
+return_delivered_order_items(order_id="#W6390527",
+                             item_ids=["1003829102"],
+                             payment_method_id="paypal_0000001")
+```
+
+Neither id exists anywhere in the world (the real ones are `8538875209` and
+`paypal_7644869`). Real τ-bench rejects this twice over — `_get_payment_method`
+raises on an unknown method, and the item-existence loop raises "Some item not
+found" — and renders the raise as the string `Error: …`, which the agent sees
+and can correct from.
+
+**What our world did, precisely.** The simulator returned the order **echoed
+back unchanged**: `status: "delivered"` (τ-bench would have set `"return
+requested"`), `return_items: null`, `return_payment_method_id: null`. The
+adapter's `when: {field: "status", eq: "return requested"}` therefore evaluated
+false and **skipped the effect entirely — zero ops**. The final ledger confirms
+it: 2141 entries, **0 mutations**, order `#W6390527` still at
+`updated_at_call: -1`.
+
+So the write gating worked exactly as designed. Nothing bad was written. The
+platform behaved correctly at every step we can inspect.
+
+**The gap is the response channel, and it is narrow but consequential.** The
+tool's reply carried no success/failure signal at all — it was a well-formed
+`Order` object that happens to be unmutated. The agent read it as success and
+told the user the return had been processed. A refused write and a successful
+write are the same shape, and only a field-by-field comparison against
+pre-call state distinguishes them.
+
+Our `output_schema` is what closed off the alternative: a full nested Order with
+large `required` arrays and no error variant leaves the simulator no legal way
+to emit `Error: …`. The corroborating trace detail is that
+`schema_compliance` logged *"First response was malformed; recovered after 1
+retry"* — consistent with the simulator attempting to signal the failure, being
+rejected by the schema, and retrying into a compliant success-shaped object.
+(Inference: the malformed body is not retained.)
+
+**Two asks, in priority order.**
+
+1. **An error channel for simulated tools that survives `output_schema`.** A
+   declared error variant, or an explicit "this call failed: `<reason>`" return
+   the engine renders in the tool's own error idiom. Without one, a strict
+   output schema silently converts every domain refusal into a fake success.
+2. **Declarative preconditions on an adapter** — a `require` clause using the
+   `ledger_read` `where` vocabulary (`{"entity_type": "order", "where": [...]}`)
+   that produces a configurable error when unmet. `when` resolves only against
+   the tool's own response or arguments; it cannot query ledger state, so
+   "the item must exist in this order" is not currently expressible and
+   validation rests on the simulator noticing. The grammar to express it already
+   exists on the read side.
+
+---
+
+## 7. A run's detail only exposes the final turn's tool calls
+
+Diagnosing the above needed the *arguments and responses* of 12 `ledger_read`
+calls spread across a multi-turn conversation. The counts are aggregated across
+turns (`tool_calls: {total: 13, ledger_read: 12}`), but `GET /agents/{id}/runs/
+{run_id}` and `…/runs/{run_id}/ledger` both return only the **last** turn's call
+bodies — one entry, and in the ledger view with `arguments: null` and
+`response: None`. The per-turn session endpoint is namespaced under
+`/projects/{id}/workflows/{id}/tasks/{id}/agent-sessions`, which a suite-based
+check does not have ids for.
+
+So on a multi-turn run there is no reachable answer to "what did that read
+actually return on turn 3" — the exact question every simulator-fidelity triage
+starts from. We settled the case by reasoning from the transcript and the world
+file instead, which worked here only because the fabricated ids were absent from
+the world entirely.
+
+---
+
+## 8. `behavior_instructions` names the wrong thing, and the failure is silent
+
+**What happened.** Porting τ-bench's user simulator, the obvious home for "what
+the simulated counterpart knows and how it must behave" is
+`behavior_instructions`. It is the wrong field. Its documented meaning is
+"free-text guidance fed into the Odyssey simulator" — the **world** simulator,
+the component that invents tool responses. The simulated *user* is driven from
+`conversation.user_simulator_persona`.
+
+The neighbouring axis has a symmetric trap. `user_instruction` reads like "the
+instruction describing the user's task", and τ-bench has a field of exactly that
+name and meaning (`reason_for_call`). But it is documented as "the per-row
+prompt **the agent receives**" and is seeded as the user's opening message. Put
+the task goal there and the agent is handed the entire objective — constraints
+and ids included — before it asks a single question.
+
+**Why it matters.** Neither mistake errors. Nothing warns. The suite runs, the
+traces look plausible, and the only symptom is that **every pass rate is
+inflated**, because the agent no longer has to elicit anything. For an eval
+platform this is the worst possible failure shape: a silent, one-directional
+bias in the headline number. We caught it only by reading the platform source
+to find out which component consumes which axis.
+
+**Shape of the ask.** Rename or alias `behavior_instructions` to say *world*
+(`world_behavior_instructions`, `simulator_guidance`), and warn at seeding when
+`user_instruction` is long enough to be a task description rather than an
+opener — in multi-turn persona mode a 500-character opener is almost always
+this mistake.
+
+---
+
+## 9. `tools.mdx` documents one `when` operator; the validator accepts four
+
+The reference documents the adapter's `when` predicate as `{"field", "eq"}` and
+nothing else. The platform's own validator (`_validate_ledger_adapter`,
+`apps/api/app/schemas/agent.py`) accepts **`eq | neq | exists | empty`**, with
+`exists`/`empty` documented in-code as taking a boolean and treating a missing
+field as the answer.
+
+This is not academic. `modify_user_address` returns a `User` and undergoes no
+status transition, so no scalar on it is constant across users — `eq` has
+nothing to compare against. The only honest success discriminator is *presence*:
+a `User` payload always carries `user_id`, an `{"error": …}` body never does.
+With `eq` alone that write is unguardable, and an unguarded write there is not
+harmless — `zip` is mapped straight from `$args`, so a rejected call would still
+move the user's zip and silently break `find_user_id_by_name_zip` for every
+later task touching that user.
+
+We only found `exists` by reading the validator. Anyone working from the docs
+would conclude the tool cannot be guarded.
+
+---
+
+## 10. Seeding advisories fire on the natural key spelling
 
 `initial_state` keyed `orders` against a declared `order` normalizes correctly
 and emits an advisory preferring the singular. That is a fine default, but the

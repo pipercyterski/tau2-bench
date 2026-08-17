@@ -9,7 +9,9 @@ in the seams between them --
 * a projection leaking a filter-only key (which silently changes the payload
   shape the model sees, and would only be caught by a byte-diff against tau2),
 * a tool name that drifted from ``Environment.get_info()``,
-* a scenario naming a tool that no longer exists.
+* a scenario naming a tool that no longer exists,
+* a write tool whose adapter has no ``when`` guard, so a simulated response
+  reporting a domain failure is written to the ledger anyway.
 
 None of those are visible from inside a single exporter. All of them cost a
 live check run to discover. So they are checked here, independently -- this
@@ -48,6 +50,11 @@ SCENARIO_SPLITS = ("test", "train", "base")
 
 LEGAL_FIELD_TYPES = {"string", "number", "integer", "boolean", "object", "array"}
 IDENT_RE = re.compile(r"^[a-z][a-z0-9_]*$")
+
+# A `when` predicate carries a `field` plus exactly one of these operators
+# (``_validate_ledger_adapter`` in apps/api/app/schemas/agent.py). Restated here
+# rather than imported, for the same reason FILTER_ONLY is.
+WHEN_OPS = {"eq", "neq", "exists", "empty"}
 
 # The filter-only keys, restated here rather than imported from ``contract`` so
 # a change to the contract cannot silently retire the leak check.
@@ -359,6 +366,13 @@ def check_ledger_adapters(
 
             when = eff.get("when")
             if isinstance(when, dict):
+                ops = sorted(set(when) - {"field"})
+                if len(ops) != 1 or ops[0] not in WHEN_OPS:
+                    v.add(
+                        c,
+                        f"{loc}: when declares {ops} -- exactly one of {sorted(WHEN_OPS)} "
+                        "is allowed beside 'field'",
+                    )
                 wf = when.get("field")
                 if wf not in declared:
                     v.add(
@@ -373,6 +387,52 @@ def check_ledger_adapters(
                             f"{loc}: when.eq={when['eq']!r} is outside the declared enum "
                             f"for {etype}.{wf} ({enum})",
                         )
+
+
+def check_write_tools_are_guarded(tools: list[dict], v: Violations) -> None:
+    """Every tau2 WRITE tool must gate its adapter on a success discriminator.
+
+    This is the regression guard for the failure that motivated the write-tool
+    response contract: an unguarded adapter applies its ``field_map`` to
+    whatever the simulator returned, so a call the real domain would have
+    rejected still mutates the world -- and the agent, told the write succeeded,
+    never gets the ``Error: ...`` it would have self-corrected from.
+
+    The write set is taken from tau2's own ``@is_tool(ToolType.WRITE)``
+    classification, not from the exporter, so a tool that changes category
+    upstream is caught here rather than inherited.
+    """
+    c = "write_guard"
+    try:
+        from tau2.domains.retail.data_model import RetailDB
+        from tau2.domains.retail.tools import RetailTools
+        from tau2.domains.retail.utils import RETAIL_DB_PATH
+        from tau2.environment.toolkit import ToolType, get_tool_types
+
+        types = get_tool_types(RetailTools(RetailDB.load(RETAIL_DB_PATH)))
+    except Exception as exc:  # pragma: no cover - env problem, not a defect
+        v.add(c, f"could not classify tau2's tools: {exc!r}")
+        return
+
+    writes = {name for name, kind in types.items() if kind is ToolType.WRITE}
+    by_name = {t["name"]: t for t in tools}
+    for name in sorted(writes):
+        entry = by_name.get(name)
+        if entry is None:
+            continue  # already reported by check_tool_names_vs_tau2
+        adapter = entry.get("ledger_adapter")
+        if adapter is None:
+            v.add(c, f"{name}: tau2 classifies it a WRITE but it declares no ledger_adapter")
+            continue
+        for i, eff in enumerate(_adapter_effects(adapter)):
+            loc = f"{name}.effects[{i}]" if "effects" in adapter else name
+            when = eff.get("when")
+            if not isinstance(when, dict) or not (set(when) & WHEN_OPS):
+                v.add(
+                    c,
+                    f"{loc}: a write effect with no `when` guard -- a response that "
+                    "reports a domain failure would still be written to the ledger",
+                )
 
 
 def check_execution_mode_routing(tools: list[dict], v: Violations) -> None:
@@ -428,7 +488,21 @@ def check_levels(v: Violations) -> None:
             for key, val in entry.items():
                 if key not in up:
                     v.add(c, f"{higher}.{name} dropped key {key!r} present in {lower}")
-                elif up[key] != val and key not in ("output_schema",):
+                elif up[key] == val or key == "output_schema":
+                    continue
+                elif key == "description":
+                    # A level may APPEND to the description -- v1 tells a write
+                    # tool's simulator which preconditions to enforce -- but it
+                    # must never reword tau2's own text, or the pass-rate delta
+                    # between levels stops being attributable to the
+                    # declaration. Additive here means "keeps v0 as its prefix".
+                    if not isinstance(up[key], str) or not up[key].startswith(val):
+                        v.add(
+                            c,
+                            f"{higher}.{name}.description does not extend {lower}'s "
+                            "(a level may append to it, never rewrite it)",
+                        )
+                else:
                     v.add(
                         c,
                         f"{higher}.{name}.{key} differs from {lower} (levels must be additive)",
@@ -840,6 +914,7 @@ def main() -> int:
     tool_names = check_tool_names_vs_tau2(tools, v)
     check_ledger_reads(tools, idx, v)
     check_ledger_adapters(tools, idx, ledger, v)
+    check_write_tools_are_guarded(tools, v)
     check_levels(v)
     check_scenarios(tool_names, v)
     check_world_grounding(ledger, idx, v)
