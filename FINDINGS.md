@@ -12,6 +12,7 @@ stated rather than blurred.
 
 | # | Finding | Kind | Hurts |
 |---|---|---|---|
+| **0** | **`replay` drops tool state; agents forget what they looked up** | **product gap** | **every multi-turn tool agent** |
 | 1 | No state/ledger scorer target | product gap | any stateful agent |
 | 2 | Nested-map members can't be declaratively updated | product gap | APIs returning maps of sub-objects |
 | 3 | CLI reports a successful dispatch as a failure | **bug** | every first-time suite run |
@@ -26,11 +27,83 @@ stated rather than blurred.
 | 12 | Working set binds on argument *names*; qualified ids never resolve | product gap | **any real API** |
 | 13 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
 
-The two worth acting on first are different in character. **§1** is the one that
-blocks selling this evaluation shape to anyone else — a customer whose
-correctness *is* the end state cannot assert on it. **§8** is the one most
-likely to be silently mis-set by the next person, and its only symptom is an
-inflated pass rate, which is the worst failure an eval platform can have.
+**§0 is the one to fix first**, and it is not close. It changes what the agent
+under test is *able* to do, so every number produced by a multi-turn tool suite
+is measuring an amnesiac. Most of the other symptoms in this file are downstream
+of it.
+
+After that they differ in character. **§1** blocks selling this evaluation shape
+to anyone else — a customer whose correctness *is* the end state cannot assert
+on it. **§8** is the one most likely to be silently mis-set by the next person,
+and its only symptom is an inflated pass rate, which is the worst failure an
+eval platform can have. **§12** is the one that will bite every customer whose
+API was written before they met us.
+
+---
+
+## 0. `replay` memory drops tool state, so a multi-turn agent forgets what it looked up
+
+**This is the one to fix first.** It is not a fidelity nicety; it changes what
+the agent under test is capable of, and it silently depresses every pass rate on
+any multi-turn tool-using suite.
+
+**What happened.** The judge's own words, on a run that scored 1/5:
+
+> "After successfully verifying the user's account in turn 1 (user_id:
+> `mia_garcia_4516`), the agent repeatedly called `get_user_details` with
+> **incorrect user_ids** (`mia.garcia2723`, `mia_garcia_2723`) in turns 2, 5 and
+> 6, causing false 'User not found' errors."
+
+The agent resolved the id correctly, then guessed at it three turns running.
+
+**Why.** In `replay` mode the per-turn payload is built in
+`services/odyssey/run_executor.py::build_turn_input`:
+
+```python
+payload["messages"] = [
+    {"role": entry.get("role"), "content": entry.get("content")}
+    for entry in (session.transcript_json or [])
+]
+```
+
+Every transcript entry is projected down to exactly `role` and `content`. Tool
+calls, tool results and `tool_call_id` are dropped unconditionally — and
+`session.transcript_json` does not carry them in the first place (the session
+trace exposes only `role` / `content` / `turn_index`).
+
+So an agent sees its own prose from earlier turns and **nothing it learned from
+a tool**. Any id, price, status or availability it fetched in turn N is gone in
+turn N+1 unless it happened to write that value into its reply.
+
+The docstring on that same function states the intent:
+
+> `replay` (platform-owned memory): … *The agent does not need its own memory to
+> be correct; maximally reproducible.*
+
+That promise holds for a conversational agent and breaks for a tool-using one,
+which is the kind the platform exists to evaluate.
+
+**What it costs, observed.** Every symptom we spent the session chasing traces
+back here: hallucinated `item_id` and `payment_method_id` on a write; 24–27
+`ledger_read` calls per run as the agent re-derives state it already had;
+`memory_inconsistency` and `task_abandoned` verdicts; and conversations that
+collapse into a transfer after the user is asked to re-verify twice. The agent
+is not weak — it is amnesiac between turns, and then judged for it.
+
+**`stateful` is not the escape hatch.** It withholds the transcript entirely,
+sending only `session_id`, `turn_id`, `input` and `user_instruction`, on the
+premise that the agent brings "its own memory infrastructure". Sandbox reuse
+appears tied to workspace-mode runs; for a proxy-topology agent that means no
+memory at all rather than partial memory. (Worth confirming — if proxy sandboxes
+*do* persist across a session's turns, that changes the recommendation.)
+
+**Shape of the ask.** Carry tool rows through replay: persist `tool_calls` /
+`tool_call_id` / `role: "tool"` entries on the session transcript and re-feed
+them, exactly as every chat-completions API does. The agent contract already
+accepts them on the way *out* — a code agent returns `messages` with tool rows —
+so this is an asymmetry between what the platform accepts and what it returns,
+not a new concept. Failing that, the limitation needs to be documented loudly,
+because the natural reading of "replay" is the opposite of what it does.
 
 ---
 
