@@ -48,13 +48,26 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
+from pathlib import Path
 from typing import Any
 
 # Must precede any tau2 import (tau2.utils.llm_utils imports litellm, which
 # otherwise fetches its cost map over the network -- a documented sandbox
 # cold-start failure).
 os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "True")
+
+# Anchor tau2 to THIS checkout, wherever the platform cloned it. tau2 resolves
+# its corpus as ``DATA_DIR / "tau2" / "domains" / <domain>``, so a TAU2_DATA_DIR
+# of "data/tau2" silently doubles into "data/tau2/tau2/domains/..." -- and left
+# unset it derives a path from the installed package, which need not be the
+# commit under test. Deciding it here, from the entrypoint's own location, means
+# the agent always reads the corpus that shipped with the code being graded.
+_REPO_ROOT = Path(__file__).resolve().parent
+os.environ["TAU2_DATA_DIR"] = str(_REPO_ROOT / "data")
+if str(_REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT / "src"))
 
 from dystopic_harness import (  # noqa: E402 - after the env guard, on purpose
     HarnessSpec,
