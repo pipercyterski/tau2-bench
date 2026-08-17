@@ -22,7 +22,8 @@ stated rather than blurred.
 | 8 | `behavior_instructions` names the wrong consumer | **naming / silent** | multi-turn ports |
 | 9 | `tools.mdx` documents 1 `when` operator, validator accepts 4 | **docs bug** | anyone guarding a write |
 | 10 | An API key can create a model but never fix it | **bug** | key-driven setup |
-| 11 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
+| 11 | Check page prints raw model ids, not names | **bug** | reading any result |
+| 12 | Seeding advisories fire on the natural key spelling | papercut | cosmetic |
 
 The two worth acting on first are different in character. **§1** is the one that
 blocks selling this evaluation shape to anyone else — a customer whose
@@ -297,7 +298,41 @@ is the one combination that accumulates permanent mistakes.
 
 ---
 
-## 11. Seeding advisories fire on the natural key spelling
+## 11. The check page prints raw model ids where the model name belongs
+
+The check detail page's config subheader renders the frozen model ids verbatim:
+
+```
+judge model 321  ·  simulators 321
+```
+
+`321` is not a fact about the run anyone can read. It is `claude-sonnet-4-5`,
+and the whole reason those rows exist is so a reader can see which model judged
+and which simulated — the two facts a result is least interpretable without.
+
+Source: `apps/web/src/app/(app)/agents/[agentId]/checks/[checkId]/page.tsx`,
+`snapshotConfigRows()` — `{ label: 'judge model', value: snap.judge_model_id }`,
+and the simulator row joins the raw ids with `·`. The stored
+`config_snapshot` genuinely only carries ids (`judge_model_id: 321`,
+`user_simulator_model_id: 321`, `odyssey_simulator_model_id: 321`), so this is
+not purely a display bug — the name is not in the evidence to begin with.
+
+**Why it matters here specifically.** Model identity is a methodology fact. A
+reproduction claim is meaningless without "judged by X, simulated by Y", and
+right now that is only recoverable by separately querying the org catalogue —
+which is also the one place a model can be *renamed or deleted*, so the id may
+one day resolve to nothing at all.
+
+**Shape of the ask, following the pattern already in the codebase.**
+`harness_variant_snapshots` freeze the variant `name` alongside a nullable
+`variant_id` precisely "so past evidence stays renderable". Do the same here:
+freeze the model slug next to each model id in `config_snapshot`, and render
+`claude-sonnet-4-5` with the id available as secondary detail. Display-time
+lookup alone would still leave old checks unreadable once a model is retired.
+
+---
+
+## 12. Seeding advisories fire on the natural key spelling
 
 `initial_state` keyed `orders` against a declared `order` normalizes correctly
 and emits an advisory preferring the singular. That is a fine default, but the
