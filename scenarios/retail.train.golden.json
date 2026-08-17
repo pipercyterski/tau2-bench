@@ -1,0 +1,5566 @@
+[
+  {
+    "name": "retail/0",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "0_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Rossi",
+            "zip": "19122"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "0_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2378156"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "0_2",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1656367028"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "0_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4896585277"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "0_4",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2378156",
+            "item_ids": [
+              "1151293680",
+              "4983901480"
+            ],
+            "new_item_ids": [
+              "7706410293",
+              "7747408585"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/1",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "1_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Rossi",
+            "zip": "19122"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "1_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2378156"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "1_2",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1656367028"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "1_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4896585277"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "1_4",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2378156",
+            "item_ids": [
+              "4983901480"
+            ],
+            "new_item_ids": [
+              "7747408585"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/2",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "2_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Rossi",
+            "zip": "19122"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_1",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6086499569"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_4",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "yusuf_rossi_9620"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6247578"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_6",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9711842"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4776164"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_8",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6679257"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2378156"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_10",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "2_11",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2378156",
+            "item_ids": [
+              "4602305039",
+              "4202497723",
+              "9408160950"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "10"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user that there are 10 t-shirt options available."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/3",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "3_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Rossi",
+            "zip": "19122"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_1",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6086499569"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_4",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "yusuf_rossi_9620"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6247578"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_6",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9711842"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4776164"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_8",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6679257"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2378156"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_10",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_11",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "yusuf_rossi_9620"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "3_12",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W4776164",
+            "item_ids": [
+              "8349118980"
+            ],
+            "new_item_ids": [
+              "9647292434"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "10"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user that there are 10 t-shirt options available."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/4",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "4_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Rossi",
+            "zip": "19122"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_1",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6086499569"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_4",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "yusuf_rossi_9620"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6247578"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_6",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9711842"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4776164"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_8",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6679257"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2378156"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_10",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "9523456873"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_11",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "yusuf_rossi_9620"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_12",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W6247578",
+            "item_ids": [
+              "3799046073"
+            ],
+            "new_item_ids": [
+              "9647292434"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "4_13",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W4776164",
+            "item_ids": [
+              "8349118980"
+            ],
+            "new_item_ids": [
+              "9647292434"
+            ],
+            "payment_method_id": "credit_card_9513926"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "10"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user that there are 10 t-shirt options available."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/6",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "6_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Mei",
+            "last_name": "Kovacs",
+            "zip": "28236"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "6_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_kovacs_8020"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "6_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6390527"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "6_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8310926033"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "6_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6817146515"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "6_5",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6390527",
+            "item_ids": [
+              "8384507844"
+            ],
+            "new_item_ids": [
+              "7453605304"
+            ],
+            "payment_method_id": "paypal_7644869"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/7",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "7_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Mei",
+            "last_name": "Kovacs",
+            "zip": "28236"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "7_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_kovacs_8020"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "7_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6390527"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "7_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8310926033"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "7_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6817146515"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "7_5",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6390527",
+            "item_ids": [
+              "8384507844"
+            ],
+            "new_item_ids": [
+              "1569765161"
+            ],
+            "payment_method_id": "paypal_7644869"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/8",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "8_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Mei",
+            "last_name": "Kovacs",
+            "zip": "28236"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "8_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_kovacs_8020"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "8_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6390527"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "8_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8310926033"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "8_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6817146515"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "8_5",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6390527",
+            "item_ids": [
+              "8384507844"
+            ],
+            "new_item_ids": [
+              "9083642334"
+            ],
+            "payment_method_id": "paypal_7644869"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/10",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "10_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "mia.garcia2723@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "10_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mia_garcia_4516"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "10_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5490111"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "10_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7387996"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "10_4",
+          "requestor": "assistant",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "The user wants to refund each order to the opposite order's payment method, but the agent cannot help."
+          },
+          "info": null,
+          "compare_args": []
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/11",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "11_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "mia.garcia2723@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "11_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mia_garcia_4516"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "11_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5490111"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "11_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7387996"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "11_4",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5490111",
+            "item_ids": [
+              "4579334072",
+              "1421289881",
+              "6117189161",
+              "4947717507"
+            ],
+            "payment_method_id": "credit_card_3124723"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "11_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7387996",
+            "item_ids": [
+              "5796612084"
+            ],
+            "payment_method_id": "paypal_9497703"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/13",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "13_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "mia.garcia2723@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "13_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mia_garcia_4516"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "13_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5490111"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "13_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7387996"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "13_4",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5490111",
+            "item_ids": [
+              "4579334072",
+              "6117189161",
+              "4947717507"
+            ],
+            "payment_method_id": "credit_card_3124723"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/14",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "14_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "mia.garcia2723@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "14_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mia_garcia_4516"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "14_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5490111"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "14_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7387996"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "14_4",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5490111",
+            "item_ids": [
+              "1421289881"
+            ],
+            "payment_method_id": "credit_card_3124723"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "14_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7387996",
+            "item_ids": [
+              "5796612084"
+            ],
+            "payment_method_id": "paypal_9497703"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/15",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "15_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Fatima",
+            "last_name": "Johnson",
+            "zip": "78712"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "fatima_johnson_7581"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9389413"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W8665881"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5199551"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_5",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "7363354090"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "15_6",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W5199551",
+            "item_ids": [
+              "1615379700"
+            ],
+            "new_item_ids": [
+              "3613716226"
+            ],
+            "payment_method_id": "paypal_5364164"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/16",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "16_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Fatima",
+            "last_name": "Johnson",
+            "zip": "78712"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "fatima_johnson_7581"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5199551"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W8665881"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9389413"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_5",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "3131.1 + 4777.75 + 367.38"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_6",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W5199551",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_7",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W8665881",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "16_8",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9389413",
+            "item_ids": [
+              "2554056026"
+            ],
+            "payment_method_id": "paypal_5364164"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "8276.23"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total refund amount is $8,276.23."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/19",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "19_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Mei",
+            "last_name": "Davis",
+            "zip": "80217"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_davis_8935"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2890441"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W1267569"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "2747247837"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_5",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4794339885"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "19_6",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2890441",
+            "item_ids": [
+              "2366567022"
+            ],
+            "payment_method_id": "credit_card_1061405"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "54.04",
+        "41.64"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user that returning the water bottle gives a refund of $54.04.",
+        "Agent should tell the user that exchanging the pet bed and office chair saves $41.64 total."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/20",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "20_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Ethan",
+            "last_name": "Garcia",
+            "zip": "80280"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ethan_garcia_1261"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4967593"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9911714"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8310926033"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_5",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1656367028"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_6",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6938111410"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_7",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "5149340237"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_8",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9911714",
+            "item_ids": [
+              "2366567022",
+              "1340995114",
+              "9791469541",
+              "1763705424"
+            ],
+            "new_item_ids": [
+              "4579334072",
+              "1151293680",
+              "4107812777",
+              "2882812427"
+            ],
+            "payment_method_id": "gift_card_4332117"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "20_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5733668"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/21",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "21_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Ethan",
+            "last_name": "Garcia",
+            "zip": "80280"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ethan_garcia_1261"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4967593"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9911714"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5733668"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_5",
+          "requestor": "assistant",
+          "name": "get_item_details",
+          "arguments": {
+            "item_id": "4107812777"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_6",
+          "requestor": "assistant",
+          "name": "get_item_details",
+          "arguments": {
+            "item_id": "1421289881"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_7",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1656367028"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_8",
+          "requestor": "assistant",
+          "name": "get_item_details",
+          "arguments": {
+            "item_id": "4107812777"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_9",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6938111410"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_10",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "155.33 - 147.05 + 268.77 - 235.13"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "21_11",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9911714",
+            "item_ids": [
+              "9791469541",
+              "1340995114"
+            ],
+            "new_item_ids": [
+              "4107812777",
+              "1421289881"
+            ],
+            "payment_method_id": "gift_card_4332117"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "44.08"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user their gift card balance is $44.08."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/22",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "22_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Ethan",
+            "last_name": "Garcia",
+            "zip": "80280"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_1",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "ethan_garcia_1261",
+            "address1": "101 Highway",
+            "address2": "",
+            "city": "New York",
+            "state": "NY",
+            "country": "USA",
+            "zip": "10001"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4967593"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9911714"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5733668"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_5",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W9911714",
+            "address1": "101 Highway",
+            "address2": "",
+            "city": "New York",
+            "state": "NY",
+            "country": "USA",
+            "zip": "10001"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "22_6",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "ethan_garcia_1261",
+            "address1": "667 Highland Drive",
+            "address2": "Suite 865",
+            "city": "Denver",
+            "state": "CO",
+            "country": "USA",
+            "zip": "80280"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/23",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "23_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Sofia",
+            "last_name": "Hernandez",
+            "zip": "98193"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sofia_hernandez_5364"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3561391"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6876713"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9609649"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3947049"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_6",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "7765186836"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_7",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3947049",
+            "item_ids": [
+              "3358616356"
+            ],
+            "new_item_ids": [
+              "8573379326"
+            ],
+            "payment_method_id": "credit_card_7901829"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_8",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "5426915165"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_9",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6876713",
+            "item_ids": [
+              "6301799585"
+            ],
+            "new_item_ids": [
+              "8926329222"
+            ],
+            "payment_method_id": "credit_card_7901829"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_10",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6819683148"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "23_11",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W3561391",
+            "item_ids": [
+              "5946177616"
+            ],
+            "new_item_ids": [
+              "7082455361"
+            ],
+            "payment_method_id": "credit_card_7901829"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/24",
+    "evaluation_criteria": {
+      "actions": [],
+      "env_assertions": null,
+      "communicate_info": [
+        "polyester",
+        "cotton"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the materials of the two t-shirts are polyester and cotton."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/25",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "25_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Isabella",
+            "last_name": "Johansson",
+            "zip": "32286"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "25_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "isabella_johansson_2152"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "25_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3792453"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "25_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7181492"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "25_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5565470"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "25_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2575533"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/28",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "28_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Isabella",
+            "last_name": "Johansson",
+            "zip": "32286"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "isabella_johansson_2152"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3792453"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7181492"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5565470"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2575533"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_6",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3792453",
+            "item_ids": [
+              "4293355847"
+            ],
+            "payment_method_id": "paypal_3024827"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_7",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7181492",
+            "item_ids": [
+              "5753502325",
+              "9851293632"
+            ],
+            "payment_method_id": "paypal_3024827"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_8",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5565470",
+            "item_ids": [
+              "9570044148",
+              "6857426243"
+            ],
+            "payment_method_id": "paypal_3024827"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2575533"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "28_10",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "200.8 + 96.35 + 193.38 + 231.37 + 196.53"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "918.43"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total refund amount is $918.43."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/29",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "29_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Isabella",
+            "last_name": "Johansson",
+            "zip": "32286"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "29_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "isabella_johansson_2152"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "29_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3792453"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "29_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1968349452"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "29_4",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3792453",
+            "item_ids": [
+              "4293355847"
+            ],
+            "new_item_ids": [
+              "8176740019"
+            ],
+            "payment_method_id": "paypal_3024827"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "29_5",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7181492",
+            "item_ids": [
+              "5753502325"
+            ],
+            "new_item_ids": [
+              "5206946487"
+            ],
+            "payment_method_id": "paypal_3024827"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "180.1",
+        "189.57",
+        "208.6"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the prices of the available bamboo skateboard options: $180.10, $189.57, and $208.60."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/30",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "30_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Olivia",
+            "last_name": "Lopez",
+            "zip": "76171"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "olivia_lopez_3865"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9319364"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9373487"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2692684"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_5",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8024098596"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_6",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2692684",
+            "item_ids": [
+              "3788616824"
+            ],
+            "payment_method_id": "gift_card_7711863"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9373487"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_8",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W9373487",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2692684"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_10",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5481803"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_11",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7449508"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "30_12",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7449508",
+            "item_ids": [
+              "6477915553"
+            ],
+            "payment_method_id": "gift_card_7711863"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "746342064230"
+      ],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/31",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "31_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Olivia",
+            "last_name": "Lopez",
+            "zip": "76171"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "olivia_lopez_3865"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9319364"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9373487"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2692684"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5481803"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_6",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7449508"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9373487"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_8",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W9373487",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_9",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5481803"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_10",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7449508"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "31_11",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7449508",
+            "item_ids": [
+              "6477915553"
+            ],
+            "payment_method_id": "gift_card_7711863"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "746342064230"
+      ],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/34",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "34_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Noah",
+            "last_name": "Patel",
+            "zip": "10108"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "34_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_patel_6952"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "34_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6111398"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "34_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7043598"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "34_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W1845024"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "34_5",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W1845024",
+            "address1": "224 Elm Street",
+            "address2": "Suite 491",
+            "city": "New York",
+            "country": "USA",
+            "state": "NY",
+            "zip": "10108"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [],
+      "reward_basis": [
+        "DB"
+      ]
+    }
+  },
+  {
+    "name": "retail/35",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "35_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "aarav.santos8321@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_1",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "aarav.santos8320@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_2",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "aarav_santos_2259"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9672333"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4760268021"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W8528674",
+            "item_ids": [
+              "6704763132"
+            ],
+            "payment_method_id": "paypal_7664977"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "35_6",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9672333",
+            "item_ids": [
+              "1684786391"
+            ],
+            "new_item_ids": [
+              "5052031638"
+            ],
+            "payment_method_id": "paypal_7664977"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/37",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "37_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "daikisanchez1479@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "37_1",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Daiki",
+            "last_name": "Sanchez",
+            "zip": "46236"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "37_2",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "daiki_sanchez_3253"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "37_9",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9348897",
+            "item_ids": [
+              "6117189161",
+              "7453605304",
+              "3799046073"
+            ],
+            "new_item_ids": [
+              "6700049080",
+              "5320792178",
+              "3234800602"
+            ],
+            "payment_method_id": "credit_card_8853416"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "camera",
+        "481.50"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the most expensive item in the order is the camera.",
+        "Agent should tell the user the camera costs $481.50."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/41",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "41_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Mei",
+            "last_name": "Patel",
+            "zip": "76165"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_patel_7272"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9583042"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4082615"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_4",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W9583042",
+            "address1": "445 Maple Drive",
+            "address2": "Suite 394",
+            "city": "Fort Worth",
+            "state": "TX",
+            "country": "USA",
+            "zip": "76165"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_5",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W4082615",
+            "address1": "445 Maple Drive",
+            "address2": "Suite 394",
+            "city": "Fort Worth",
+            "state": "TX",
+            "country": "USA",
+            "zip": "76165"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_6",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "mei_patel_7272",
+            "address1": "445 Maple Drive",
+            "address2": "Suite 394",
+            "city": "Fort Worth",
+            "state": "TX",
+            "country": "USA",
+            "zip": "76165"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_7",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "1808611083"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_8",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4082615"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "41_9",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W4082615",
+            "item_ids": [
+              "9779102705"
+            ],
+            "new_item_ids": [
+              "1096508426"
+            ],
+            "payment_method_id": "paypal_4768213"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/43",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "43_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Lucas",
+            "last_name": "Santos",
+            "zip": "80239"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "43_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "lucas_santos_6600"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "43_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W1588712"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "43_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7895761"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "43_4",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "lucas_santos_6600",
+            "address1": "943 Maple Drive",
+            "address2": "Suite 356",
+            "city": "Chicago",
+            "state": "IL",
+            "country": "USA",
+            "zip": "60621"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "840887978435",
+        "943 Maple Drive",
+        "Suite 356",
+        "Chicago",
+        "IL",
+        "60621",
+        "64GB"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the tracking number is 840887978435.",
+        "Agent should tell the user the order was shipped to 943 Maple Drive, Suite 356, Chicago, IL 60621.",
+        "Agent should tell the user the tablet storage is 64GB."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/44",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "44_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Aarav",
+            "last_name": "Anderson",
+            "zip": "19031"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "44_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9300146"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "44_2",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "6817146515"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "44_3",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "135.24 - 153.23"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "44_4",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9300146",
+            "item_ids": [
+              "9190635437"
+            ],
+            "new_item_ids": [
+              "5320792178"
+            ],
+            "payment_method_id": "gift_card_7245904"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "17.99"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user they will get back $17.99."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/46",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "46_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Daiki",
+            "last_name": "Johnson",
+            "zip": "80273"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#9502126"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#9502127"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9502127"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_4",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "652.61 + 473.43"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9502127",
+            "item_ids": [
+              "6259501109",
+              "9534205511"
+            ],
+            "payment_method_id": "paypal_2433177"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "46_6",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "2623.69 - 1126.04"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "1126.04",
+        "1497.65"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total refund amount is $1,126.04.",
+        "Agent should tell the user the total paid for remaining items is $1,497.65."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/47",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "47_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Daiki",
+            "last_name": "Johnson",
+            "zip": "80273"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#9502126"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#9502127"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9502127"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_4",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "622.12 + 473.43"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9502127",
+            "item_ids": [
+              "2872451762",
+              "9534205511"
+            ],
+            "payment_method_id": "paypal_2433177"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "47_6",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "2623.69 - 1095.55"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "1095.55",
+        "1528.14"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total refund amount is $1,095.55.",
+        "Agent should tell the user the total paid for remaining items is $1,528.14."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/48",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "48_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Daiki",
+            "last_name": "Johnson",
+            "zip": "80273"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "48_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "daiki_johnson_9523"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "48_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W1436802"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "48_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5282037"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "48_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W9502127"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "48_5",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9502127",
+            "item_ids": [
+              "9534205511"
+            ],
+            "payment_method_id": "paypal_2433177"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/50",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "50_0",
+          "requestor": "assistant",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "The user urgently needs to undo a cancellation of an order and insists on receiving the items from the initial order as soon as possible. The user acknowledges the policy but requests exceptional measures due to the urgency of the situation."
+          },
+          "info": null,
+          "compare_args": []
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/52",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "52_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Sofia",
+            "last_name": "Li",
+            "zip": "78260"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "52_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sofia_li_9219"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "52_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4689314"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "52_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "8940227892"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "52_4",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4689314",
+            "item_ids": [
+              "5996159312"
+            ],
+            "new_item_ids": [
+              "9228757377"
+            ],
+            "payment_method_id": "paypal_8194385"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/54",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "54_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "silva7872@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_1",
+          "requestor": "assistant",
+          "name": "find_user_id_by_email",
+          "arguments": {
+            "email": "amelia.silva7872@example.com"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_2",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_silva_7726"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2586676"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5400801"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_5",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4597054"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_6",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W4836353"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_7",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7773202"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_8",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W7342738"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_9",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W4836353",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_10",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W7342738",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "54_11",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4597054",
+            "item_ids": [
+              "5669664287",
+              "4900990404",
+              "9862136885",
+              "6777246137"
+            ],
+            "payment_method_id": "gift_card_3491931"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "3646.68"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total refund amount is $3,646.68."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/57",
+    "evaluation_criteria": {
+      "actions": [],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/58",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "58_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Ivan",
+            "last_name": "Hernandez",
+            "zip": "92133"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "58_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ivan_hernandez_6923"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "58_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5838674"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "58_3",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4354588079"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "58_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4760268021"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "58_5",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5838674",
+            "item_ids": [
+              "7441167885",
+              "3478699712"
+            ],
+            "new_item_ids": [
+              "3815173328",
+              "6017636844"
+            ],
+            "payment_method_id": "gift_card_9368765"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/59",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "59_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Yusuf",
+            "last_name": "Taylor",
+            "zip": "95154"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "59_1",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2702727"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "59_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W8268610"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "59_3",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W8268610",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "59_4",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W2702727",
+            "address1": "1234 Elm St",
+            "address2": "",
+            "city": "Springfield",
+            "state": "IL",
+            "country": "USA",
+            "zip": "62701"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "164.28",
+        "625.60"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the refund for the cancelled desk lamp order is $164.28.",
+        "Agent should tell the user the total price of order #W2702727 is $625.60."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/63",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "63_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Chen",
+            "last_name": "Johnson",
+            "zip": "77004"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "chen_johnson_4204"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5797164"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W5061109"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_4",
+          "requestor": "assistant",
+          "name": "get_product_details",
+          "arguments": {
+            "product_id": "4768869376"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_5",
+          "requestor": "assistant",
+          "name": "calculate",
+          "arguments": {
+            "expression": "1319.43 - 302.67 + 271.89"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "63_6",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W5061109",
+            "item_ids": [
+              "3254583681"
+            ],
+            "new_item_ids": [
+              "2635605237"
+            ],
+            "payment_method_id": "paypal_3742148"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "302.67",
+        "20 hours",
+        "1288.65"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the Bluetooth speaker costs $302.67.",
+        "Agent should tell the user the battery life is 20 hours.",
+        "Agent should tell the user the new order total is $1,288.65."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/66",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "66_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Aarav",
+            "last_name": "Lee",
+            "zip": "85025"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "66_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "aarav_lee_1982"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "66_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3361211"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "66_3",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W3586556"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "66_4",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W3361211",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/67",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "67_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Noah",
+            "last_name": "Ito",
+            "zip": "98178"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "67_1",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Noah",
+            "last_name": "Ito",
+            "zip": "98186"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "67_2",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Noah",
+            "last_name": "Ito",
+            "zip": "98187"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "67_3",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_ito_3850"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "67_4",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W6729841"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "829.43"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the order total is $829.43."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/69",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "69_0",
+          "requestor": "assistant",
+          "name": "find_user_id_by_name_zip",
+          "arguments": {
+            "first_name": "Emma",
+            "last_name": "Smith",
+            "zip": "10192"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "69_1",
+          "requestor": "assistant",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "emma_smith_8564"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "69_2",
+          "requestor": "assistant",
+          "name": "get_order_details",
+          "arguments": {
+            "order_id": "#W2417020"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "69_3",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W2417020",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/72",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "72_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W5270061",
+            "address1": "159 Hickory Lane",
+            "address2": "Suite 995",
+            "city": "Charlotte",
+            "country": "USA",
+            "state": "NC",
+            "zip": "28243"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "72_1",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W5270061",
+            "item_ids": [
+              "2492465580"
+            ],
+            "new_item_ids": [
+              "5917587651"
+            ],
+            "payment_method_id": "paypal_7729105"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/73",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "73_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W5272531",
+            "item_ids": [
+              "7228247242",
+              "2698416822",
+              "8098621301",
+              "3320557165"
+            ],
+            "payment_method_id": "credit_card_6824399"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/75",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "75_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6908222",
+            "item_ids": [
+              "8555936349"
+            ],
+            "new_item_ids": [
+              "4063058357"
+            ],
+            "payment_method_id": "paypal_4518393"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/76",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "76_0",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W8367380",
+            "reason": "ordered by mistake"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "76_1",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W1242543",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "1939.05"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the total price of all grills is $1,939.05."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/78",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "78_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W5056519",
+            "address1": "380 Maple Drive",
+            "address2": "Suite 960",
+            "city": "San Diego",
+            "country": "USA",
+            "state": "CA",
+            "zip": "92101"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "78_1",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W5056519",
+            "item_ids": [
+              "7902309762"
+            ],
+            "new_item_ids": [
+              "1573035764"
+            ],
+            "payment_method_id": "credit_card_3095586"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "78_2",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W5995614",
+            "reason": "ordered by mistake"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/80",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "80_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7209932",
+            "item_ids": [
+              "5047954489"
+            ],
+            "new_item_ids": [
+              "9354168549"
+            ],
+            "payment_method_id": "gift_card_2611937"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/81",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "81_0",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W3289292",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "81_1",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W9722559",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/82",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "82_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9571698",
+            "item_ids": [
+              "5952720925",
+              "9973034634",
+              "7381052709",
+              "6065192424"
+            ],
+            "payment_method_id": "gift_card_7250692"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/83",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "83_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9571698",
+            "item_ids": [
+              "6065192424"
+            ],
+            "payment_method_id": "gift_card_7250692"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/84",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "84_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9571698",
+            "item_ids": [
+              "6065192424"
+            ],
+            "payment_method_id": "gift_card_7250692"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/85",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "85_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W2466703",
+            "item_ids": [
+              "9385662952"
+            ],
+            "new_item_ids": [
+              "8733974883"
+            ],
+            "payment_method_id": "paypal_7529813"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/87",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "87_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W2166301",
+            "address1": "565 Maple Drive",
+            "address2": "Suite 501",
+            "city": "Washington",
+            "country": "USA",
+            "state": "DC",
+            "zip": "20307"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "87_1",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W2466703",
+            "address1": "565 Maple Drive",
+            "address2": "Suite 501",
+            "city": "Washington",
+            "country": "USA",
+            "state": "DC",
+            "zip": "20307"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "87_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W6832752",
+            "address1": "565 Maple Drive",
+            "address2": "Suite 501",
+            "city": "Washington",
+            "country": "USA",
+            "state": "DC",
+            "zip": "20307"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "87_3",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "yusuf_hernandez_6785",
+            "address1": "565 Maple Drive",
+            "address2": "Suite 501",
+            "city": "Washington",
+            "country": "USA",
+            "state": "DC",
+            "zip": "20307"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/88",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "88_0",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W8835847",
+            "reason": "ordered by mistake"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/89",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "89_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4680753",
+            "item_ids": [
+              "9690244451"
+            ],
+            "payment_method_id": "paypal_2417743"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "226.11",
+        "tactile",
+        "white",
+        "full"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the cheapest mechanical keyboard costs $226.11.",
+        "Agent should tell the user the keyboard switch type is tactile.",
+        "Agent should tell the user the keyboard backlight is white.",
+        "Agent should tell the user the keyboard size is full."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/91",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "91_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7553978",
+            "item_ids": [
+              "4545791457",
+              "3098764622",
+              "1631806422"
+            ],
+            "payment_method_id": "credit_card_5902940"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "91_1",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3239882",
+            "item_ids": [
+              "9494281769"
+            ],
+            "new_item_ids": [
+              "7609274509"
+            ],
+            "payment_method_id": "credit_card_5902940"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/92",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "92_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W7553978",
+            "item_ids": [
+              "4545791457",
+              "3098764622",
+              "1631806422"
+            ],
+            "payment_method_id": "credit_card_5902940"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "92_1",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3239882",
+            "item_ids": [
+              "9494281769"
+            ],
+            "payment_method_id": "credit_card_5902940"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/93",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "93_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4073673",
+            "item_ids": [
+              "2216662955"
+            ],
+            "new_item_ids": [
+              "9844888101"
+            ],
+            "payment_method_id": "credit_card_3677959"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/95",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "96_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W2905754",
+            "item_ids": [
+              "3478699712"
+            ],
+            "new_item_ids": [
+              "9844888101"
+            ],
+            "payment_method_id": "credit_card_3677959"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "96_1",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4073673",
+            "item_ids": [
+              "2216662955"
+            ],
+            "new_item_ids": [
+              "9844888101"
+            ],
+            "payment_method_id": "credit_card_3677959"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "167.87",
+        "60.78",
+        "107.09"
+      ],
+      "nl_assertions": [
+        "Agent should tell the user the price difference for one laptop exchange is $167.87.",
+        "Agent should tell the user the price difference for the other laptop exchange is $60.78 (a refund).",
+        "Agent should tell the user the total amount to pay today is $107.09."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/96",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "97_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W6750959",
+            "address1": "476 Maple Drive",
+            "address2": "Suite 432",
+            "city": "New York",
+            "country": "USA",
+            "state": "NY",
+            "zip": "10093"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "97_1",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W6750959",
+            "item_ids": [
+              "3254583681"
+            ],
+            "new_item_ids": [
+              "9440686670"
+            ],
+            "payment_method_id": "paypal_8080730"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/98",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "99_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4689314",
+            "item_ids": [
+              "5996159312"
+            ],
+            "new_item_ids": [
+              "8363011723"
+            ],
+            "payment_method_id": "credit_card_8105988"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "99_1",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3916020",
+            "item_ids": [
+              "7758198585",
+              "4068787148"
+            ],
+            "new_item_ids": [
+              "5606522780",
+              "6245746168"
+            ],
+            "payment_method_id": "credit_card_8105988"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "99_2",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W8855135",
+            "reason": "no longer needed"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/99",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "100_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4689314",
+            "item_ids": [
+              "5996159312"
+            ],
+            "new_item_ids": [
+              "8363011723"
+            ],
+            "payment_method_id": "credit_card_3951670"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "100_1",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3916020",
+            "item_ids": [
+              "7758198585",
+              "4068787148"
+            ],
+            "new_item_ids": [
+              "5606522780",
+              "5546244844"
+            ],
+            "payment_method_id": "credit_card_3951670"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/103",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "104_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6239298",
+            "item_ids": [
+              "4900661478",
+              "3614853563"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "104_1",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9218746",
+            "item_ids": [
+              "7824298782"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "104_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W4860251",
+            "address1": "921 Park Avenue",
+            "address2": "Suite 892",
+            "city": "Chicago",
+            "country": "USA",
+            "state": "IL",
+            "zip": "60612"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "104_3",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W4860251",
+            "item_ids": [
+              "5209958006"
+            ],
+            "new_item_ids": [
+              "8964750292"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "286422338955"
+      ],
+      "nl_assertions": [
+        "Agent should provide the tracking number 286422338955."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/104",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "105_0",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W8660475",
+            "item_ids": [
+              "8479046075"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "105_1",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W9218746",
+            "item_ids": [
+              "7824298782"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "105_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W4860251",
+            "address1": "921 Park Avenue",
+            "address2": "Suite 892",
+            "city": "Chicago",
+            "country": "USA",
+            "state": "IL",
+            "zip": "60612"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "105_3",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W4860251",
+            "item_ids": [
+              "5209958006"
+            ],
+            "new_item_ids": [
+              "8964750292"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "action_1746656550382",
+          "requestor": "assistant",
+          "name": "return_delivered_order_items",
+          "arguments": {
+            "order_id": "#W6239298",
+            "item_ids": [
+              "4900661478",
+              "3614853563"
+            ],
+            "payment_method_id": "credit_card_2112420"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [
+        "286422338955"
+      ],
+      "nl_assertions": [
+        "Agent should provide the tracking number 286422338955."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/105",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "106_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W4316152",
+            "item_ids": [
+              "7292993796",
+              "7292993796"
+            ],
+            "new_item_ids": [
+              "3761330360",
+              "9647374798"
+            ],
+            "payment_method_id": "gift_card_7245904"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should exchange both tea kettles (same style) to the items requested"
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/106",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "107_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W3388163",
+            "item_ids": [
+              "9354168549"
+            ],
+            "new_item_ids": [
+              "2060066974"
+            ],
+            "payment_method_id": "paypal_5334408"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should process the exchange."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/107",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "108_0",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W1304208",
+            "item_ids": [
+              "1615379700"
+            ],
+            "new_item_ids": [
+              "8106223139"
+            ],
+            "payment_method_id": "paypal_1679017"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "108_1",
+          "requestor": "assistant",
+          "name": "exchange_delivered_order_items",
+          "arguments": {
+            "order_id": "#W8353027",
+            "item_ids": [
+              "6245746168"
+            ],
+            "new_item_ids": [
+              "3112842858"
+            ],
+            "payment_method_id": "paypal_1679017"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should exchange items in both orders."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/109",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "110_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W1603792",
+            "address1": "592 Elm Avenue",
+            "address2": "Suite 978",
+            "city": "Houston",
+            "country": "USA",
+            "state": "TX",
+            "zip": "77242"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "110_1",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "sophia_martin_8570",
+            "address1": "592 Elm Avenue",
+            "address2": "Suite 978",
+            "city": "Houston",
+            "country": "USA",
+            "state": "TX",
+            "zip": "77242"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "110_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W1603792",
+            "item_ids": [
+              "6501071631"
+            ],
+            "new_item_ids": [
+              "2106335193"
+            ],
+            "payment_method_id": "credit_card_5694100"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should make changes to address on order and user profile",
+        "Agent should modify the pending order."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/110",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "111_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W1092119",
+            "address1": "760 Elm Avenue",
+            "address2": "Suite 564",
+            "city": "Houston",
+            "state": "TX",
+            "country": "USA",
+            "zip": "77034"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "111_1",
+          "requestor": "assistant",
+          "name": "modify_user_address",
+          "arguments": {
+            "user_id": "sophia_martin_8570",
+            "address1": "760 Elm Avenue",
+            "address2": "Suite 564",
+            "city": "Houston",
+            "state": "TX",
+            "country": "USA",
+            "zip": "77034"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "111_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W1603792",
+            "item_ids": [
+              "6501071631"
+            ],
+            "new_item_ids": [
+              "2106335193"
+            ],
+            "payment_method_id": "credit_card_5694100"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should modify address for the order",
+        "Agent should modify user address",
+        "Agent should modify the items in the pending order."
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/112",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "113_0",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W9810810",
+            "item_ids": [
+              "1355937109"
+            ],
+            "new_item_ids": [
+              "9949163720"
+            ],
+            "payment_method_id": "gift_card_7252880"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "113_1",
+          "requestor": "assistant",
+          "name": "modify_pending_order_address",
+          "arguments": {
+            "order_id": "#W3730488",
+            "address1": "555 Highland Drive",
+            "address2": "Suite 872",
+            "city": "New York",
+            "country": "USA",
+            "state": "NY",
+            "zip": "10116"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "113_2",
+          "requestor": "assistant",
+          "name": "modify_pending_order_items",
+          "arguments": {
+            "order_id": "#W3730488",
+            "item_ids": [
+              "2913673670"
+            ],
+            "new_item_ids": [
+              "9844888101"
+            ],
+            "payment_method_id": "gift_card_7252880"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": null,
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  },
+  {
+    "name": "retail/113",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "114_0",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W5056519",
+            "reason": "ordered by mistake"
+          },
+          "info": null,
+          "compare_args": null
+        },
+        {
+          "action_id": "114_1",
+          "requestor": "assistant",
+          "name": "cancel_pending_order",
+          "arguments": {
+            "order_id": "#W5995614",
+            "reason": "ordered by mistake"
+          },
+          "info": null,
+          "compare_args": null
+        }
+      ],
+      "env_assertions": null,
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent should cancel all pending orders"
+      ],
+      "reward_basis": [
+        "DB",
+        "NL_ASSERTION"
+      ]
+    }
+  }
+]

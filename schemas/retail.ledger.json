@@ -1,0 +1,206 @@
+{
+  "entities": [
+    {
+      "type": "product",
+      "id_field": "product_id",
+      "description": "A retail product line. Its variants{} map holds the purchasable items, each of which is also a first-class `item` entity.",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name of the product"
+        },
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "Unique identifier for the product"
+        },
+        {
+          "name": "variants",
+          "type": "object",
+          "description": "Dictionary of variants indexed by variant ID"
+        }
+      ]
+    },
+    {
+      "type": "item",
+      "id_field": "item_id",
+      "description": "One purchasable variant of a product (a specific colour/size/...), promoted out of products[].variants so it can be looked up directly.",
+      "fields": [
+        {
+          "name": "item_id",
+          "type": "string",
+          "description": "Unique identifier for the variant"
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "description": "Dictionary of option names to values (e.g. {'color': 'blue', 'size': 'large'})"
+        },
+        {
+          "name": "available",
+          "type": "boolean",
+          "description": "Whether this variant is currently in stock"
+        },
+        {
+          "name": "price",
+          "type": "number",
+          "description": "Price of this variant"
+        },
+        {
+          "name": "product_id",
+          "type": "string",
+          "description": "ID of the product this item is a variant of."
+        },
+        {
+          "name": "product_name",
+          "type": "string",
+          "description": "Name of the parent product, denormalized onto the item so it can be filtered without a join. Filter key only -- never projected."
+        }
+      ]
+    },
+    {
+      "type": "user",
+      "id_field": "user_id",
+      "description": "A customer, with their address, payment methods and order history.",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "description": "Unique identifier for the user"
+        },
+        {
+          "name": "name",
+          "type": "object",
+          "description": "User's full name"
+        },
+        {
+          "name": "address",
+          "type": "object",
+          "description": "User's primary address"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "description": "User's email address"
+        },
+        {
+          "name": "payment_methods",
+          "type": "object",
+          "description": "Dictionary of payment methods indexed by payment method ID"
+        },
+        {
+          "name": "orders",
+          "type": "array",
+          "description": "List of order IDs associated with this user"
+        },
+        {
+          "name": "first_name",
+          "type": "string",
+          "description": "Flattened copy of name.first_name so a ledger_read `where` can filter on it. Filter key only -- never projected; the nested name{} object is what tools return."
+        },
+        {
+          "name": "last_name",
+          "type": "string",
+          "description": "Flattened copy of name.last_name so a ledger_read `where` can filter on it. Filter key only -- never projected; the nested name{} object is what tools return."
+        },
+        {
+          "name": "zip",
+          "type": "string",
+          "description": "Flattened copy of address.zip so a ledger_read `where` can filter on it. Filter key only -- never projected; the nested address{} object is what tools return."
+        }
+      ]
+    },
+    {
+      "type": "order",
+      "id_field": "order_id",
+      "description": "A customer order and its lifecycle: items, fulfillments, payment history, and the cancel/return/exchange fields written by the post-purchase tools.",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "string",
+          "description": "Unique identifier for the order"
+        },
+        {
+          "name": "user_id",
+          "type": "string",
+          "description": "Unique identifier for the user"
+        },
+        {
+          "name": "address",
+          "type": "object",
+          "description": "Address of the user"
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "description": "Items in the order"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "enum": [
+            "pending",
+            "processed",
+            "delivered",
+            "cancelled",
+            "pending (item modified)",
+            "return requested",
+            "exchange requested"
+          ],
+          "description": "Status of the order"
+        },
+        {
+          "name": "fulfillments",
+          "type": "array",
+          "description": "Fulfillments of the order"
+        },
+        {
+          "name": "payment_history",
+          "type": "array",
+          "description": "Payments of the order"
+        },
+        {
+          "name": "cancel_reason",
+          "type": "string",
+          "enum": [
+            "no longer needed",
+            "ordered by mistake"
+          ],
+          "description": "Reason for cancelling the order. Should be 'no longer needed' or 'ordered by mistake'"
+        },
+        {
+          "name": "exchange_items",
+          "type": "array",
+          "description": "Items to be exchanged"
+        },
+        {
+          "name": "exchange_new_items",
+          "type": "array",
+          "description": "Items exchanged for"
+        },
+        {
+          "name": "exchange_payment_method_id",
+          "type": "string",
+          "description": "Payment method ID for the exchange"
+        },
+        {
+          "name": "exchange_price_difference",
+          "type": "number",
+          "description": "Price difference for the exchange"
+        },
+        {
+          "name": "return_items",
+          "type": "array",
+          "description": "Items to be returned"
+        },
+        {
+          "name": "return_payment_method_id",
+          "type": "string",
+          "description": "Payment method ID for the return"
+        }
+      ]
+    }
+  ],
+  "field_policy": "closed"
+}
